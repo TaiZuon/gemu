@@ -16,8 +16,10 @@
 
 void GameObject::go_Stop()
 {
-    X_Vel = 0;
-    Y_Vel = 0;
+    Up = false;
+    Down = false;
+    Left = false;
+    Right = false;
 }
 
 void GameObject::go_Up()
@@ -38,6 +40,11 @@ void GameObject::go_Left()
 void GameObject::go_Right()
 {
     X_Pos += X_Vel;
+}
+
+void GameObject::go_Jump()
+{
+    Y_Pos += Y_Vel;    
 }
 
 void GameObject::Update()

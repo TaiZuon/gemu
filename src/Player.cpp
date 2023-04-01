@@ -11,13 +11,21 @@ Player::Player(const char* texturesheet, int x, int y, int vx, int vy)
     X_Vel = vx;
     Y_Vel = vy;
 
-    Up = false; Left = false; Right = false;
-    if(!Player::isGround()) Down = true; else Down = false;
+    Up = false; Left = false; Right = false; Jump = false;
+    if(!Player::isGround())
+    {
+        Down = true;
+    } 
+    else 
+    {
+        Y_Vel = 0;
+        Down = false;
+    }
 }
 
 bool Player::isGround()
 {
-    if((float)Y_Pos == 14 * 32) is_ground = true;
+    if((float)Y_Pos >= 13 * 32) is_ground = true;
     else is_ground = false;
     return is_ground;
 }

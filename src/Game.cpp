@@ -11,6 +11,9 @@ Map* map;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
+float player_Y_Vel = 2;
+float player_X_Vel = 2; 
+
 Game::Game()
 {}
 
@@ -37,8 +40,8 @@ void Game::init(const char * title, int width, int height, bool fullscreen)
         isRunning = true;
     }
 
-    player = new Player("assets/player.png", 100, 100, 2, 2);
-    enemy = new Player("assets/enemy.png", 100, 0, 1, 1);
+    player = new Player("assets/player.png", 200, 0, player_X_Vel, player_Y_Vel);
+    enemy = new Player("assets/enemy.png", 100, 0, player_X_Vel, player_Y_Vel);
     map = new Map();
 }
 
@@ -56,8 +59,9 @@ void Game::handleEvents()
         switch (event.key.keysym.sym)
         {
         case SDLK_w:
-            //di len
+            //nhay
             player->Up = true;
+            player->Down = false;
             break;
         case SDLK_s:
             //di xuong
@@ -81,19 +85,19 @@ void Game::handleEvents()
     switch (event.key.keysym.sym)
         {
         case SDLK_w:
-            //di len
+            //roi xuong
             player->Up = false;
+            player->Down = true;
             break;
         case SDLK_s:
-            //di xuong
-            player->Down = false;
+
             break;
         case SDLK_a:
-            //di trai
+            //dung di trai
             player->Left = false;
             break;
         case SDLK_d:
-            //di phai
+            //dung di phai
             player->Right = false;
             break;
         case SDLK_SPACE:
@@ -107,10 +111,20 @@ void Game::handleEvents()
 
 void Game::update()
 {
-    if( player->isGround()) player->Down = false;
-    if( !enemy->isGround()) enemy->go_Down();
-    if( player->Up ) player->go_Up();
-    if( player->Down ) player->go_Down();
+    if( !player->isGround() and !player->Up ) player->Down = true;
+    else
+    {
+        player->Down = false;
+    }
+    if( !enemy->isGround() ) enemy->go_Down();
+    if( player->Up ) 
+    {
+        player->go_Up();
+    }
+    if( player->Down)
+    {
+        player->go_Down();
+    }
     if( player->Left ) player->go_Left();
     if( player->Right ) player->go_Right();
     player->Update();
@@ -122,6 +136,7 @@ void Game::render()
     SDL_RenderClear(renderer);
     map->DrawMap();
 //    std::cout << player->X_Pos << std::endl << player->Y_Pos << '\n'; 
+    std::cout << player->Y_Vel << '\n';
     player->Render();
     enemy->Render();
     SDL_RenderPresent(renderer);

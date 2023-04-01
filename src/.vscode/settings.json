@@ -44,5 +44,12 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "d:\\hoc_tap\\Learning_C++\\MyProject\\gemu\\src",
+            "binaryPath": "d:\\hoc_tap\\Learning_C++\\MyProject\\gemu\\src\\main",
+            "binaryArgs": []
+        }
+    ]
 }

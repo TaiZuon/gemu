@@ -15,14 +15,18 @@ class GameObject
         void go_Left();
         void go_Right();
         void go_Stop();
+        void go_Jump();
 
-        bool Up, Down, Left, Right;
+        bool Up, Down, Left, Right, Jump;
 
-        int X_Vel;
-        int Y_Vel;
+        float X_Vel;
+        float Y_Vel;
 
-        int X_Pos;
-        int Y_Pos;
+        float X_Pos;
+        float Y_Pos;
+
+        float X_A;
+        float Y_A = 0.25;
         
         SDL_Texture* objTexture;
         SDL_Rect srcRect, destRect;
