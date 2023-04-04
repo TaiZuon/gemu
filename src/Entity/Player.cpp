@@ -1,5 +1,5 @@
 #include "Player.hpp"
-#include "TextureManager.hpp"
+#include "../TextureManager/TextureManager.hpp"
 
 Player::Player(const char* texturesheet, int x, int y, int vx, int vy)
 {

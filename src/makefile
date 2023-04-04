@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp Game.cpp TextureManager.cpp GameObject.cpp Map.cpp Player.cpp
+OBJS = main.cpp Game.cpp TextureManager\TextureManager.cpp Entity\GameObject.cpp Map\Map.cpp Entity\Player.cpp Physics\Vector2D.cpp
 
 #CC specifies which compiler we're using
 CC = g++
@@ -14,7 +14,7 @@ LIBRARY_PATHS = -L SDL\lib
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer 
 
 #OBJ_NAME specifies the name of our exectuable
-OBJ_NAME = main
+OBJ_NAME = gemu
 
 #This is the target that compiles our executable
 all : $(OBJS)

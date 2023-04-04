@@ -1,8 +1,8 @@
 #include "Game.hpp"
-#include "TextureManager.hpp"
-#include "GameObject.hpp"
-#include "Map.hpp"
-#include "Player.hpp"
+#include "TextureManager/TextureManager.hpp"
+#include "Entity/GameObject.hpp"
+#include "Map/Map.hpp"
+#include "Entity/Player.hpp"
 
 Player* player;
 Player* enemy;

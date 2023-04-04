@@ -50,6 +50,11 @@
             "cwd": "d:\\hoc_tap\\Learning_C++\\MyProject\\gemu\\src",
             "binaryPath": "d:\\hoc_tap\\Learning_C++\\MyProject\\gemu\\src\\main",
             "binaryArgs": []
+        },
+        {
+            "cwd": "d:\\hoc_tap\\Learning_C++\\MyProject\\gemu\\src",
+            "binaryPath": "d:\\hoc_tap\\Learning_C++\\MyProject\\gemu\\src\\gemu",
+            "binaryArgs": []
         }
     ]
 }
