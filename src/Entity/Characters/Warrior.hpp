@@ -1,5 +1,6 @@
 #include "Character.hpp"
 #include "../../Animation/Animation.hpp"
+#include "../../Physics/RigidBody.hpp"
 
 class Warrior : public Character{
 public:
@@ -13,5 +14,5 @@ private:
     // int gRow, gFrame, gFrame_Count;
     // int gAnimation_Speed;
     Animation* gAnimation;
-    
+    RigidBody* gRigidBody;
 };

@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include "Entity/Characters/Warrior.hpp"
 #include "TextureManager/TextureManager.hpp"
+#include "Inputs/Input.hpp"
 
 Game* Game::g_Instance = nullptr;
 SDL_Renderer* Game::gRenderer = nullptr;
@@ -36,57 +37,16 @@ void Game::init(const char * title, int width, int height, bool fullscreen)
 
 void Game::handleEvents()
 {    
-    while(SDL_PollEvent(&event) != 0)
-    {
-    switch (event.type)
-    {
-    case SDL_QUIT:
-        isRunning = false;
-        break;
-    case SDL_KEYDOWN:
-        switch (event.key.keysym.sym)
-        {
-        case SDLK_w:
-            //nhay
-            break;
-        case SDLK_s:
-            //di xuong
-            break;
-        case SDLK_a:
-            //di trai
-            break;
-        case SDLK_d:
-            //di phai
-            break;
-        case SDLK_SPACE:
-            //dung lai
-            break;
-        }
-        break;
-    case SDL_KEYUP:
-    switch (event.key.keysym.sym)
-        {
-        case SDLK_w:
-            //roi xuong
-            break;
-        case SDLK_s:
-            break;
-        case SDLK_a:
-            //dung di trai
-            break;
-        case SDLK_d:
-            //dung di phai
-            break;
-        case SDLK_SPACE:
-            //dung lai
-            break;
-        }
-    } 
-    }
+    Input::Get_Instance()->Listen();
+
 }
 
 void Game::update(double dt)
 {
+    if(Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_A))
+    {
+        SDL_Log("Key A pushed!\n");
+    }
     Player->Update(0); 
 //    std::cout << "Game updated!\n";
 }

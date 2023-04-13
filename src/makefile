@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp Game.cpp TextureManager\TextureManager.cpp  Entity\Characters\Warrior.cpp Physics\Vector2D.cpp Animation\Animation.cpp
+OBJS = main.cpp Game.cpp TextureManager\TextureManager.cpp  Entity\Characters\Warrior.cpp Physics\Vector2D.cpp Animation\Animation.cpp Inputs\Input.cpp
 
 #CC specifies which compiler we're using
 CC = g++
@@ -11,7 +11,7 @@ INCLUDE_PATHS = -I SDL\include\SDL2
 LIBRARY_PATHS = -L SDL\lib
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer 
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = gemu

@@ -4,23 +4,21 @@
 
 Warrior::Warrior(Properties* props): Character(props)
 {
-    // gRow = 1;
-    // gFrame_Count = 6;
-    // gAnimation_Speed = 80;
+    gRigidBody = new RigidBody();
     gAnimation = new Animation();
     gAnimation->Set_Props(gTexture_ID, 1, 6, 80, SDL_FLIP_NONE);
 }
 
 void Warrior::Draw()
 {
-//    TextureManager::Get_Instance()->DrawFrame(gTexture_ID, gTransform->X, gTransform->Y, gWidth, gHeight, gRow, gFrame, gFlip);
     gAnimation->Draw(gTransform->X, gTransform->Y, gWidth, gHeight);
 }
 
 void Warrior::Update(double dt)
 {
-//    gFrame = (SDL_GetTicks() / gAnimation_Speed) % gFrame_Count;
-//    std::cout << gFrame << '\n';
+    gRigidBody->Update(0.05);
+    gTransform->Translate(gRigidBody->Get_Position());
+
     gAnimation->Update();
 }
 
