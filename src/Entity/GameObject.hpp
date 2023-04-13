@@ -1,35 +1,44 @@
 #pragma once
 
-#include "../Game.hpp"
+#include "IObject.hpp"
+#include "../Physics/Transform.hpp"
 
-class GameObject
+struct Properties
+{
+    int Width, Height;
+    std::string Texture_ID;
+    double X, Y;
+    SDL_RendererFlip Flip;
+    Properties(std::string textureID, double x, double y, int width, int height, SDL_RendererFlip flip)
+    {
+        X = x;
+        Y = y;
+        Flip = flip;
+        Width = width;
+        Height = height;
+        Texture_ID = textureID;
+    }    
+};
+
+
+class GameObject: public IObject
 {
     public:
-//        GameObject(const char* texturesheet, int x, int y, int vx, int vy);
-//       ~GameObject();
+        GameObject(Properties* props) 
+        { 
+            gTexture_ID = props->Texture_ID;
+            gWidth = props->Width;
+            gHeight = props->Height;
+            gFlip = props->Flip;
+            gTransform = new Transform(props->X, props->Y);
+        }
+        virtual void Draw()=0;
+        virtual void Update(double dt)=0;
+        virtual void Clean()=0;
 
-        void Update();
-        void Render();
-        void go_Up();
-        void go_Down();
-        void go_Left();
-        void go_Right();
-        void go_Stop();
-        void go_Jump();
-
-        bool Up, Down, Left, Right, Jump;
-
-        float X_Vel;
-        float Y_Vel;
-
-        float X_Pos;
-        float Y_Pos;
-
-        float X_A;
-        float Y_A = 0.25;
-        
-        SDL_Texture* objTexture;
-        SDL_Rect srcRect, destRect;
-
-
+    protected:
+        Transform* gTransform;
+        int gWidth, gHeight;
+        SDL_RendererFlip gFlip;
+        std::string gTexture_ID;
 };

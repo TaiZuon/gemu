@@ -1,24 +1,11 @@
 #include "Game.hpp"
+#include "Entity/Characters/Warrior.hpp"
 #include "TextureManager/TextureManager.hpp"
-#include "Entity/GameObject.hpp"
-#include "Map/Map.hpp"
-#include "Entity/Player.hpp"
 
-Player* player;
-Player* enemy;
-Map* map;
-
-SDL_Renderer* Game::renderer = nullptr;
+Game* Game::g_Instance = nullptr;
+SDL_Renderer* Game::gRenderer = nullptr;
 SDL_Event Game::event;
-
-float player_Y_Vel = 2;
-float player_X_Vel = 2; 
-
-Game::Game()
-{}
-
-Game::~Game()
-{}
+Warrior* Player = nullptr;
 
 void Game::init(const char * title, int width, int height, bool fullscreen)
 {
@@ -31,23 +18,24 @@ void Game::init(const char * title, int width, int height, bool fullscreen)
     if(SDL_Init(SDL_INIT_EVERYTHING) == 0)
     {
         window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
-        renderer = SDL_CreateRenderer(window, -1, 0);
-        if(renderer)
+        gRenderer = SDL_CreateRenderer(window, -1, 0);
+        if(gRenderer)
         {
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
         }
-
         isRunning = true;
+        TextureManager::Get_Instance()->Load("Player","assets/Walk.png");
+        Player = new Warrior(new Properties("Player", 100, 100, 128, 128, SDL_FLIP_NONE));
+        std::cout << "Game initialized!\n"; 
     }
-
-    player = new Player("assets/player.png", 200, 0, player_X_Vel, player_Y_Vel);
-    enemy = new Player("assets/enemy.png", 100, 0, player_X_Vel, player_Y_Vel);
-    map = new Map();
+    else
+    {
+        std::cout << "Init failed!\n";
+    }
 }
 
 void Game::handleEvents()
-{
-    
+{    
     while(SDL_PollEvent(&event) != 0)
     {
     switch (event.type)
@@ -60,24 +48,18 @@ void Game::handleEvents()
         {
         case SDLK_w:
             //nhay
-            player->Up = true;
-            player->Down = false;
             break;
         case SDLK_s:
             //di xuong
-            player->Down = true;
             break;
         case SDLK_a:
             //di trai
-            player->Left = true;
             break;
         case SDLK_d:
             //di phai
-            player->Right = true;
             break;
         case SDLK_SPACE:
             //dung lai
-            player->go_Stop();
             break;
         }
         break;
@@ -86,66 +68,44 @@ void Game::handleEvents()
         {
         case SDLK_w:
             //roi xuong
-            player->Up = false;
-            player->Down = true;
             break;
         case SDLK_s:
-
             break;
         case SDLK_a:
             //dung di trai
-            player->Left = false;
             break;
         case SDLK_d:
             //dung di phai
-            player->Right = false;
             break;
         case SDLK_SPACE:
             //dung lai
-            player->go_Stop();
             break;
         }
     } 
     }
 }
 
-void Game::update()
+void Game::update(double dt)
 {
-    if( !player->isGround() and !player->Up ) player->Down = true;
-    else
-    {
-        player->Down = false;
-    }
-    if( !enemy->isGround() ) enemy->go_Down();
-    if( player->Up ) 
-    {
-        player->go_Up();
-    }
-    if( player->Down)
-    {
-        player->go_Down();
-    }
-    if( player->Left ) player->go_Left();
-    if( player->Right ) player->go_Right();
-    player->Update();
-    enemy->Update();
+    Player->Update(0); 
+//    std::cout << "Game updated!\n";
 }
 
 void Game::render()
 {
-    SDL_RenderClear(renderer);
-    map->DrawMap();
-//    std::cout << player->X_Pos << std::endl << player->Y_Pos << '\n'; 
-    std::cout << player->Y_Vel << '\n';
-    player->Render();
-    enemy->Render();
-    SDL_RenderPresent(renderer);
+    SDL_RenderClear(gRenderer);
+    Player->Draw();
+
+    SDL_RenderPresent(gRenderer);
+//    std::cout << "Game rendered!\n";
 }
 
 void Game::clean()
 {
+    TextureManager::Get_Instance()->Clean();
     SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
+    SDL_DestroyRenderer(gRenderer);
+//    SDL_DestroyRenderer(Game::texturemanager->TM_Renderer);
     SDL_Quit();
     std::cout << "Game cleaned!\n";
 }
