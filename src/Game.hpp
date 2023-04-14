@@ -13,16 +13,19 @@ public:
         return g_Instance = (g_Instance != nullptr)? g_Instance : new Game();
     }
 
-    void init(const char * title, int width, int height, bool fullscreen);
+    void Init(const char * title, int width, int height, bool fullscreen);
     
-    void handleEvents();
-    void update(double dt);
-    void render();
-    void clean();
+    void LoadMedia();
+
+    void Handle_Events();
+    void Update(double dt);
+    void Render();
+    void Clean();
+    void Quit();
 
     bool running()
     {
-        return isRunning;
+        return gIs_Running;
     };
     SDL_Renderer* Get_Renderer()
     {
@@ -34,9 +37,7 @@ public:
 
 private:
     
-    
     static Game* g_Instance;
-    bool isRunning;
-    int cnt = 0;
-    SDL_Window* window;
+    bool gIs_Running;
+    SDL_Window* gWindow;
 };

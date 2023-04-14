@@ -2,13 +2,14 @@
 #include "Entity/Characters/Warrior.hpp"
 #include "TextureManager/TextureManager.hpp"
 #include "Inputs/Input.hpp"
+#include "Timer/Timer.hpp"
 
 Game* Game::g_Instance = nullptr;
 SDL_Renderer* Game::gRenderer = nullptr;
 SDL_Event Game::event;
 Warrior* Player = nullptr;
 
-void Game::init(const char * title, int width, int height, bool fullscreen)
+void Game::Init(const char * title, int width, int height, bool fullscreen)
 {
     int flags = 0;
     if(fullscreen)
@@ -18,15 +19,16 @@ void Game::init(const char * title, int width, int height, bool fullscreen)
 
     if(SDL_Init(SDL_INIT_EVERYTHING) == 0)
     {
-        window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
-        gRenderer = SDL_CreateRenderer(window, -1, 0);
+        gWindow = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
+        gRenderer = SDL_CreateRenderer(gWindow, -1, 0);
         if(gRenderer)
         {
-            SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+            SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 0);
         }
-        isRunning = true;
-        TextureManager::Get_Instance()->Load("Player","assets/Walk.png");
-        Player = new Warrior(new Properties("Player", 100, 100, 128, 128, SDL_FLIP_NONE));
+        gIs_Running = true;
+        TextureManager::Get_Instance()->Load("Warrior_Idle","assets/Characters/Warriors/Warrior_1/Idle.png");
+        TextureManager::Get_Instance()->Load("Warrior_Run","assets/Characters/Warriors/Warrior_1/Run.png");
+        Player = new Warrior(new Properties("Warrior_Idle", 100, 100, 96, 96, SDL_FLIP_NONE));
         std::cout << "Game initialized!\n"; 
     }
     else
@@ -35,23 +37,20 @@ void Game::init(const char * title, int width, int height, bool fullscreen)
     }
 }
 
-void Game::handleEvents()
+void Game::Handle_Events()
 {    
     Input::Get_Instance()->Listen();
 
 }
 
-void Game::update(double dt)
+void Game::Update(double dt)
 {
-    if(Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_A))
-    {
-        SDL_Log("Key A pushed!\n");
-    }
-    Player->Update(0); 
+    dt = Timer::Get_Instance()->Get_Delta_Time();
+    Player->Update(dt); 
 //    std::cout << "Game updated!\n";
 }
 
-void Game::render()
+void Game::Render()
 {
     SDL_RenderClear(gRenderer);
     Player->Draw();
@@ -60,12 +59,16 @@ void Game::render()
 //    std::cout << "Game rendered!\n";
 }
 
-void Game::clean()
+void Game::Clean()
 {
     TextureManager::Get_Instance()->Clean();
-    SDL_DestroyWindow(window);
+    SDL_DestroyWindow(gWindow);
     SDL_DestroyRenderer(gRenderer);
-//    SDL_DestroyRenderer(Game::texturemanager->TM_Renderer);
     SDL_Quit();
     std::cout << "Game cleaned!\n";
+}
+
+void Game::Quit()
+{
+
 }

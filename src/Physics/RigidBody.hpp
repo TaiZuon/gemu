@@ -66,7 +66,7 @@ public:
     void Update(double dt)
     {
         gAccelaration.X = (gForce.X + gFriction.X) / gMass;
-        gAccelaration.Y = gGravity + (gForce.Y + gFriction.Y) / gMass;
+        gAccelaration.Y = /*gGravity + */(gForce.Y + gFriction.Y) / gMass;
         gVelocity = gVelocity.ScalarMultiply_Vector(gAccelaration, dt);
         gPosition = gPosition.ScalarMultiply_Vector(gVelocity, dt);
     }

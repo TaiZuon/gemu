@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "Timer/Timer.hpp"
 
 int main(int argv, char** args)
 {
@@ -11,16 +12,17 @@ int main(int argv, char** args)
     
     int cnt = 0;
 
-    Game::Get_Instance()->init("Gemu", 800, 640, 0);
+    Game::Get_Instance()->Init("Gemu", 800, 640, 0);
 
     while( Game::Get_Instance()->running())
     {
 //        std::cout << cnt << " Running...\n" ;
 //        frameStart = SDL_GetTicks();
 
-        Game::Get_Instance()->handleEvents();
-        Game::Get_Instance()->update(0);
-        Game::Get_Instance()->render();
+        Game::Get_Instance()->Handle_Events();
+        Game::Get_Instance()->Update(0);
+        Game::Get_Instance()->Render();
+        Timer::Get_Instance()->Tick();
 
         // frameTime = SDL_GetTicks() - frameStart;
 
@@ -31,6 +33,7 @@ int main(int argv, char** args)
 //        cnt++;
     }
 
-    Game::Get_Instance()->clean();
+    Game::Get_Instance()->Clean();
+    
     return 0;
 }

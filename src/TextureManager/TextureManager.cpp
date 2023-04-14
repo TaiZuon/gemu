@@ -6,7 +6,7 @@ TextureManager* TextureManager::TM_Instance = nullptr;
 void TextureManager::Load(std::string id, const char* fileName )
 {
     SDL_Surface* tmpSurface = IMG_Load(fileName);
-    if(tmpSurface == nullptr) std::cout << "Load failed!\n"; else std::cout << "Img loaded!\n";
+//    if(tmpSurface == nullptr) std::cout << "Load failed!\n"; else std::cout << "Img loaded!\n";
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::Get_Instance()->Get_Renderer(), tmpSurface);
     SDL_FreeSurface(tmpSurface);
     
