@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "C:\\Library\\SDL2\\i686-w64-mingw32\\include\\SDL2"
+                "C:\\Library\\SDL2\\i686-w64-mingw32\\include\\SDL2",
+                "src\\TextureManager"
             ],
             "defines": [
                 "_DEBUG",

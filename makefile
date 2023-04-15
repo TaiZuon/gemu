@@ -1,14 +1,14 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp Game.cpp TextureManager\TextureManager.cpp  Entity\Characters\Warrior.cpp Physics\Vector2D.cpp Animation\Animation.cpp Inputs\Input.cpp Timer\Timer.cpp
+OBJS = src\main.cpp src\Game.cpp src\TextureManager\TextureManager.cpp  src\Entity\Characters\Warrior.cpp src\Physics\Vector2D.cpp src\Animation\Animation.cpp src\Inputs\Input.cpp src\Timer\Timer.cpp
 
 #CC specifies which compiler we're using
 CC = g++
 
 #INCLUDE_PATHS specifies the additional include paths we'll need
-INCLUDE_PATHS = -I SDL\include\SDL2
+INCLUDE_PATHS = -I src\SDL\include\SDL2 
 
 #LIBRARY_PATHS specifies the additional library paths we'll need
-LIBRARY_PATHS = -L SDL\lib
+LIBRARY_PATHS = -L src\SDL\lib
 
 #LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
