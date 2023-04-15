@@ -1,5 +1,6 @@
 #pragma once
 
+#include "iostream"
 #include "Vector2D.hpp"
 
 #define UNI_MASS 1.0f;
@@ -69,6 +70,7 @@ public:
         gAccelaration.Y = /*gGravity + */(gForce.Y + gFriction.Y) / gMass;
         gVelocity = gVelocity.ScalarMultiply_Vector(gAccelaration, dt);
         gPosition = gPosition.ScalarMultiply_Vector(gVelocity, dt);
+        std::cout << gVelocity.X << " " << gVelocity.Y << "\n";
     }
 
     Vector2D Get_Position()

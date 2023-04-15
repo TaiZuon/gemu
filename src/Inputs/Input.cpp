@@ -17,7 +17,7 @@ void Input::Listen()
         switch (event.type)
         {
         case SDL_QUIT:
-            Game::Get_Instance()->clean();
+            Game::Get_Instance()->Clean();
             break;
         case SDL_KEYDOWN:
             Key_Down();
