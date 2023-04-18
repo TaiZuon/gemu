@@ -15,7 +15,7 @@ public:
 
     void Init(const char * title, int width, int height, bool fullscreen);
     
-    void LoadMedia();
+    void Load();
 
     void Handle_Events();
     void Update(double dt);

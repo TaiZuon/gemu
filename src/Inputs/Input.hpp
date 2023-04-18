@@ -19,6 +19,7 @@ public:
 
     void Listen();
     bool Get_Key_Down(SDL_Scancode Key);
+    bool Get_Key_Up(SDL_Scancode Key);
     
 };
 

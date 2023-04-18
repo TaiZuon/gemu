@@ -4,7 +4,9 @@
             "name": "Win32",
             "includePath": [
                 "C:\\Library\\SDL2\\i686-w64-mingw32\\include\\SDL2",
-                "src\\TextureManager"
+                "src\\Vendor\\Tinyxml",
+                "src\\TextureManager",
+                "${workspaceFolder}/src/SDL/include/SDL2"
             ],
             "defines": [
                 "_DEBUG",

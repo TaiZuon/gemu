@@ -1,10 +1,8 @@
 #pragma once
 
-#include "iostream"
+#include "bits/stdc++.h"
 #include "Vector2D.hpp"
-
-#define UNI_MASS 1.0f;
-#define GRAVITY 9.8f;
+#include "../Constant.hpp"
 
 class RigidBody
 {
@@ -64,13 +62,34 @@ public:
         gFriction = Vector2D(0,0);
     }
 
+    void Stop_Vel_X()
+    {
+        gVelocity.X = 0;
+    }
+    void Stop_Vel_Y()
+    {
+        gVelocity.Y = 0;
+    }
+
     void Update(double dt)
     {
         gAccelaration.X = (gForce.X + gFriction.X) / gMass;
-        gAccelaration.Y = /*gGravity + */(gForce.Y + gFriction.Y) / gMass;
-        gVelocity = gVelocity.ScalarMultiply_Vector(gAccelaration, dt);
+        gAccelaration.Y = gGravity + (gForce.Y + gFriction.Y) / gMass;
+        
+        gVelocity = gVelocity.Add_Vector(gVelocity, gVelocity.ScalarMultiply_Vector(gAccelaration, dt));
+//        gVelocity = gVelocity.ScalarMultiply_Vector(gAccelaration, dt);
+        if(gVelocity.X > MAX_VELOCITY or gVelocity.X < - MAX_VELOCITY)
+        {
+            gVelocity.X = MAX_VELOCITY * (gVelocity.X / std::abs(gVelocity.X));
+        } 
+//        std::cout << dt << '\n';
         gPosition = gPosition.ScalarMultiply_Vector(gVelocity, dt);
-        std::cout << gVelocity.X << " " << gVelocity.Y << "\n";
+        if(std::abs(gPosition.X) < 0.001) gPosition.X = 0;
+        if(std::abs(gVelocity.X) < 0.001) gVelocity.X = 0;
+        if(std::abs(gPosition.Y) < 0.001) gPosition.Y = 0;
+        if(std::abs(gVelocity.Y) < 0.001) gVelocity.Y = 0;
+//        std::cout << "Vel: " << gVelocity.Y << " " << "Pos: " << gPosition.Y << '\n';
+//        std::cout << "Vel: " << gVelocity.X << " " << "Pos: " << gPosition.X << '\n';
     }
 
     Vector2D Get_Position()

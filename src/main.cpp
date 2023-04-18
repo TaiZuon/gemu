@@ -1,36 +1,24 @@
 #include "Game.hpp"
 #include "Timer/Timer.hpp"
+#include "Map/Map.hpp"
+#include "Constant.hpp"
 
 int main(int argv, char** args)
 {
     std::cout << "Starting...\n";
-    const int FPS = 60;
-    const int frameDelay = 1000 / FPS;
 
-    Uint32 frameStart;
-    int frameTime;
-    
-    int cnt = 0;
+    Game::Get_Instance()->Init("Gemu", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+    Game::Get_Instance()->Load();
 
-    Game::Get_Instance()->Init("Gemu", 800, 640, 0);
-
+//    Map::Get_Instance()->Create_White_Map();
     while( Game::Get_Instance()->running())
     {
-//        std::cout << cnt << " Running...\n" ;
-//        frameStart = SDL_GetTicks();
-
+        Map::Get_Instance()->Draw();
         Game::Get_Instance()->Handle_Events();
         Game::Get_Instance()->Update(0);
         Game::Get_Instance()->Render();
         Timer::Get_Instance()->Tick();
 
-        // frameTime = SDL_GetTicks() - frameStart;
-
-        // if(frameDelay > frameTime) 
-        // {
-        //     SDL_Delay(frameDelay - frameTime);
-        // }
-//        cnt++;
     }
 
     Game::Get_Instance()->Clean();
