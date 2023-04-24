@@ -1,9 +1,36 @@
 #include "Animation.hpp"
 #include "../TextureManager/TextureManager.hpp"
 
-void Animation::Update()
+void Animation::Update(double dt, bool repeat, bool &reset)
 {
-    gSprite_Frame = (SDL_GetTicks() / gAnimation_Speed) % gFrame_Count;
+    bool stop = false;
+//    gSum_dt += 1;
+//    gSprite_Frame = int (gSum_dt / gAnimation_Speed) % gFrame_Count;
+//    std::cout << gSum_dt / gAnimation_Speed << " " << gSprite_Frame << '\n';
+//    if(gSum_dt == gFrame_Count * gAnimation_Speed) gSum_dt = 0; 
+//std::cout << dt << '\n';
+//    int temp = SDL_GetTicks() / gAnimation_Speed;
+//    gSprite_Frame = (SDL_GetTicks() / gAnimation_Speed) % gFrame_Count;
+    if(reset)
+    {
+        gSprite_Frame = 0;
+        reset = false;
+    }
+    if((gSprite_Frame == gFrame_Count - 1) and !repeat)
+    {
+        stop = true;
+    }
+    if(!stop) 
+    {
+        gSprite_Frame = (SDL_GetTicks() / gAnimation_Speed) % gFrame_Count;
+    } 
+    else
+    {
+        gSprite_Frame = gFrame_Count - 1;
+    } 
+//    std::cout << stop << "\n";
+//    std::cout << gSprite_Frame << "\n";
+//    std::cout << gFrame_Count << "\n";
 }
 
 void Animation::Draw(double x, double y, int Sprite_Width, int Sprite_Height)

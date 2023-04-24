@@ -51,3 +51,20 @@ void Input::Key_Down()
 {
     gKey_States = SDL_GetKeyboardState(nullptr);
 }
+
+int Input::Get_Direction(int Dir)
+{
+    switch (Dir)
+    {
+    case HORIZONTAL:
+        if(Get_Key_Down(SDL_SCANCODE_D) or Get_Key_Down(SDL_SCANCODE_RIGHT)) return 1; 
+        if(Get_Key_Down(SDL_SCANCODE_A) or Get_Key_Down(SDL_SCANCODE_LEFT)) return - 1;
+        break;
+    case VERTICAL:
+        if(Get_Key_Down(SDL_SCANCODE_W) or Get_Key_Down(SDL_SCANCODE_UP)) return 1;
+        if(Get_Key_Down(SDL_SCANCODE_S) or Get_Key_Down(SDL_SCANCODE_DOWN)) return - 1;
+        break;
+    default:
+        break;
+    }
+}

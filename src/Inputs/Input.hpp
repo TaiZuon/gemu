@@ -1,4 +1,5 @@
 #include "SDL.h"
+#include "../Constant.hpp"
 
 class Input
 {
@@ -20,6 +21,7 @@ public:
     void Listen();
     bool Get_Key_Down(SDL_Scancode Key);
     bool Get_Key_Up(SDL_Scancode Key);
+    int Get_Direction(int Dir);
     
 };
 

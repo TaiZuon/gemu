@@ -22,6 +22,7 @@ int main(int argv, char** args)
     }
 
     Game::Get_Instance()->Clean();
+    Game::Get_Instance()->Quit();
     
     return 0;
 }

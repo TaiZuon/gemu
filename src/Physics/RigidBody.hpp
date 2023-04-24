@@ -84,10 +84,10 @@ public:
         } 
 //        std::cout << dt << '\n';
         gPosition = gPosition.ScalarMultiply_Vector(gVelocity, dt);
-        if(std::abs(gPosition.X) < 0.001) gPosition.X = 0;
-        if(std::abs(gVelocity.X) < 0.001) gVelocity.X = 0;
-        if(std::abs(gPosition.Y) < 0.001) gPosition.Y = 0;
-        if(std::abs(gVelocity.Y) < 0.001) gVelocity.Y = 0;
+        if(std::abs(gPosition.X) <= 0.01) gPosition.X = 0;
+        if(std::abs(gVelocity.X) <= 0.001) gVelocity.X = 0;
+        if(std::abs(gPosition.Y) <= 0.001) gPosition.Y = 0;
+        if(std::abs(gVelocity.Y) <= 0.001) gVelocity.Y = 0;
 //        std::cout << "Vel: " << gVelocity.Y << " " << "Pos: " << gPosition.Y << '\n';
 //        std::cout << "Vel: " << gVelocity.X << " " << "Pos: " << gPosition.X << '\n';
     }

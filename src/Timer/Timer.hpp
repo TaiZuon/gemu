@@ -1,6 +1,6 @@
-const int FPS = 60;
-const double DELTA_TIME = 1.5;
+#pragma once
 
+#include "../Constant.hpp"
 class Timer
 {
 private:
