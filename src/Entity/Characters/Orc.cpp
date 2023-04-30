@@ -1,10 +1,10 @@
 #include "Orc.hpp"
 #include "../../TextureManager/TextureManager.hpp"
 #include "SDL.h"
-#include "../../Inputs/Input.hpp"
 #include "../../Camera/Camera.hpp"
 #include "../../Game.hpp"
 #include "../../Physics/CollisionHandler.hpp"
+#include "../Coins/Coin.hpp"
 
 Orc::Orc(Properties* props): Character(props)
 {
@@ -15,6 +15,7 @@ Orc::Orc(Properties* props): Character(props)
     bool gIs_Landed = false;
     bool gIs_Hurt = false;
     bool gIs_Dead = false;
+    bool gIs_Killed = false;
 
     gJump_Time = JUMP_TIME;
     gJump_Force = JUMP_FORCE;
@@ -33,13 +34,13 @@ void Orc::Update(double dt)
 {
     bool Reset = false;
     bool Repeat = false;
-    if(!gIs_Dead)
+    if(!gIs_Dead and !gTar_Dead and !gIs_Killed)
     {
     if(gTar_Attack) 
     {
         gIs_Hurt = true;
     }
-    if(gIs_Hurt and gHurt_Time > 0) 
+    if(gIs_Hurt and gHurt_Time > 0 and Is_Taken_Dam()) 
     {
         gHurt_Time -= dt;
         Hurt(gTar_Dam);
@@ -64,16 +65,6 @@ void Orc::Update(double dt)
         gIs_Dead = false;
         Repeat = true;
     }
-    if(gIs_Dead and gDead_Time > 0)
-    {
-        gDead_Time -= dt;
-    }
-    if(gIs_Dead)
-    {
-        gAnimation->Set_Props("Warrior_Dead", 1, 4, 100, gFlip);
-        Repeat = false;
-        Dead();
-    }
 
     if(std::abs(gRigidBody->Get_Velocity().X) != 0)
     {
@@ -88,11 +79,16 @@ void Orc::Update(double dt)
     if(!gIs_Attacking and !gIs_Running)
     gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
 
-    if(Is_Tar_Colly())
+    if(Is_Tar_Colly() != 0)
     {
 //        std::cout << "Touch!\n";
         gIs_Attacking = true;
         gIs_Running = false;
+    }
+    else
+    {
+        gIs_Attacking = false;
+        gIs_Running = true;
     }
     if(gIs_Attacking and gAttack_Time > 0)
     {
@@ -108,6 +104,7 @@ void Orc::Update(double dt)
 //        std::cout << "Chase!\n";
         gIs_Running = true;
     }
+    //tracking player
     if(std::abs(gOrigin->X - gTar->X) > 5 and !gIs_Attacking)
     {
         if(gTar->X > gOrigin->X) 
@@ -137,26 +134,43 @@ void Orc::Update(double dt)
         gAnimation->Set_Props("Orc_Run", 1, 6, 100, gFlip);
     }
     }
-    else
+    else if(gIs_Dead)
     {
-        Dead();
+        if(gDead_Time > 0)
+        {
+            gDead_Time -= dt;
+//            std::cout << gDead_Time << " " << dt << '\n'; 
+            if(gDead_Time <= dt)
+            { 
+                gIs_Killed = true;
+                Coin::Get_Instance()->Update(0);
+//                std::cout << "Update: Killed!\n";
+            }
+        }
         gAnimation->Set_Props("Orc_Dead", 1, 4, 100, gFlip);
         gRigidBody->Unset_Force();
         gRigidBody->Stop_Vel_X();
         gRigidBody->Stop_Vel_Y();
-    }
+        Dead();
+    } else if(gTar_Dead)
+    {
+        gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
+        gRigidBody->Unset_Force();
+        gRigidBody->Stop_Vel_X();
+        gRigidBody->Stop_Vel_Y();
+    } 
 
-
-    gRigidBody->Update(dt);
+//    std::cout << "Orc: " << gIs_Attacking << "\n";
+    gRigidBody->Update(dt, ORC);
 
     gLast_Safe_Position.X = gTransform->X;
     gTransform->X+=gRigidBody->Get_Position().X;
-    gCollider->Set_Box(gTransform->X, gTransform->Y, 96, 96);
-    gRigidBody->Update(dt);
+    gCollider->Set_Box(gTransform->X, gTransform->Y, CHAR_SIZE, CHAR_SIZE);
+    gRigidBody->Update(dt, ORC);
 
     gLast_Safe_Position.Y = gTransform->Y;
     gTransform->Y+=gRigidBody->Get_Position().Y;
-    gCollider->Set_Box(gTransform->X, gTransform->Y, 96, 96);
+    gCollider->Set_Box(gTransform->X, gTransform->Y, CHAR_SIZE, CHAR_SIZE);
 
     SDL_Rect Box = gCollider->Get_Box();
     SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);

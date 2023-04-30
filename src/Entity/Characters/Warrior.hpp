@@ -1,8 +1,13 @@
+#pragma once
+
 #include "Character.hpp"
 #include "../../Animation/Animation.hpp"
 #include "../../Physics/RigidBody.hpp"
 #include "../../Physics/Collider.hpp"
 #include "../../Constant.hpp"
+#include "Orc.hpp"
+#include "Boss.hpp"
+#include <vector>
 
 class Warrior : public Character{
 public:
@@ -28,8 +33,7 @@ public:
     SDL_Rect gEnemy_Box;
     void Up_Enemy_Dam(int dtDam)
     {
-        
-        gEnemy_Dam += dtDam;
+        if(!gEnemy_Dead) gEnemy_Dam += dtDam;
     } 
     void Set_Enemy_Box(SDL_Rect a)
     {
@@ -37,11 +41,14 @@ public:
     }
 
     bool gEnemy_Attack;
+    bool gEnemy_Dead;
     int gEnemy_Dam;
 
-    void Set_Enemy_State(bool a)
+    void Set_Enemy_State(bool attack, bool dead)
     {
-        gEnemy_Attack = a;
+        gEnemy_Attack = attack;
+        gEnemy_Dead = dead;
+//        std::cout << gEnemy_Attack;
     }
     void Set_Enemy_Dam(int a)
     {
@@ -51,9 +58,18 @@ public:
     {
         return gDamage;
     }
+    int Get_Dir()
+    {
+        if(gFlip == SDL_FLIP_NONE) return FORWARD;
+        if(gFlip == SDL_FLIP_HORIZONTAL) return BACKWARD;
+    }
     bool Is_Attacking()
     {
         return gIs_Attacking;
+    }
+    bool Is_Dead()
+    {
+        return gIs_Dead;
     }
     RigidBody* Get_RigidBody()
     {
@@ -63,10 +79,25 @@ public:
     {
         return gCollider;
     }
+    void Block_Forward()
+    {
+        gIs_Blocked = FORWARD;
+    }
+    void Block_Backward()
+    {
+        gIs_Blocked = BACKWARD;
+    }
+    void Un_Block()
+    {
+        gIs_Blocked = 0;
+    }
 private:
 
     int gHealth = 2500;
     int gDamage = 5;
+
+    int gDirection;
+    int gIs_Blocked;
 
     bool gIs_Jumping;
     bool gIs_Falling;
@@ -80,7 +111,7 @@ private:
     double gAttack_Time;
     double gJump_Time;
     double gJump_Force;
-    double gHurt_Time = 2.0;
+    double gHurt_Time = 1.0;
     double gDead_Time = 2.0;
 
     Animation* gAnimation;

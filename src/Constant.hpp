@@ -16,8 +16,20 @@
 #define HORIZONTAL 0
 #define VERTICAL 1
 
-const double MAX_VELOCITY = 5;
+#define BACKWARD -1
+#define FORWARD 1
+
+#define WARRIOR 0
+#define ORC 1
+#define MAGE 2
+#define BOSS 3
+
+const double MAX_VELOCITIES[4] = {5, 1, 3, 3};
+const double MAX_VELOCITY = 3;
 const double FRICTION = 0.4;
+
+const int CHAR_SIZE = 96;
+const int BOSS_SIZE = 96*2;
 
 const int FPS = 60;
 const double DELTA_TIME = 0.15;

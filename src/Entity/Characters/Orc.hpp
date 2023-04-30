@@ -6,6 +6,7 @@
 #include "../../Physics/Collider.hpp"
 #include "../../Constant.hpp"
 #include "../../Physics/CollisionHandler.hpp"
+#include "../../Inputs/Input.hpp"
 
 class Orc: public Character{
 public:
@@ -21,7 +22,7 @@ public:
     }
     Point* gTar;
     SDL_Rect gTar_Box;
-    void Set_Tar(Point* a)
+    void Set_Tar_Origin(Point* a)
     {
         gTar = a;
     }
@@ -29,21 +30,48 @@ public:
     {
         gTar_Box = t;
     }
-    void Set_Tar_State(bool a)
+    void Set_Tar_State(bool attack, bool dead)
     {
-        gTar_Attack = a;
+        gTar_Attack = attack;
+        gTar_Dead = dead;
     }
     void Set_Tar_Dam(int a)
     {
         gTar_Dam = a;
     }
-    bool Is_Tar_Colly()
+    int Is_Tar_Colly()
     {
-        if(CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTar_Box))
-        return true;
-        else
-        return false;
+        return CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTar_Box);
     }
+    int Is_Tar_Colly_Seperate()
+    {
+        return CollisionHandler::Get_Instance()->Is_Seperate_Collision(gCollider->Get_Box(), gTar_Box);
+    }
+    void Set_Tar_Dir(int a)
+    {
+        gTar_Dir = a;
+    }
+    bool Is_Taken_Dam()
+    {
+        if(Is_Tar_Colly() != 0)
+        {
+            switch (CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTar_Box))
+            {
+            case FORWARD:
+                /* code */
+                if(gTar_Dir == BACKWARD) return true;
+                else return false;
+                break;
+            case BACKWARD:
+                if(gTar_Dir == FORWARD) return true;
+                else return false;
+                break;
+            default:
+                break;
+            }
+        }
+        return false;
+    }    
     void Up_Dam(int dtDam)
     {
         gDamage += dtDam;
@@ -56,9 +84,17 @@ public:
     {
         return gIs_Attacking;
     }
+    bool Is_Dead()
+    {
+        return gIs_Dead;
+    }
+    bool Is_Killed()
+    {
+        return gIs_Killed;
+    }
     void Hurt(int dam)
     {
-        if(Is_Tar_Colly()) gHealth -= dam;
+        if(Is_Tar_Colly() != 0) gHealth -= dam;
     }
     void Dead()
     {
@@ -78,18 +114,23 @@ private:
     bool gIs_Landed;
     bool gIs_Hurt;
     bool gIs_Dead;
+    bool gIs_Killed;
 
     bool gTar_Attack;
+    bool gTar_Dead;
 
     double gAttack_Time;
     double gJump_Time;
     double gJump_Force;
     double gHurt_Time = 2.0;
-    double gDead_Time = 2.0;
+    double gDead_Time = 20.0;
 
     int gHealth = 2500;
     int gDamage = 1;
     int gTar_Dam;
+    int gTar_Dir;
+
+    int gVal = 10;
 
     Animation* gAnimation;
     RigidBody* gRigidBody;

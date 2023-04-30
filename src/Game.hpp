@@ -2,7 +2,9 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "GameStates/GameState.hpp"
 #include <iostream>
+#include <vector>
 
 class Game
 {
@@ -23,6 +25,10 @@ public:
     void Clean();
     void Quit();
 
+    void PopState();
+    void PushState(GameState* Current);
+    void ChangeState(GameState* Target);
+
     bool running()
     {
         return gIs_Running;
@@ -40,4 +46,6 @@ private:
     static Game* g_Instance;
     bool gIs_Running;
     SDL_Window* gWindow;
+    std::vector<GameState*> gStates;
+
 };

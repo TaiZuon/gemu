@@ -65,6 +65,32 @@ void TextureManager::Drop(std::string id)
     Texture_Map.erase(id);
 }
 
+void TextureManager::LoadAll()
+{
+    Load("Warrior_Idle","assets/Characters/Warriors/Warrior_1/Idle.png");
+    Load("Warrior_Run","assets/Characters/Warriors/Warrior_1/Run.png");
+    Load("Warrior_Dead","assets/Characters/Warriors/Warrior_1/Dead.png");
+    Load("Warrior_Jump","assets/Characters/Warriors/Warrior_1/Jump.png");
+    Load("Warrior_Fall","assets/Characters/Warriors/Warrior_1/Fall.png");
+    Load("Warrior_Hurt","assets/Characters/Warriors/Warrior_1/Hurt.png");
+    Load("Warrior_Walk","assets/Characters/Warriors/Warrior_1/Walk.png");
+    Load("Warrior_Attack_1","assets/Characters/Warriors/Warrior_1/Attack_1.png");
+    Load("Warrior_Attack_2","assets/Characters/Warriors/Warrior_1/Attack_2.png");
+    Load("Warrior_Attack_3","assets/Characters/Warriors/Warrior_1/Attack_3.png");
+    
+    Load("Orc_Idle","assets/Characters/Orcs/Orc_Berserk/Idle.png");
+    Load("Orc_Run","assets/Characters/Orcs/Orc_Berserk/Run.png");
+    Load("Orc_Hurt","assets/Characters/Orcs/Orc_Berserk/Hurt.png");
+    Load("Orc_Dead","assets/Characters/Orcs/Orc_Berserk/Dead.png");
+    Load("Orc_Attack_1","assets/Characters/Orcs/Orc_Berserk/Attack_1.png");
+    Load("Orc_Warrior_Idle","assets/Characters/Orcs/Orc_Warrior/Idle_1.png");
+    
+    Load("Background","assets/Map/Background.png");
+
+    Load("Tile_02","assets/Map/Tiles/Tile_02.png");
+    Load("Tile_12","assets/Map/Tiles/Tile_12.png");
+}
+
 void TextureManager::Clean()
 {
     std::map<std::string, SDL_Texture*>::iterator iter;

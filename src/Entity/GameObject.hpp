@@ -1,3 +1,5 @@
+#pragma once
+
 #include "IObject.hpp"
 #include "../Physics/Transform.hpp"
 #include "../Physics/Point.hpp"

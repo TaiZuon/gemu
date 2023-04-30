@@ -7,7 +7,7 @@ Map* Map::g_Instance = nullptr;
 
 void Map::Create_White_Map()
 {
-    std::ofstream file ("D:/hoc_tap/Learning_C++/MyProject/gemu/src/Map/MapMatrix.txt");
+    std::ofstream file ("src/Map/MapMatrix.txt");
     if (!file) std::cout << "file not open!\n";
     for ( int row = 0; row < MAP_ROWS; row++ )
     {
@@ -25,7 +25,7 @@ void Map::Create_White_Map()
 
 void Map::Read_Map()
 {
-    std::ifstream file ("D:/hoc_tap/Learning_C++/MyProject/gemu/src/Map/MapMatrix.txt");
+    std::ifstream file ("src/Map/MapMatrix.txt");
     for( int row = 0; row < MAP_ROWS; row++ )
     {
         for( int col = 0; col < MAP_COLS; col++ )

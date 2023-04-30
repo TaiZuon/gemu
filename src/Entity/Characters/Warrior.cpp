@@ -15,6 +15,7 @@ Warrior::Warrior(Properties* props): Character(props)
     bool gIs_Landed = false;
     bool gIs_Hurt = false;
     bool gIs_Dead = false;
+    Un_Block();
 
     gJump_Time = JUMP_TIME;
     gJump_Force = JUMP_FORCE;
@@ -55,6 +56,7 @@ void Warrior::Draw_Health()
     Box.y-=2;
     Box.h += 4;
     Box.w++;
+//    std::cout << "Health: " << gHealth << '\n';
 //    std::cout << "Hw: " << H.w << '\n';
     
 //    std::cout << "Box: " << Box.x << " " << Box.y << '\n';
@@ -74,43 +76,44 @@ int Warrior::Get_Health()
 
 void Warrior::Hurt(int dam)
 {
-    gHealth -= dam;
+    if(SDL_GetTicks() %50 ==0) gHealth -= dam;
     gHealth = std::max(gHealth, 0);
+    gHealth = std::min(gHealth, 2500);
 //    std::cout << "Health: " << gHealth << '\n';
 }
 
 void Warrior::Update(double dt)
 {
+//    std::cout << gIs_Hurt << '\n';
     bool Repeat = false;
     bool Reset = false;
 //    std::cout << SDL_GetTicks() << "\n";
     if(!gIs_Dead)
     {
-    if(gEnemy_Attack) 
+//        std::cout << "E A: " << gEnemy_Attack << " E D: " << gEnemy_Dead << '\n';
+    if(gEnemy_Attack and !gEnemy_Dead) 
     {
         gIs_Hurt = true;
-
     }
+    else gIs_Hurt = false;
     if(gIs_Hurt and gHurt_Time > 0) 
     {
         gHurt_Time -= dt;
-        Hurt(gEnemy_Dam);
+//        Hurt(gEnemy_Dam);
     }
     else 
     {
-        gHurt_Time = 2.0;
+        gHurt_Time = 1.0;
         gIs_Hurt = false;
     }
     if(gIs_Hurt) 
     {
         gAnimation->Set_Props("Warrior_Hurt", 1, 2, 100, gFlip);
         Repeat = false;
-        
     }
     if(gHealth == 0)
     {
         gIs_Dead = true;
-
     }
     else 
     {
@@ -127,6 +130,8 @@ void Warrior::Update(double dt)
         Repeat = false;
         Dead();
     }
+    //check neu enemy chet thi unblock
+    if(gEnemy_Dead or gIs_Jumping) Un_Block();
     
     //neu V != 0 thi co ma sat (xet theo phuong X)
     if(std::abs(gRigidBody->Get_Velocity().X) != 0)
@@ -151,15 +156,17 @@ void Warrior::Update(double dt)
     gIs_Running = false;
 
     
-    if(Input::Get_Instance()->Get_Direction(HORIZONTAL) == 1 and !gIs_Attacking)
+    if(Input::Get_Instance()->Get_Direction(HORIZONTAL) == FORWARD and !gIs_Attacking)
     {
-        gRigidBody->Apply_ForceX(1 * 0.5);
+//        gRigidBody->Apply_ForceX(1 * 0.5);
+        gDirection = FORWARD;
         gIs_Running = true;
         gFlip = SDL_FLIP_NONE;
     }
-    if(Input::Get_Instance()->Get_Direction(HORIZONTAL) == - 1 and !gIs_Attacking)
+    if(Input::Get_Instance()->Get_Direction(HORIZONTAL) == BACKWARD and !gIs_Attacking)
     {
-        gRigidBody->Apply_ForceX(-1 * 0.5);
+//        gRigidBody->Apply_ForceX(-1 * 0.5);
+        gDirection = BACKWARD;
         gIs_Running = true;
         gFlip = SDL_FLIP_HORIZONTAL;
     }
@@ -181,7 +188,7 @@ void Warrior::Update(double dt)
         gAttack_Time = ATTACK_TIME;
         gIs_Attacking = false;
     }
-
+    //jump
     if(Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_J) and gIs_Landed)
     {
         gIs_Jumping = true; 
@@ -202,21 +209,22 @@ void Warrior::Update(double dt)
         gIs_Jumping = false;
         gJump_Time = JUMP_TIME;
     }
-
+    //fall
     if(gRigidBody->Get_Velocity().Y != 0 and !gIs_Landed) 
     {
         gIs_Falling = true;
     }
     else gIs_Falling = false;
-
 //    std::cout << gIs_Jumping << '\n';
     // if(gIs_Jumping)
     // {
     //     gAnimation->Set_Props("Warrior_Jump", 1, 3, 200, gFlip);
     // } 
-    if(gIs_Running)
+//    std::cout << "Dir: " << gDirection << " Block: " << gIs_Blocked << "\n"; 
+    if(gIs_Running and (gDirection != gIs_Blocked))
     {
         gAnimation->Set_Props("Warrior_Run", 1, 6, 100, gFlip);
+        gRigidBody->Apply_ForceX( gDirection * 0.5 );
         Repeat = true;
     }
 //        std::cout << gIs_Running << " " << gFlip << '\n';
@@ -241,28 +249,30 @@ void Warrior::Update(double dt)
         gRigidBody->Stop_Vel_Y();
     }
 
-    gRigidBody->Update(dt);
+    gRigidBody->Update(dt, WARRIOR);
 
     gLast_Safe_Position.X = gTransform->X;
 //    gTransform->TranslateX(gRigidBody->Get_Position().X);
 //    std::cout << "Pos:" << gRigidBody->Get_Position().X << "\n";
+//    std::cout << gRigidBody->Get_Position().X <<'\n';
     gTransform->X+=gRigidBody->Get_Position().X;
-    gCollider->Set_Box(gTransform->X, gTransform->Y, 96, 96);
+    gCollider->Set_Box(gTransform->X, gTransform->Y, CHAR_SIZE, CHAR_SIZE);
 //    std::cout << "Trans: " << gTransform->X << "\n";
 //    std::cout << "Box 1: " << gCollider->Get_Box().x << " " << gCollider->Get_Box().y << '\n';
 
-    // if(CollisionHandler::Get_Instance()->Is_Map_Collision(gCollider->Get_Box()))
-    // {
-    //     gTransform->X = gLast_Safe_Position.X;
-    // }
+//    std::cout << gTransform->X << "\n";
+    if(gTransform->X <= -35 or gTransform->X > (1860))
+    {
+        gTransform->X = gLast_Safe_Position.X;
+    }
 
-    gRigidBody->Update(dt);
+    gRigidBody->Update(dt, WARRIOR);
 
     gLast_Safe_Position.Y = gTransform->Y;
     gTransform->Y+=gRigidBody->Get_Position().Y;
     // std::cout << "Last Safe: " << gLast_Safe_Position.Y << '\n';
     // std::cout << "Transform: " << gTransform->Y << '\n';
-    gCollider->Set_Box(gTransform->X, gTransform->Y, 96, 96);
+    gCollider->Set_Box(gTransform->X, gTransform->Y, CHAR_SIZE, CHAR_SIZE);
 //    std::cout << "Box 2: " << gCollider->Get_Box().x << " " << gCollider->Get_Box().y << '\n';
     if(CollisionHandler::Get_Instance()->Is_Map_Collision(gCollider->Get_Box()))
     {
@@ -277,6 +287,9 @@ void Warrior::Update(double dt)
 //      std::cout << "Not Landed!\n";
         gIs_Landed = false;
     }
+    //neu !landed thi unblock
+    if(gIs_Landed) Un_Block();
+
 
     gOrigin->X = gTransform->X + gWidth/2;
     gOrigin->Y = gTransform->Y + gHeight/2;

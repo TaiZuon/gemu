@@ -64,23 +64,26 @@ public:
 
     void Stop_Vel_X()
     {
+        Unset_Force();
         gVelocity.X = 0;
-    }
+        gPosition.X = 0;
+     }
     void Stop_Vel_Y()
     {
         gVelocity.Y = 0;
+        gPosition.Y = 0;
     }
 
-    void Update(double dt)
+    void Update(double dt, int type)
     {
         gAccelaration.X = (gForce.X + gFriction.X) / gMass;
         gAccelaration.Y = gGravity + (gForce.Y + gFriction.Y) / gMass;
         
         gVelocity = gVelocity.Add_Vector(gVelocity, gVelocity.ScalarMultiply_Vector(gAccelaration, dt));
 //        gVelocity = gVelocity.ScalarMultiply_Vector(gAccelaration, dt);
-        if(gVelocity.X > MAX_VELOCITY or gVelocity.X < - MAX_VELOCITY)
+        if(gVelocity.X > MAX_VELOCITIES[type] or gVelocity.X < - MAX_VELOCITIES[type])
         {
-            gVelocity.X = MAX_VELOCITY * (gVelocity.X / std::abs(gVelocity.X));
+            gVelocity.X = MAX_VELOCITIES[type] * (gVelocity.X / std::abs(gVelocity.X));
         } 
 //        std::cout << dt << '\n';
         gPosition = gPosition.ScalarMultiply_Vector(gVelocity, dt);
