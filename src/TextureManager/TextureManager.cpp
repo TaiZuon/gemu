@@ -1,6 +1,7 @@
 #include "TextureManager.hpp"
 #include "../Game.hpp"
 #include "../Camera/Camera.hpp"
+#include "SDL_ttf.h"
 
 TextureManager* TextureManager::TM_Instance = nullptr;
 
@@ -9,7 +10,7 @@ void TextureManager::Load(std::string id, const char* fileName )
     SDL_Surface* tmpSurface = IMG_Load(fileName);
 //    if(tmpSurface == nullptr) std::cout << "Load failed!\n"; else std::cout << "Img loaded!\n";
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::Get_Instance()->Get_Renderer(), tmpSurface);
-//    if(texture == nullptr) std::cout << "load texture failes!\n"; else std::cout << "Texture loaded!\n";
+    if(texture == nullptr) std::cout << "load " << id << " texture failes!\n"; 
     SDL_FreeSurface(tmpSurface);
     
     Texture_Map[id] = texture;
@@ -59,6 +60,58 @@ void TextureManager::DrawFrame(std::string id, int x, int y, int width, int heig
     SDL_RenderCopyEx(Game::Get_Instance()->Get_Renderer(), Texture_Map[id], &srcRect, &destRect, 0, nullptr, flip);
 //    std::cout << "Draw Frame\n";
 }
+
+void TextureManager::Set_Font(const char* id, int size)
+{
+    gFont = TTF_OpenFont(id, size);
+    if(gFont == nullptr) std::cout << "Load Font failed!\n";
+}
+void TextureManager::Set_Text_Color(Uint8 r, Uint8 g, Uint8 b)
+{
+    gText_Color = {r, g, b};
+//    std::cout << "set color!\n";
+}
+
+void TextureManager::LoadText(std::string id, std::string text)
+{
+    TextureManager::Get_Instance()->Set_Font("assets/Fonts/1.ttf", 30);
+    TextureManager::Get_Instance()->Set_Text_Color(255, 255, 255);
+    TextureManager::Drop(id);
+//    std::cout << text << '\n';
+    SDL_Surface* textSurface = TTF_RenderText_Solid( gFont, text.c_str(), gText_Color );
+	if( textSurface == NULL )
+	{
+		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
+	}
+	else
+	{
+		//Create texture from surface pixels
+        Texture_Map[id] = SDL_CreateTextureFromSurface( Game::Get_Instance()->gRenderer, textSurface );
+		if( Texture_Map[id] == NULL )
+		{
+			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+		}
+        else 
+        {
+            gText_Box.w = textSurface->w;
+            gText_Box.h = textSurface->h;
+        }
+
+		//Get rid of old surface
+		SDL_FreeSurface( textSurface );
+	}
+}
+void TextureManager::DrawText(std::string id, int x, int y, double angle, const SDL_Point *center, SDL_RendererFlip flip)
+{
+    gText_Box.x = 0;
+    gText_Box.y = 0;
+//    std::cout << gText_Box.w << " " << gText_Box.h << '\n';
+
+    SDL_Rect destRect = {x, y, gText_Box.w, gText_Box.h};
+
+    SDL_RenderCopyEx(Game::Get_Instance()->Get_Renderer(), Texture_Map[id], &gText_Box, &destRect, angle, center, flip);
+}
+
 void TextureManager::Drop(std::string id)
 {
     SDL_DestroyTexture(Texture_Map[id]);
@@ -89,6 +142,11 @@ void TextureManager::LoadAll()
 
     Load("Tile_02","assets/Map/Tiles/Tile_02.png");
     Load("Tile_12","assets/Map/Tiles/Tile_12.png");
+
+    Load("Coin","assets/Items/Coin.png");
+    Load("Heart","assets/Items/Heart.png");
+
+    Load("Play_Game","assets/Button/Rect.png");
 }
 
 void TextureManager::Clean()
@@ -100,4 +158,8 @@ void TextureManager::Clean()
         SDL_DestroyTexture(iter->second);
     }
     Texture_Map.clear();
+    TTF_CloseFont( gFont );
+    TTF_Quit();
+	IMG_Quit();
+
 }

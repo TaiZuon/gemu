@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = src\main.cpp src\Game.cpp src\TextureManager\TextureManager.cpp  src\Entity\Characters\Warrior.cpp src\Entity\Characters\Orc.cpp src\Entity\Characters\Boss.cpp src\Entity\Coins\Coin.cpp src\Physics\Vector2D.cpp src\Animation\Animation.cpp src\Inputs\Input.cpp src\Timer\Timer.cpp src\Map\Map.cpp src\Camera\Camera.cpp src\Physics\CollisionHandler.cpp src\GameStates\Menu.cpp src\GameStates\Play.cpp src\Entity\ObjectHandler.cpp
+OBJS = src\main.cpp src\Game.cpp src\TextureManager\TextureManager.cpp  src\Entity\Characters\Warrior.cpp src\Entity\Characters\Orc.cpp src\Entity\Characters\Boss.cpp src\Entity\Coins\Coin.cpp src\Physics\Vector2D.cpp src\Animation\Animation.cpp src\Inputs\Input.cpp src\Timer\Timer.cpp src\Map\Map.cpp src\Camera\Camera.cpp src\Physics\CollisionHandler.cpp src\GameStates\Menu.cpp src\GameStates\Play.cpp src\Entity\ObjectHandler.cpp src\Entity\Button\Button.cpp src\Entity\Items\Heart.cpp
 
 #CC specifies which compiler we're using
 CC = g++

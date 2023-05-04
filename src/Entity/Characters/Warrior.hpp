@@ -28,8 +28,9 @@ public:
         gIs_Landed = false; 
         gIs_Hurt = false;
     }
+    void Heal(int a);
     void Draw_Health();
-
+    //enemy
     SDL_Rect gEnemy_Box;
     void Up_Enemy_Dam(int dtDam)
     {
@@ -91,6 +92,14 @@ public:
     {
         gIs_Blocked = 0;
     }
+
+    //item
+    SDL_Rect gHeart_Box;
+    void Set_Heart_Box(SDL_Rect a)
+    {
+        gHeart_Box = a;
+    }
+
 private:
 
     int gHealth = 2500;

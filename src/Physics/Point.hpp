@@ -7,6 +7,7 @@ private:
 public:
     double X;
     double Y;
+    Point(){};
     Point(double x, double y)
     {
         X = x;

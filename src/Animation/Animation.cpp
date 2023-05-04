@@ -4,13 +4,7 @@
 void Animation::Update(double dt, bool repeat, bool &reset)
 {
     bool stop = false;
-//    gSum_dt += 1;
-//    gSprite_Frame = int (gSum_dt / gAnimation_Speed) % gFrame_Count;
-//    std::cout << gSum_dt / gAnimation_Speed << " " << gSprite_Frame << '\n';
-//    if(gSum_dt == gFrame_Count * gAnimation_Speed) gSum_dt = 0; 
-//std::cout << dt << '\n';
-//    int temp = SDL_GetTicks() / gAnimation_Speed;
-//    gSprite_Frame = (SDL_GetTicks() / gAnimation_Speed) % gFrame_Count;
+
     if(reset)
     {
         gSprite_Frame = 0;

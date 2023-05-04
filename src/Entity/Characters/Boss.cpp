@@ -29,10 +29,41 @@ Boss::Boss(Properties* props): Character(props)
     gAnimation->Set_Props(gTexture_ID, 1, 5, 150, SDL_FLIP_NONE);
 }
 
+void Boss::Track_Tar()
+{
+    if(std::abs(gOrigin->X - gTar->X) > 50 )
+    {
+//        std::cout << "Chase!\n";
+        gIs_Running = true;
+    }
+    //tracking player
+    if(std::abs(gOrigin->X - gTar->X) > 5 and !gIs_Attacking)
+    {
+        if(gTar->X > gOrigin->X) 
+        {
+            gFlip = SDL_FLIP_NONE;
+            gRigidBody->Apply_ForceX(RUN_FORCES[BOSS]);
+        }
+        else 
+        {
+            gFlip = SDL_FLIP_HORIZONTAL;
+            gRigidBody->Apply_ForceX(-RUN_FORCES[BOSS]);
+        }
+    }
+    else 
+    {
+//        std::cout << "Stop!\n";
+        gRigidBody->Unset_Force();
+        gIs_Running = false;
+    }
+}
+
 void Boss::Update(double dt)
 {
     bool Reset = false;
     bool Repeat = true;
+    if(!gIs_Dead and !gTar_Dead)
+    Track_Tar();
 
     gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
 
@@ -67,9 +98,6 @@ void Boss::Update(double dt)
     gOrigin->X = gTransform->X + gWidth/2;
     gOrigin->Y = gTransform->Y + gHeight/2;
 
-
-//    std::cout << "Orc: " << gOrigin->X << " " << gOrigin->Y << '\n';
-//    std::cout << "Tar: " << gTar->X << " " << gTar->Y << "\n";
     gAnimation->Update(dt, Repeat, Reset);
 }
 
@@ -81,11 +109,6 @@ void Boss::Draw()
     SDL_Rect Box = gCollider->Get_Box();
     Box.x -= Cam.X;
     Box.y -= Cam.Y;
-//    std::cout << "Box: " << Box.x << " " << Box.y << '\n';
-//    std::cout << "Cam: " << Cam.X << " " << Cam.Y << '\n';
-//   std::cout << "transform: " << gTransform->X << " " << gTransform->Y << '\n';
-//    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
- //   Draw_Health();
 }
 
 void Boss::Draw_Health()

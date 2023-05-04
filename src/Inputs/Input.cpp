@@ -1,5 +1,6 @@
 #include "Input.hpp"
 #include "../Game.hpp"
+#include "../Physics/Point.hpp"
 
 Input* Input::g_Instance = nullptr;
 
@@ -18,6 +19,7 @@ void Input::Listen()
         {
         case SDL_QUIT:
             Game::Get_Instance()->Clean();
+            Game::Get_Instance()->Quit();
             break;
         case SDL_KEYDOWN:
             Key_Down();
@@ -25,10 +27,24 @@ void Input::Listen()
         case SDL_KEYUP:
             Key_Up();
             break;
+        case SDL_MOUSEMOTION:
+            gEvent_Type = SDL_MOUSEMOTION;
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            gEvent_Type = SDL_MOUSEBUTTONDOWN;
+            break;
+        case SDL_MOUSEBUTTONUP:
+            gEvent_Type = SDL_MOUSEBUTTONUP;
+            break;
         default:
             break;
         }
     }
+}
+
+SDL_EventType Input::Get_Event_Type()
+{
+    return gEvent_Type;
 }
 
 bool Input::Get_Key_Down(SDL_Scancode Key)
@@ -67,4 +83,12 @@ int Input::Get_Direction(int Dir)
     default:
         break;
     }
+}
+
+Point Input::Get_Mouse_Position()
+{
+    int x; int y;
+    SDL_GetMouseState( &x, &y );
+    Point MP(x, y);
+    return MP;
 }

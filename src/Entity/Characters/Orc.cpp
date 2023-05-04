@@ -24,7 +24,7 @@ Orc::Orc(Properties* props): Character(props)
     gCollider->Set_Empty(-35,-50,70,50);
 
     gRigidBody = new RigidBody();
-    gRigidBody->Set_Gravity(GRAVITY*2);
+    gRigidBody->Set_Gravity(GRAVITY);
 
     gAnimation = new Animation();
     gAnimation->Set_Props(gTexture_ID, 1, 5, 50, SDL_FLIP_NONE);
@@ -54,7 +54,6 @@ void Orc::Update(double dt)
     {
         gAnimation->Set_Props("Orc_Hurt", 1, 2, 100, gFlip);
         Repeat = false;
-
     }
     if(gHealth == 0)
     {
@@ -110,12 +109,12 @@ void Orc::Update(double dt)
         if(gTar->X > gOrigin->X) 
         {
             gFlip = SDL_FLIP_NONE;
-            gRigidBody->Apply_ForceX(0.5);
+            gRigidBody->Apply_ForceX(RUN_FORCES[ORC]);
         }
         else 
         {
             gFlip = SDL_FLIP_HORIZONTAL;
-            gRigidBody->Apply_ForceX(-0.5);
+            gRigidBody->Apply_ForceX(-RUN_FORCES[ORC]);
         }
     }
     else 
@@ -143,7 +142,7 @@ void Orc::Update(double dt)
             if(gDead_Time <= dt)
             { 
                 gIs_Killed = true;
-                Coin::Get_Instance()->Update(0);
+                Coin::Get_Instance()->Up_Num_Coins(gVal);
 //                std::cout << "Update: Killed!\n";
             }
         }
@@ -152,7 +151,8 @@ void Orc::Update(double dt)
         gRigidBody->Stop_Vel_X();
         gRigidBody->Stop_Vel_Y();
         Dead();
-    } else if(gTar_Dead)
+    } 
+    else if(gTar_Dead)
     {
         gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
         gRigidBody->Unset_Force();
@@ -209,7 +209,7 @@ void Orc::Draw()
 //    std::cout << "Box: " << Box.x << " " << Box.y << '\n';
 //    std::cout << "Cam: " << Cam.X << " " << Cam.Y << '\n';
 //   std::cout << "transform: " << gTransform->X << " " << gTransform->Y << '\n';
-//    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
+    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
     Draw_Health();
 }
 
@@ -219,7 +219,7 @@ void Orc::Draw_Health()
     SDL_Rect Box = gCollider->Get_Box();
     Box.x -= Cam.X;
     Box.y -= Cam.Y;
-    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
+//    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
     Box.y -= 15;
     Box.h -= 50;
     SDL_Rect H = Box;

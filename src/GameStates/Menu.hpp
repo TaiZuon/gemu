@@ -11,11 +11,15 @@ private:
     static void Settings();
     static void Upgrade();
     static void Quit();
+
 public:
     Menu();
+    void Events();
     virtual bool Init();
     virtual bool Exit();
 
     virtual void Update();
     virtual void Render();
+
+    Button* Play_Game;
 };

@@ -24,7 +24,7 @@ Warrior::Warrior(Properties* props): Character(props)
     gCollider->Set_Empty(-35,-50,70,50);
 
     gRigidBody = new RigidBody();
-    gRigidBody->Set_Gravity(GRAVITY*2);
+    gRigidBody->Set_Gravity(GRAVITY);
 
     gAnimation = new Animation();
     gAnimation->Set_Props(gTexture_ID, 1, 6, 100, SDL_FLIP_NONE);
@@ -74,9 +74,14 @@ int Warrior::Get_Health()
     return gHealth;
 }
 
+void Warrior::Heal(int a)
+{
+    gHealth += a;
+}
+
 void Warrior::Hurt(int dam)
 {
-    if(SDL_GetTicks() %50 ==0) gHealth -= dam;
+    if(SDL_GetTicks() %10 ==0) gHealth -= dam;
     gHealth = std::max(gHealth, 0);
     gHealth = std::min(gHealth, 2500);
 //    std::cout << "Health: " << gHealth << '\n';
@@ -84,13 +89,11 @@ void Warrior::Hurt(int dam)
 
 void Warrior::Update(double dt)
 {
-//    std::cout << gIs_Hurt << '\n';
     bool Repeat = false;
     bool Reset = false;
-//    std::cout << SDL_GetTicks() << "\n";
+
     if(!gIs_Dead)
     {
-//        std::cout << "E A: " << gEnemy_Attack << " E D: " << gEnemy_Dead << '\n';
     if(gEnemy_Attack and !gEnemy_Dead) 
     {
         gIs_Hurt = true;
@@ -99,7 +102,6 @@ void Warrior::Update(double dt)
     if(gIs_Hurt and gHurt_Time > 0) 
     {
         gHurt_Time -= dt;
-//        Hurt(gEnemy_Dam);
     }
     else 
     {
@@ -126,7 +128,7 @@ void Warrior::Update(double dt)
     }
     if(gIs_Dead)
     {
-        gAnimation->Set_Props("Warrior_Dead", 1, 4, 100, gFlip);
+        gAnimation->Set_Props("Warrior_Dead", 1, 4, 200, gFlip);
         Repeat = false;
         Dead();
     }
@@ -134,7 +136,7 @@ void Warrior::Update(double dt)
     if(gEnemy_Dead or gIs_Jumping) Un_Block();
     
     //neu V != 0 thi co ma sat (xet theo phuong X)
-    if(std::abs(gRigidBody->Get_Velocity().X) != 0)
+    if(std::abs(gRigidBody->Get_Velocity().X) >= 0.01)
     {
         double v_temp = gRigidBody->Get_Velocity().X;
         Vector2D friction(-FRICTION * (v_temp/std::abs(v_temp)),0);
@@ -143,6 +145,7 @@ void Warrior::Update(double dt)
     else
     {
         gRigidBody->Unset_Friction();
+        gRigidBody->Stop_Vel_X();
     }
 
     //idle
@@ -198,7 +201,7 @@ void Warrior::Update(double dt)
     }
     if(gIs_Jumping && gJump_Time > 0)
     {
-        gAnimation->Set_Props("Warrior_Jump", 1, 3, 200, gFlip);
+        gAnimation->Set_Props("Warrior_Jump", 1, 3, 75, gFlip);
         Repeat = false;
         gJump_Time -= dt;
 //        std::cout << gJump_Time << '\n';
@@ -214,6 +217,10 @@ void Warrior::Update(double dt)
     {
         gIs_Falling = true;
     }
+    if(std::abs(gRigidBody->Get_Velocity().Y) <= 0.01 and !gIs_Landed)
+    {
+        Reset = true;
+    }
     else gIs_Falling = false;
 //    std::cout << gIs_Jumping << '\n';
     // if(gIs_Jumping)
@@ -224,7 +231,7 @@ void Warrior::Update(double dt)
     if(gIs_Running and (gDirection != gIs_Blocked))
     {
         gAnimation->Set_Props("Warrior_Run", 1, 6, 100, gFlip);
-        gRigidBody->Apply_ForceX( gDirection * 0.5 );
+        gRigidBody->Apply_ForceX( gDirection * RUN_FORCES[WARRIOR] );
         Repeat = true;
     }
 //        std::cout << gIs_Running << " " << gFlip << '\n';
@@ -236,7 +243,7 @@ void Warrior::Update(double dt)
 
     if(gIs_Falling)
     {
-        gAnimation->Set_Props("Warrior_Fall", 1, 2, 200, gFlip);
+        gAnimation->Set_Props("Warrior_Fall", 1, 2, 75, gFlip);
         Repeat = false;
     }
     }

@@ -18,7 +18,6 @@ int main(int argv, char** args)
         Game::Get_Instance()->Update(0);
         Game::Get_Instance()->Render();
         Timer::Get_Instance()->Tick();
-
     }
 
     Game::Get_Instance()->Clean();

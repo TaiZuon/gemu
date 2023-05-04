@@ -17,6 +17,8 @@ public:
 
     void Init(const char * title, int width, int height, bool fullscreen);
     
+    void StateInit();
+
     void Load();
 
     void Handle_Events();

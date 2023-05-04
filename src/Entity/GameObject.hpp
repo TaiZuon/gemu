@@ -52,7 +52,7 @@ class GameObject: public IObject
             return a;
         }
         virtual void Draw()=0;
-        virtual void Update(double dt)=0;
+        virtual void Update(double dt){}
         virtual void Clean()=0;
 
     protected:

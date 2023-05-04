@@ -11,7 +11,7 @@
 #define ATTACK_TIME 15.0f
 
 #define UNI_MASS 1.0f
-#define GRAVITY 0.2f
+#define GRAVITY 0.5f
 
 #define HORIZONTAL 0
 #define VERTICAL 1
@@ -24,12 +24,14 @@
 #define MAGE 2
 #define BOSS 3
 
-const double MAX_VELOCITIES[4] = {5, 1, 3, 3};
+const double RUN_FORCES[4] = {0.5, 0.5, 0.5, 0.5};
+const double MAX_VELOCITIES[4] = {5, 3, 3, 3};
 const double MAX_VELOCITY = 3;
 const double FRICTION = 0.4;
 
 const int CHAR_SIZE = 96;
 const int BOSS_SIZE = 96*2;
+const int HEART_SIZE = 64;
 
 const int FPS = 60;
 const double DELTA_TIME = 0.15;

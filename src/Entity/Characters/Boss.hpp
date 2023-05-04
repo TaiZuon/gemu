@@ -65,6 +65,7 @@ public:
     {
         if(Is_Tar_Colly()) gHealth -= dam;
     }
+    void Track_Tar();
     void Dead()
     {
         gIs_Jumping = false;
@@ -83,6 +84,7 @@ private:
     bool gIs_Landed;
     bool gIs_Hurt;
     bool gIs_Dead;
+    bool gIs_Killed;
 
     bool gTar_Attack;
     bool gTar_Dead;

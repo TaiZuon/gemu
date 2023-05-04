@@ -13,36 +13,39 @@
 #include "../Entity/Coins/Coin.hpp"
 #include "../Entity/ObjectHandler.hpp"
 
-Play::Play(){}
+Play::Play()
+{
+    gIs_Setting = false;
+    gGS_Renderer = Game::Get_Instance()->gRenderer;
+}
 
 bool Play::Init()
 {
-    int Num_Enemies = 3;
-    gIs_Setting = false;
-    gGS_Renderer = Game::Get_Instance()->gRenderer;
-
-    TextureManager::Get_Instance()->LoadAll();
+    int Num = 3;
 
     Coin::Get_Instance()->Get_Num_Coins();
-    Coin::Get_Instance()->Check_Num_Coins();
 
     Map::Get_Instance()->Create_White_Map();
     Map::Get_Instance()->Read_Map();
+
+//    ObjectHandler::Get_Instance()->Delete_All();
 
     ObjectHandler::Get_Instance()->New_Player(100, 200);
 
     ObjectHandler::Get_Instance()->Add_New_Boss(400, 200);
 
     srand(time(0));
-    for (int i = 0; i < Num_Enemies; i++)
+    for (int i = 0; i < Num; i++)
     {
         int MAX = 600, MIN = 0;
         int posX = rand() % (MAX - MIN + 1) + MIN;
         ObjectHandler::Get_Instance()->Add_New_Enemy(posX, 100);
     }
 
-    Camera::Get_Instance()->Set_Target(ObjectHandler::Get_Instance()->Get_Player()->Get_Origin());
+    ObjectHandler::Get_Instance()->Add_New_Heart();
 
+    Camera::Get_Instance()->Set_Target(ObjectHandler::Get_Instance()->Get_Player()->Get_Origin());
+    std::cout << "Play init!\n";
     return true;
 }
 
@@ -58,12 +61,15 @@ void Play::Render()
     for( int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
     ObjectHandler::Get_Instance()->Get_Enemy(i)->Draw();
     ObjectHandler::Get_Instance()->Get_Player()->Draw();
+    ObjectHandler::Get_Instance()->Get_Heart(0)->Draw();
+    Coin::Get_Instance()->Draw_Num_Coins();
 
     SDL_RenderPresent(gGS_Renderer);
 }
 
 void Play::Update()
 {
+//    std::cout << gIs_Setting << '\n';
     Events();
 
     if(!gIs_Setting)
@@ -73,6 +79,8 @@ void Play::Update()
         int blocked_back = 0;
         int blocked_fore = 0;
 
+        ObjectHandler::Get_Instance()->Get_Boss(0)->Set_Tar_Box(ObjectHandler::Get_Instance()->Get_Player()->Get_Collider()->Get_Box());
+        ObjectHandler::Get_Instance()->Get_Boss(0)->Set_Tar(ObjectHandler::Get_Instance()->Get_Player()->Get_Origin());
         ObjectHandler::Get_Instance()->Get_Boss(0)->Update(dt);
 
         for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
@@ -87,6 +95,7 @@ void Play::Update()
         ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_Dam(0);
         for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
         {
+//            std::cout << ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Tar_Colly() << '\n';
             ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_State(ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Attacking(), ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Dead());
 
             if(ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Tar_Colly() != 0)  
@@ -113,9 +122,19 @@ void Play::Update()
         }
         if(blocked_back != 0) ObjectHandler::Get_Instance()->Get_Player()->Block_Backward();
         if(blocked_fore != 0) ObjectHandler::Get_Instance()->Get_Player()->Block_Forward();
+
+        ObjectHandler::Get_Instance()->Get_Heart(0)->Set_Tar_Box(ObjectHandler::Get_Instance()->Get_Player()->Get_Collider()->Get_Box());
+        if(ObjectHandler::Get_Instance()->Get_Heart(0)->Get_Heart_State())
+        {
+            ObjectHandler::Get_Instance()->Get_Player()->Heal(ObjectHandler::Get_Instance()->Get_Heart(0)->Get_Num_Heal());
+            ObjectHandler::Get_Instance()->Delete_Heart(0);
+            ObjectHandler::Get_Instance()->Add_New_Heart();
+        }
+        ObjectHandler::Get_Instance()->Get_Heart(0)->Update(dt);
         ObjectHandler::Get_Instance()->Get_Player()->Update(dt); 
 
         Camera::Get_Instance()->Update(dt);
+        Coin::Get_Instance()->Update(dt);
     }
 }
 
@@ -123,7 +142,7 @@ void Play::Events()
 {
     if(!gIs_Setting and Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_M))
     {
-        Game::Get_Instance()->ChangeState(new Menu);
+        OpenMenu();
     }
     if(!gIs_Setting and Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_ESCAPE))
     {
