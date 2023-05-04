@@ -8,6 +8,12 @@
 
 Orc::Orc(Properties* props): Character(props)
 {
+    gMax_Damage = 5;
+    gMax_Health = 2500;
+
+    gDamage = gMax_Damage;
+    gHealth = gMax_Health;
+
     bool gIs_Jumping = false;
     bool gIs_Falling = false;
     bool gIs_Running = false;
@@ -158,9 +164,9 @@ void Orc::Update(double dt)
         gRigidBody->Unset_Force();
         gRigidBody->Stop_Vel_X();
         gRigidBody->Stop_Vel_Y();
+        Repeat = true;
     } 
 
-//    std::cout << "Orc: " << gIs_Attacking << "\n";
     gRigidBody->Update(dt, ORC);
 
     gLast_Safe_Position.X = gTransform->X;
@@ -177,24 +183,18 @@ void Orc::Update(double dt)
 
     if(CollisionHandler::Get_Instance()->Is_Map_Collision(gCollider->Get_Box()))
     {
-//        std::cout << "Landed!\n";
         gIs_Landed = true;
         gTransform->Y = gLast_Safe_Position.Y;
-//        gRigidBody->Unset_Force();
         gRigidBody->Stop_Vel_Y();
     }
     else
     {
-//      std::cout << "Not Landed!\n";
         gIs_Landed = false;
     }
 
     gOrigin->X = gTransform->X + gWidth/2;
     gOrigin->Y = gTransform->Y + gHeight/2;
 
-
-//    std::cout << "Orc: " << gOrigin->X << " " << gOrigin->Y << '\n';
-//    std::cout << "Tar: " << gTar->X << " " << gTar->Y << "\n";
     gAnimation->Update(dt, Repeat, Reset);
 }
 
@@ -223,7 +223,7 @@ void Orc::Draw_Health()
     Box.y -= 15;
     Box.h -= 50;
     SDL_Rect H = Box;
-    H.w = std::max(gHealth/100, 0);
+    H.w = double(gHealth*1.0 / gMax_Health) *25;
     Box.x--;
     Box.y-=2;
     Box.h += 4;

@@ -125,8 +125,11 @@ private:
     double gHurt_Time = 2.0;
     double gDead_Time = 20.0;
 
-    int gHealth = 2500;
-    int gDamage = 1;
+    int gMax_Health;
+    int gMax_Damage;
+
+    int gHealth;
+    int gDamage;
     int gTar_Dam;
     int gTar_Dir;
 

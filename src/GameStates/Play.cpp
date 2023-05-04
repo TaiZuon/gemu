@@ -81,6 +81,9 @@ void Play::Update()
 
         ObjectHandler::Get_Instance()->Get_Boss(0)->Set_Tar_Box(ObjectHandler::Get_Instance()->Get_Player()->Get_Collider()->Get_Box());
         ObjectHandler::Get_Instance()->Get_Boss(0)->Set_Tar(ObjectHandler::Get_Instance()->Get_Player()->Get_Origin());
+        ObjectHandler::Get_Instance()->Get_Boss(0)->Set_Tar_Dir(ObjectHandler::Get_Instance()->Get_Player()->Get_Dir());
+        ObjectHandler::Get_Instance()->Get_Boss(0)->Set_Tar_Dam(ObjectHandler::Get_Instance()->Get_Player()->Get_Damage());
+        ObjectHandler::Get_Instance()->Get_Boss(0)->Set_Tar_State(ObjectHandler::Get_Instance()->Get_Player()->Is_Attacking(), ObjectHandler::Get_Instance()->Get_Player()->Is_Dead());
         ObjectHandler::Get_Instance()->Get_Boss(0)->Update(dt);
 
         for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
@@ -93,6 +96,29 @@ void Play::Update()
             ObjectHandler::Get_Instance()->Get_Enemy(i)->Update(dt);
         }
         ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_Dam(0);
+        
+        //boss
+        ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_State(ObjectHandler::Get_Instance()->Get_Boss(0)->Is_Attacking(), ObjectHandler::Get_Instance()->Get_Boss(0)->Is_Dead());
+        if(ObjectHandler::Get_Instance()->Get_Boss(0)->Is_Tar_Colly() != 0)  
+        {       
+        ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_Dam(ObjectHandler::Get_Instance()->Get_Boss(0)->Get_Damage());
+        
+        if(ObjectHandler::Get_Instance()->Get_Player()->gEnemy_Attack)
+        ObjectHandler::Get_Instance()->Get_Player()->Hurt(ObjectHandler::Get_Instance()->Get_Boss(0)->Get_Damage());
+        
+        switch (ObjectHandler::Get_Instance()->Get_Boss(0)->Is_Tar_Colly())
+        {
+        case FORWARD:
+            if(Input::Get_Instance()->Get_Direction(HORIZONTAL) == BACKWARD) blocked_back--;
+            break;
+        case BACKWARD:
+            if(Input::Get_Instance()->Get_Direction(HORIZONTAL) == FORWARD) blocked_fore++;
+            break;
+            default:
+                break;
+            }
+        }
+        //
         for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
         {
 //            std::cout << ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Tar_Colly() << '\n';
@@ -120,6 +146,9 @@ void Play::Update()
                 ObjectHandler::Get_Instance()->Delete_Enemy(i);    
             }
         }
+        //
+
+        //
         if(blocked_back != 0) ObjectHandler::Get_Instance()->Get_Player()->Block_Backward();
         if(blocked_fore != 0) ObjectHandler::Get_Instance()->Get_Player()->Block_Forward();
 
@@ -127,9 +156,24 @@ void Play::Update()
         if(ObjectHandler::Get_Instance()->Get_Heart(0)->Get_Heart_State())
         {
             ObjectHandler::Get_Instance()->Get_Player()->Heal(ObjectHandler::Get_Instance()->Get_Heart(0)->Get_Num_Heal());
+            ObjectHandler::Get_Instance()->Get_Heart(0)->Set_Heart_State(false);
             ObjectHandler::Get_Instance()->Delete_Heart(0);
-            ObjectHandler::Get_Instance()->Add_New_Heart();
+            do
+            {
+                ObjectHandler::Get_Instance()->Add_New_Heart();
+                ObjectHandler::Get_Instance()->Get_Heart(0)->Set_Tar_Box(ObjectHandler::Get_Instance()->Get_Player()->Get_Collider()->Get_Box());
+                if(ObjectHandler::Get_Instance()->Get_Heart(0)->Get_Heart_State()) ObjectHandler::Get_Instance()->Delete_Heart(0);
+                else break;
+            } while (1);
         }
+        if(ObjectHandler::Get_Instance()->Get_Boss(0)->Get_Crystal() != nullptr)
+        {
+            if(ObjectHandler::Get_Instance()->Get_Boss(0)->Get_Crystal()->Is_Tar_Colly() != 0)
+            {
+                ObjectHandler::Get_Instance()->Get_Player()->Hurt(ObjectHandler::Get_Instance()->Get_Boss(0)->Get_Crystal()->Get_Dam());
+            }
+        }
+
         ObjectHandler::Get_Instance()->Get_Heart(0)->Update(dt);
         ObjectHandler::Get_Instance()->Get_Player()->Update(dt); 
 

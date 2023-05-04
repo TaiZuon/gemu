@@ -20,7 +20,7 @@ void ObjectHandler::Add_New_Boss(int x, int y)
     Num_Bosses++;
 }
 void ObjectHandler::Add_New_Heart()
-{
+{   
     int MIN_X, MAX_X;
     SDL_Rect viewbox = Camera::Get_Instance()->Get_View_Box();
     MIN_X = viewbox.x;
@@ -68,7 +68,5 @@ void ObjectHandler::Delete_All()
     {
         Delete_Heart(0);
     }
-    
-    Delete_Player();
 }
 

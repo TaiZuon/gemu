@@ -74,8 +74,6 @@ void TextureManager::Set_Text_Color(Uint8 r, Uint8 g, Uint8 b)
 
 void TextureManager::LoadText(std::string id, std::string text)
 {
-    TextureManager::Get_Instance()->Set_Font("assets/Fonts/1.ttf", 30);
-    TextureManager::Get_Instance()->Set_Text_Color(255, 255, 255);
     TextureManager::Drop(id);
 //    std::cout << text << '\n';
     SDL_Surface* textSurface = TTF_RenderText_Solid( gFont, text.c_str(), gText_Color );
@@ -136,8 +134,14 @@ void TextureManager::LoadAll()
     Load("Orc_Hurt","assets/Characters/Orcs/Orc_Berserk/Hurt.png");
     Load("Orc_Dead","assets/Characters/Orcs/Orc_Berserk/Dead.png");
     Load("Orc_Attack_1","assets/Characters/Orcs/Orc_Berserk/Attack_1.png");
-    Load("Orc_Warrior_Idle","assets/Characters/Orcs/Orc_Warrior/Idle_1.png");
     
+    Load("Orc_Warrior_Idle","assets/Characters/Orcs/Orc_Warrior/Idle_1.png");
+    Load("Orc_Warrior_Hurt","assets/Characters/Orcs/Orc_Warrior/Hurt.png");
+    Load("Orc_Warrior_Hurt","assets/Characters/Orcs/Orc_Warrior/Hurt.png");
+    Load("Orc_Warrior_Attack_1","assets/Characters/Orcs/Orc_Warrior/Attack_1.png");
+    Load("Orc_Warrior_Run","assets/Characters/Orcs/Orc_Warrior/Run.png");
+    Load("Orc_Warrior_Attack_2","assets/Characters/Orcs/Orc_Warrior/Attack_2.png");
+
     Load("Background","assets/Map/Background.png");
 
     Load("Tile_02","assets/Map/Tiles/Tile_02.png");
@@ -146,7 +150,14 @@ void TextureManager::LoadAll()
     Load("Coin","assets/Items/Coin.png");
     Load("Heart","assets/Items/Heart.png");
 
+    Load("Bullet_Move", "assets/Items/crystal/Move.png");
+    Load("Bullet_Explose", "assets/Items/crystal/Explose.png");
+
     Load("Play_Game","assets/Button/Rect.png");
+    Load("NewGame","assets/Button/NewGame.png");
+    Load("Setting","assets/Button/Setting.png");
+    Load("Upgrade","assets/Button/Upgrade.png");
+    Load("Exit","assets/Button/Exit.png");
 }
 
 void TextureManager::Clean()

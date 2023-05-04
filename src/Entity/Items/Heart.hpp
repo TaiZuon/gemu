@@ -22,6 +22,10 @@ public:
     {
         return gIs_Touched;
     }
+    void Set_Heart_State(bool a)
+    {
+        gIs_Touched = a;
+    }
 private:
     int gHeal = 100;
     bool gIs_Touched;

@@ -17,6 +17,9 @@ void Camera::Update(double dt)
         gView_Box.x = std::min(2 * SCREEN_WIDTH - gView_Box.w, gView_Box.x); 
         gView_Box.y = std::min(SCREEN_HEIGHT - gView_Box.h, gView_Box.y);
 
+        gView_Box.h = SCREEN_HEIGHT;
+        gView_Box.w = SCREEN_WIDTH;
+
         gPosition = Vector2D(gView_Box.x, gView_Box.y);
 //        std::cout << gPosition.X << " " << gPosition.Y << '\n';
     }

@@ -1,6 +1,8 @@
 #include "Button.hpp"
 #include <iostream>
 #include "../../Game.hpp"
+#include "../../Camera/Camera.hpp"
+#include "../../Physics/Vector2D.hpp"
 
 Button::Button(Properties* prop): GameObject(prop)
 {
@@ -72,6 +74,6 @@ void Button::State_Update()
 
 void Button::Draw()
 {
-    TextureManager::Get_Instance()->DrawFrame(gTexture_ID, gTransform->X, gTransform->Y, gWidth, gHeight, 1, gButton_State);
-//	std::cout << "Draw Button!\n";
+	Vector2D Cam = Camera::Get_Instance()->Get_Position();
+    TextureManager::Get_Instance()->DrawFrame(gTexture_ID, gTransform->X + (int)Cam.X, gTransform->Y + (int)Cam.Y, gWidth, gHeight, 1, gButton_State);
 }

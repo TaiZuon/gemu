@@ -23,6 +23,10 @@ public:
     void State_Update();
     virtual void Draw();
     virtual void Clean(){}
+    ButtonState Get_Button_State()
+    {
+        return gButton_State;
+    }
 private:
     ButtonState gButton_State;
     int gCurrent_State;

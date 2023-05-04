@@ -7,10 +7,9 @@
 class Menu: public GameState
 {
 private:
-    static void StartGame();
+    static void NewGame();
     static void Settings();
     static void Upgrade();
-    static void Quit();
 
 public:
     Menu();
@@ -20,6 +19,11 @@ public:
 
     virtual void Update();
     virtual void Render();
+    virtual void Clean();
 
-    Button* Play_Game;
+    Button* mNewGame = nullptr;
+    Button* mSetting = nullptr;
+    Button* mUpgrade = nullptr;
+    Button* mExit = nullptr;
+
 };

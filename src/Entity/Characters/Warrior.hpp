@@ -7,6 +7,8 @@
 #include "../../Constant.hpp"
 #include "Orc.hpp"
 #include "Boss.hpp"
+#include "PlayerProperties/Damage.hpp"
+#include "PlayerProperties/Health.hpp"
 #include <vector>
 
 class Warrior : public Character{
@@ -22,7 +24,6 @@ public:
     void Dead()
     {
         gIs_Jumping = false;
-        gIs_Falling = false;
         gIs_Running = false;
         gIs_Attacking = false;
         gIs_Landed = false; 
@@ -101,9 +102,12 @@ public:
     }
 
 private:
+    
+    int gMax_Health;
+    int gMax_Damage;
 
-    int gHealth = 2500;
-    int gDamage = 5;
+    int gHealth;
+    int gDamage;
 
     int gDirection;
     int gIs_Blocked;

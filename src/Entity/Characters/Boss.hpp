@@ -6,6 +6,7 @@
 #include "../../Physics/Collider.hpp"
 #include "../../Constant.hpp"
 #include "../../Physics/CollisionHandler.hpp"
+#include "../Items/Bullet.hpp"
 
 class Boss: public Character{
 public:
@@ -38,13 +39,35 @@ public:
     {
         gTar_Dam = a;
     }
-    bool Is_Tar_Colly()
+    int Is_Tar_Colly()
     {
-        if(CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTar_Box))
-        return true;
-        else
-        return false;
+        return CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTar_Box);
     }
+    void Set_Tar_Dir(int a)
+    {
+        gTar_Dir = a;
+    }
+    bool Is_Taken_Dam()
+    {
+        if(Is_Tar_Colly() != 0)
+        {
+            switch (CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTar_Box))
+            {
+            case FORWARD:
+                /* code */
+                if(gTar_Dir == BACKWARD) return true;
+                else return false;
+                break;
+            case BACKWARD:
+                if(gTar_Dir == FORWARD) return true;
+                else return false;
+                break;
+            default:
+                break;
+            }
+        }
+        return false;
+    } 
     void Up_Dam(int dtDam)
     {
         gDamage += dtDam;
@@ -61,11 +84,21 @@ public:
     {
         return gIs_Dead;
     }
+    bool Is_Killed()
+    {
+        return gIs_Killed;
+    }
     void Hurt(int dam)
     {
         if(Is_Tar_Colly()) gHealth -= dam;
     }
+    void Is_Insane()
+    {
+        if(float(gHealth*1.0 / gMax_Health) < 0.5) gIs_Insane = true;
+        else gIs_Insane = false;
+    }
     void Track_Tar();
+    void Track_Tar_Shoot();
     void Dead()
     {
         gIs_Jumping = false;
@@ -74,6 +107,15 @@ public:
         gIs_Attacking = false;
         gIs_Landed = false; 
         gIs_Hurt = false;
+    }
+    bool Tar_In_Range()
+    {
+        if(std::abs(gTar->X - gOrigin->X) <= gShoot_Range) return true;
+        return false;
+    }
+    Bullet* Get_Crystal()
+    {
+        return Crystal;
     }
 
 private:
@@ -85,6 +127,8 @@ private:
     bool gIs_Hurt;
     bool gIs_Dead;
     bool gIs_Killed;
+    bool gIs_Insane;
+    bool gIs_Shooting;
 
     bool gTar_Attack;
     bool gTar_Dead;
@@ -93,11 +137,25 @@ private:
     double gJump_Time;
     double gJump_Force;
     double gHurt_Time = 2.0;
-    double gDead_Time = 2.0;
+    double gDead_Time = 20.0;
+    double gShoot_Time = 20.0;
 
-    int gHealth = 2500;
-    int gDamage = 1;
+    double gShoot_Range = 300;
+
+    int gMax_Health;
+    int gMax_Damage;
+
+    int gType;
+
+    int gHealth;
+    int gDamage;
     int gTar_Dam;
+    int gTar_Dir;
+    int gDir;
+
+    int gVal = 100;
+
+    Bullet* Crystal = nullptr;
 
     Animation* gAnimation;
     RigidBody* gRigidBody;

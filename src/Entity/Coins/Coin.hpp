@@ -10,7 +10,6 @@ public:
     Coin();
     static Coin* Get_Instance()
     {
-//        std::string a = "Warrior_Idle";
         return g_Instance = (g_Instance != nullptr)? g_Instance : new Coin();
     }
     void Update(double dt);

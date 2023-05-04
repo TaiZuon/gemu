@@ -8,6 +8,14 @@
 
 Warrior::Warrior(Properties* props): Character(props)
 {
+    Health::Get_Instance()->Get_Num_Health();
+    gMax_Health = Health::Get_Instance()->Check_Num_Health();
+    gHealth = gMax_Health;
+
+    Damage::Get_Instance()->Get_Num_Damage();
+    gMax_Damage = Damage::Get_Instance()->Check_Num_Damage(); 
+    gDamage = gMax_Damage;
+
     bool gIs_Jumping = false;
     bool gIs_Falling = false;
     bool gIs_Running = false;
@@ -51,18 +59,12 @@ void Warrior::Draw_Health()
     Box.y -= 15;
     Box.h -= 50;
     SDL_Rect H = Box;
-    H.w = std::max(gHealth/100, 0);
+    H.w = double(gHealth*1.0 / gMax_Health) *25;
     Box.x--;
     Box.y-=2;
     Box.h += 4;
     Box.w++;
-//    std::cout << "Health: " << gHealth << '\n';
-//    std::cout << "Hw: " << H.w << '\n';
-    
-//    std::cout << "Box: " << Box.x << " " << Box.y << '\n';
-//    std::cout << "Cam: " << Cam.X << " " << Cam.Y << '\n';
-//   std::cout << "transform: " << gTransform->X << " " << gTransform->Y << '\n';
-//    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
+
     SDL_SetRenderDrawColor(Game::Get_Instance()->gRenderer, 255, 255, 255, 0); 
     SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
     SDL_SetRenderDrawColor(Game::Get_Instance()->gRenderer, 255, 50, 50, 0); 
@@ -76,15 +78,15 @@ int Warrior::Get_Health()
 
 void Warrior::Heal(int a)
 {
-    gHealth += a;
+    gHealth = std::min(gMax_Health, gHealth + a);
+
 }
 
 void Warrior::Hurt(int dam)
 {
     if(SDL_GetTicks() %10 ==0) gHealth -= dam;
     gHealth = std::max(gHealth, 0);
-    gHealth = std::min(gHealth, 2500);
-//    std::cout << "Health: " << gHealth << '\n';
+    gHealth = std::min(gHealth, gMax_Health);
 }
 
 void Warrior::Update(double dt)
@@ -94,6 +96,7 @@ void Warrior::Update(double dt)
 
     if(!gIs_Dead)
     {
+    //    std::cout << gIs_Hurt << "\n";
     if(gEnemy_Attack and !gEnemy_Dead) 
     {
         gIs_Hurt = true;
@@ -253,7 +256,7 @@ void Warrior::Update(double dt)
         gAnimation->Set_Props("Warrior_Dead", 1, 4, 100, gFlip);
         gRigidBody->Unset_Force();
         gRigidBody->Stop_Vel_X();
-        gRigidBody->Stop_Vel_Y();
+//        gRigidBody->Stop_Vel_Y();
     }
 
     gRigidBody->Update(dt, WARRIOR);

@@ -23,15 +23,19 @@
 #define ORC 1
 #define MAGE 2
 #define BOSS 3
+#define BULLET 4
+#define BOSS_INSANE 5
 
-const double RUN_FORCES[4] = {0.5, 0.5, 0.5, 0.5};
-const double MAX_VELOCITIES[4] = {5, 3, 3, 3};
+const double RUN_FORCES[6] = {0.5, 0.5, 0.5, 0.5, 0.2, 0.5};
+const double MAX_VELOCITIES[6] = {5, 3, 3, 1, 5.5, 4};
 const double MAX_VELOCITY = 3;
 const double FRICTION = 0.4;
 
 const int CHAR_SIZE = 96;
 const int BOSS_SIZE = 96*2;
 const int HEART_SIZE = 64;
+
+const int BOSS_HEALTH = 10000;
 
 const int FPS = 60;
 const double DELTA_TIME = 0.15;

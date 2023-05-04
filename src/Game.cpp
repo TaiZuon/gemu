@@ -99,6 +99,9 @@ void Game::Load()
     Map::Get_Instance()->Create_White_Map();
     Map::Get_Instance()->Read_Map();
 
+    TextureManager::Get_Instance()->Set_Font("assets/Fonts/1.ttf", 30);
+    TextureManager::Get_Instance()->Set_Text_Color(255, 255, 255);
+
     TextureManager::Get_Instance()->LoadAll();
     std::cout << "Game loaded!\n";
 }
@@ -126,10 +129,10 @@ void Game::Clean()
 
     SDL_DestroyRenderer(gRenderer);
     SDL_Quit();
-    delete gPlayer;
-    delete gEnemy;
-    for (int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++) delete ObjectHandler::Get_Instance()->Get_Enemy(i);
-    delete gBosu;
+    // delete gPlayer;
+    // delete gEnemy;
+    // for (int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++) delete ObjectHandler::Get_Instance()->Get_Enemy(i);
+    // delete gBosu;
     ObjectHandler::Get_Instance()->Delete_All();
 //    gStates[gStates.size()-1]->Clean();
     
