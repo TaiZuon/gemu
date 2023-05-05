@@ -25,35 +25,40 @@ int Num_Enemies = 3;
 
 void Game::PopState()
 {
-    gStates.erase(gStates.end());
+//   delete gStates[gCurrent_State_id];
+    gStates.erase(gStates.begin() + gCurrent_State_id);
+    gCurrent_State_id--;
+    std::cout << "Pop! " << gCurrent_State_id << '\n';
 }
 
 void Game::PushState(GameState* Current)
 {
     gStates.push_back(Current);
+    gCurrent_State_id++;
+
 }
 
 void Game::ChangeState(GameState* Target)
 {
-    bool found = false;
-    int Pos;
-    for( int i = 0; i < gStates.size(); i++ )
-    {
-        if(gStates[i] == Target)
-        {
-            found = true;
-            Pos = i;
-        }
-    }
-    if(found)
-    {
-        while(gStates.size() != Pos) PopState();
-    }
-    else
-    {
-        PushState(Target);
-    }
-//    PushState(Target);
+    // bool found = false;
+    // int Pos;
+    // for( int i = 0; i < gStates.size(); i++ )
+    // {
+    //     if(gStates[i] == Target)
+    //     {
+    //         found = true;
+    //         Pos = i;
+    //     }
+    // }
+    // if(found)
+    // {
+    //     while(gStates.size() != Pos) PopState();
+    // }
+    // else
+    // {
+    //     PushState(Target);
+    // }
+    PushState(Target);
     StateInit();
     std::cout << "Change State!\n";
 }
@@ -78,7 +83,7 @@ void Game::Init(const char * title, int width, int height, bool fullscreen)
         gIs_Running = true;
 
         PushState(new Menu());
-        gStates[gStates.size()-1]->Init();
+        gStates[gCurrent_State_id]->Init();
         std::cout << gStates.size()-1 << '\n';
     }
     else
@@ -89,7 +94,7 @@ void Game::Init(const char * title, int width, int height, bool fullscreen)
 
 void Game::StateInit()
 {
-    if(!gStates[gStates.size()-1]->Init()) std::cout << "state init failed!\n";
+    if(!gStates[gCurrent_State_id]->Init()) std::cout << "state init failed!\n";
 }
 
 void Game::Load() 
@@ -113,12 +118,13 @@ void Game::Handle_Events()
 
 void Game::Update(double dt)
 {
-    gStates[gStates.size()-1]->Update();
+    gStates[gCurrent_State_id]->Update();
 }
 
 void Game::Render()
 {
-    gStates[gStates.size()-1]->Render();
+//    std::cout << gCurrent_State_id << "\n";
+    gStates[gCurrent_State_id]->Render();
 
     Coin::Get_Instance()->Save_Num_Coins();
 }

@@ -6,7 +6,7 @@
 
 Button::Button(Properties* prop): GameObject(prop)
 {
-	std::cout << "Button init!\n";
+//	std::cout << "Button init!\n";
 }
 
 void Button::State_Update()

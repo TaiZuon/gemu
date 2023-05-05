@@ -40,6 +40,12 @@ int Coin::Check_Num_Coins()
     return gNum_Coins;
 }
 
+bool Coin::Is_Enough(int price)
+{
+    if(gNum_Coins >= price) return true;
+    else return false;
+}
+
 void Coin::Draw_Num_Coins()
 {
     Vector2D Cam = Camera::Get_Instance()->Get_Position();

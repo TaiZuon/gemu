@@ -34,11 +34,12 @@ int Bullet::Get_Dam()
 
 void Bullet::Update(double dt)
 {
+//    std::cout << "Bullet: " << gDir << '\n';
     bool Reset = true;
     bool Repeat = true;
     int gTime_Current = SDL_GetTicks();
     gRigidBody->Stop_Vel_Y();
-    if(gTime_Current - gTime_Start >= 5000) gIs_Touched = true;
+    if(gTime_Current - gTime_Start >= BULLET_TIMELIFE) gIs_Touched = true;
     if(!gIs_Touched and !gIs_Done)
     {
         gAnimation->Set_Props(gTexture_ID, 1, 2, 250, SDL_FLIP_NONE);
@@ -64,7 +65,7 @@ void Bullet::Update(double dt)
 
     gCollider->Set_Box(gTransform->X, gTransform->Y, CHAR_SIZE, CHAR_SIZE);
         
-    gRigidBody->Update(dt, ORC);
+    gRigidBody->Update(dt, BULLET);
         
     gOrigin->X = gTransform->X + gWidth/2;   
     gOrigin->Y = gTransform->Y + gHeight/2;

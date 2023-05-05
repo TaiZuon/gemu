@@ -149,6 +149,7 @@ void TextureManager::LoadAll()
 
     Load("Coin","assets/Items/Coin.png");
     Load("Heart","assets/Items/Heart.png");
+    Load("Sword","assets/Items/Sword.png");
 
     Load("Bullet_Move", "assets/Items/crystal/Move.png");
     Load("Bullet_Explose", "assets/Items/crystal/Explose.png");
@@ -158,6 +159,8 @@ void TextureManager::LoadAll()
     Load("Setting","assets/Button/Setting.png");
     Load("Upgrade","assets/Button/Upgrade.png");
     Load("Exit","assets/Button/Exit.png");
+    Load("Back","assets/Button/Back.png");
+    Load("Up","assets/Button/Up.png");
 }
 
 void TextureManager::Clean()

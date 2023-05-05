@@ -210,7 +210,7 @@ void Play::OpenMenu()
     Game::Get_Instance()->ChangeState(new Menu);
 }
 
-void Play::PauseGame()
+void Play::OpenSetting()
 {
 
 }

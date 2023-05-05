@@ -22,6 +22,7 @@ public:
     void Get_Num_Coins();
     int Check_Num_Coins();
     void Draw_Num_Coins();
+    bool Is_Enough(int price);
 
 private:
     static Coin* g_Instance;

@@ -27,6 +27,10 @@ public:
     {
         return gButton_State;
     }
+    void Set_Button_State(ButtonState target)
+    {
+        gButton_State = target;
+    }
 private:
     ButtonState gButton_State;
     int gCurrent_State;

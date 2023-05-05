@@ -90,7 +90,11 @@ public:
     }
     void Hurt(int dam)
     {
-        if(Is_Tar_Colly()) gHealth -= dam;
+        if(Is_Tar_Colly()) 
+        {
+            gHealth -= dam;
+            gHealth = std::max(gHealth, 0);
+        }
     }
     void Is_Insane()
     {
@@ -138,7 +142,7 @@ private:
     double gJump_Force;
     double gHurt_Time = 2.0;
     double gDead_Time = 20.0;
-    double gShoot_Time = 20.0;
+    double gShoot_Time = 5.0;
 
     double gShoot_Range = 300;
 

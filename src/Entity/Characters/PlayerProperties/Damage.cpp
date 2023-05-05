@@ -3,13 +3,22 @@
 #include "../../../TextureManager/TextureManager.hpp"
 #include <string>
 #include "../../../Camera/Camera.hpp"
+#include "../../Coins/Coin.hpp"
 
 Damage* Damage::g_Instance = nullptr;
 
 Damage::Damage()
 {
     gAnimation = new Animation();
-    gAnimation->Set_Props("Heart", 1, 4, 200, SDL_FLIP_NONE);
+    gAnimation->Set_Props("Sword", 1, 2, 400, SDL_FLIP_NONE);
+}
+
+void Damage::Update(double dt)
+{
+    gAnimation->Set_Props("Sword", 1, 2, 400, SDL_FLIP_NONE);
+    bool reset = true;
+    bool repeat = true;
+    gAnimation->Update(dt, repeat, reset);
 }
 
 void Damage::Save_Num_Damage()
@@ -26,16 +35,26 @@ void Damage::Get_Num_Damage()
     file >> gNum_Damage;
     file.close();
 }
+
+void Damage::Up_Num_Damage(int a)
+{
+    if(Coin::Get_Instance()->Is_Enough(gPrice))
+    {
+        gNum_Damage += a;
+        Coin::Get_Instance()->Up_Num_Coins(- gPrice);
+    }
+}
+
 int Damage::Check_Num_Damage()
 {
     return gNum_Damage;
 }
 void Damage::Draw_Num_Damage()
 {
-    Vector2D Cam = Camera::Get_Instance()->Get_Position();
+//    Vector2D Cam = Camera::Get_Instance()->Get_Position();
 
-    gAnimation->Draw(10 + (int) Cam.X, 5 + (int) Cam.Y, 30, 30);
+    gAnimation->Draw(200, SCREEN_HEIGHT*2/3, HEART_SIZE, HEART_SIZE);
     int n = Damage::Get_Instance()->Check_Num_Damage();
     TextureManager::Get_Instance()->LoadText("Num_Damage", std::to_string(n));
-    TextureManager::Get_Instance()->DrawText("Num_Damage", 50, 5, 0, nullptr, SDL_FLIP_NONE);
+    TextureManager::Get_Instance()->DrawText("Num_Damage", 300, SCREEN_HEIGHT*2/3 + 25, 0, nullptr, SDL_FLIP_NONE);
 }

@@ -103,7 +103,7 @@ void Boss::Track_Tar_Shoot()
 
 void Boss::Update(double dt)
 {
-    std::cout << gType << '\n';
+//    std::cout << gType << '\n';
     bool Reset = false;
     bool Repeat = true;
     if(!gIs_Dead and !gTar_Dead and !gIs_Killed)
@@ -121,9 +121,8 @@ void Boss::Update(double dt)
             if(gIs_Shooting and gShoot_Time > 0) 
             {
                 gShoot_Time -= dt;
-                gAnimation->Set_Props("Orc_Warrior_Attack_2", 1, 4, 300, gFlip);
-                Reset = true;
-                Repeat = false;
+                gAnimation->Set_Props("Orc_Warrior_Attack_2", 1, 4, 250, gFlip);
+                Repeat = true;
             } 
             else 
             { 
@@ -131,10 +130,11 @@ void Boss::Update(double dt)
                 {
                     Crystal = new Bullet(new Properties("Bullet_Move", gTransform->X, gTransform->Y + 73, 150, 120, gFlip));
                     Crystal->Set_Dir(gDir);
+//                    std::cout << gDir << '\n';
                 }
                 if(!gIs_Running)
                 gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
-                gShoot_Time = 20.0;
+                gShoot_Time = 5.0;
                 Repeat = true;
             }
 //            gAnimation->Set_Props("Orc_Warrior_Attack_2", 1, 4, 150, gFlip);
@@ -204,7 +204,7 @@ void Boss::Update(double dt)
         if(gIs_Hurt) 
         {
             gAnimation->Set_Props("Orc_Warrior_Hurt", 1, 2, 100, gFlip);
-            Repeat = false;
+            Repeat = true;
         }
         if(gHealth == 0)
         {

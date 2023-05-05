@@ -94,7 +94,11 @@ public:
     }
     void Hurt(int dam)
     {
-        if(Is_Tar_Colly() != 0) gHealth -= dam;
+        if(Is_Tar_Colly() != 0) 
+        {
+            gHealth -= dam;
+            gHealth = std::max(gHealth, 0);
+        }
     }
     void Dead()
     {

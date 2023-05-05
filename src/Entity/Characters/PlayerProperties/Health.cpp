@@ -3,6 +3,7 @@
 #include "../../../TextureManager/TextureManager.hpp"
 #include <string>
 #include "../../../Camera/Camera.hpp"
+#include "../../Coins/Coin.hpp"
 
 Health* Health::g_Instance = nullptr;
 
@@ -10,6 +11,23 @@ Health::Health()
 {
     gAnimation = new Animation();
     gAnimation->Set_Props("Heart", 1, 4, 200, SDL_FLIP_NONE);
+}
+
+void Health::Up_Num_Health(int a)
+{
+    if(Coin::Get_Instance()->Is_Enough(gPrice))
+    {
+        gNum_Health += a;
+        Coin::Get_Instance()->Up_Num_Coins(- gPrice);
+    }
+}
+
+void Health::Update(double dt)
+{
+    gAnimation->Set_Props("Heart", 1, 4, 200, SDL_FLIP_NONE);
+    bool reset = true;
+    bool repeat = true;
+    gAnimation->Update(dt, repeat, reset);
 }
 
 void Health::Save_Num_Health()
@@ -32,10 +50,10 @@ int Health::Check_Num_Health()
 }
 void Health::Draw_Num_Health()
 {
-    Vector2D Cam = Camera::Get_Instance()->Get_Position();
+//    Vector2D Cam = Camera::Get_Instance()->Get_Position();
 
-    gAnimation->Draw(10 + (int) Cam.X, 5 + (int) Cam.Y, 30, 30);
+    gAnimation->Draw(200, SCREEN_HEIGHT / 3, HEART_SIZE, HEART_SIZE);
     int n = Health::Get_Instance()->Check_Num_Health();
     TextureManager::Get_Instance()->LoadText("Num_Health", std::to_string(n));
-    TextureManager::Get_Instance()->DrawText("Num_Health", 50, 5, 0, nullptr, SDL_FLIP_NONE);
+    TextureManager::Get_Instance()->DrawText("Num_Health", 300, SCREEN_HEIGHT / 3 + 25, 0, nullptr, SDL_FLIP_NONE);
 }

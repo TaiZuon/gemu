@@ -8,14 +8,19 @@ class Menu: public GameState
 {
 private:
     static void NewGame();
-    static void Settings();
-    static void Upgrade();
+    static void OpenSetting();
+    static void OpenUpgrade();
+    static void OpenExit();
+
+    bool gIs_NewGame;
+    bool gIs_Setting;
+    bool gIs_Upgrade;
+    bool gIs_Exit;
 
 public:
     Menu();
     void Events();
     virtual bool Init();
-    virtual bool Exit();
 
     virtual void Update();
     virtual void Render();

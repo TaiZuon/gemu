@@ -34,7 +34,7 @@ public:
     bool running()
     {
         return gIs_Running;
-    };
+    }
     SDL_Renderer* Get_Renderer()
     {
         return gRenderer;
@@ -49,5 +49,6 @@ private:
     bool gIs_Running;
     SDL_Window* gWindow;
     std::vector<GameState*> gStates;
+    int gCurrent_State_id = -1;
 
 };

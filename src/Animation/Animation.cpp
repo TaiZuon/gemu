@@ -5,11 +5,11 @@ void Animation::Update(double dt, bool repeat, bool &reset)
 {
     bool stop = false;
 
-    if(reset)
-    {
-        gSprite_Frame = 0;
-        reset = false;
-    }
+    // if(reset)
+    // {
+    //     gSprite_Frame = 0;
+    //     reset = false;
+    // }
     if((gSprite_Frame == gFrame_Count - 1) and !repeat)
     {
         stop = true;

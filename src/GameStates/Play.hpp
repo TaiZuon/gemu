@@ -8,7 +8,7 @@ class Play: public GameState
 {
 private:
     static void OpenMenu();
-    static void PauseGame();
+    static void OpenSetting();
 
     bool gIs_Setting;
     
