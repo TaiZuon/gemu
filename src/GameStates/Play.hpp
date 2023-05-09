@@ -9,8 +9,10 @@ class Play: public GameState
 private:
     static void OpenMenu();
     static void OpenSetting();
+    static void OpenDefeat();
 
     bool gIs_Setting;
+    bool gIs_Defeat;
     
 public:
     Play();
@@ -20,4 +22,11 @@ public:
 
     virtual void Update();
     virtual void Render();
+
+    void Init_Player();
+    void Init_Orcs();
+    void Init_Boss();
+    void Init_Other();
+
+    Button* mSetting;
 };

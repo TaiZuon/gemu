@@ -21,7 +21,7 @@ void TextureManager::Draw(std::string id, int x, int y, int width, int height, d
     SDL_Rect srcRect = {0, 0, width, height};
 
     Vector2D Cam = Camera::Get_Instance()->Get_Position();
-    Cam = Cam.ScalarMultiply_Vector(Cam, 1);
+    Cam = Cam.ScalarMultiply_Vector(Cam, 0);
 
     SDL_Rect destRect = {x - (int)Cam.X, y - (int)Cam.Y, width, height};
     SDL_RenderCopyEx(Game::Get_Instance()->Get_Renderer(), Texture_Map[id], &srcRect, &destRect, angle, center, flip);
@@ -137,12 +137,15 @@ void TextureManager::LoadAll()
     
     Load("Orc_Warrior_Idle","assets/Characters/Orcs/Orc_Warrior/Idle_1.png");
     Load("Orc_Warrior_Hurt","assets/Characters/Orcs/Orc_Warrior/Hurt.png");
-    Load("Orc_Warrior_Hurt","assets/Characters/Orcs/Orc_Warrior/Hurt.png");
+    Load("Orc_Warrior_Dead","assets/Characters/Orcs/Orc_Warrior/Dead.png");
     Load("Orc_Warrior_Attack_1","assets/Characters/Orcs/Orc_Warrior/Attack_1.png");
     Load("Orc_Warrior_Run","assets/Characters/Orcs/Orc_Warrior/Run.png");
     Load("Orc_Warrior_Attack_2","assets/Characters/Orcs/Orc_Warrior/Attack_2.png");
 
     Load("Background","assets/Map/Background.png");
+    Load("Upgrade_bg","assets/Map/Upgrade_bg.png");
+    Load("Menu_bg","assets/Map/Menu_bg.png");
+    Load("Defeat_bg","assets/Map/Defeat_bg.png");
 
     Load("Tile_02","assets/Map/Tiles/Tile_02.png");
     Load("Tile_12","assets/Map/Tiles/Tile_12.png");
@@ -158,6 +161,7 @@ void TextureManager::LoadAll()
     Load("NewGame","assets/Button/NewGame.png");
     Load("Setting","assets/Button/Setting.png");
     Load("Upgrade","assets/Button/Upgrade.png");
+    Load("Menu","assets/Button/Menu.png");
     Load("Exit","assets/Button/Exit.png");
     Load("Back","assets/Button/Back.png");
     Load("Up","assets/Button/Up.png");
@@ -175,5 +179,4 @@ void TextureManager::Clean()
     TTF_CloseFont( gFont );
     TTF_Quit();
 	IMG_Quit();
-
 }

@@ -30,8 +30,12 @@ public:
     {
         gDir = a;
     }
+    void Set_Dam(int a)
+    {
+        gDam = a;
+    }
 private:
-    int gDam = 100;
+    int gDam;
     int gDir;
     int gTime_Start;
 

@@ -7,6 +7,7 @@
 #include "../../Constant.hpp"
 #include "../../Physics/CollisionHandler.hpp"
 #include "../../Inputs/Input.hpp"
+#include "../../WaveManager/WaveManager.hpp"
 
 class Orc: public Character{
 public:
@@ -72,10 +73,6 @@ public:
         }
         return false;
     }    
-    void Up_Dam(int dtDam)
-    {
-        gDamage += dtDam;
-    }
     int Get_Damage()
     {
         return gDamage;

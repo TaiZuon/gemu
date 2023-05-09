@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Item.hpp"
+#include "../Characters/PlayerProperties/Health.hpp"
 
 class Heart: public Item
 {
@@ -27,6 +28,6 @@ public:
         gIs_Touched = a;
     }
 private:
-    int gHeal = 100;
+    int gHeal = Health::Get_Instance()->Check_Num_Health() / 25;
     bool gIs_Touched;
 };

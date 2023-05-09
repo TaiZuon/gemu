@@ -6,6 +6,7 @@ ObjectHandler* ObjectHandler::g_Instance = nullptr;
 void ObjectHandler::New_Player(int x, int y)
 {
     Player = new Warrior(new Properties("Warrior_Idle", x, y, CHAR_SIZE, CHAR_SIZE, SDL_FLIP_NONE));
+    std::cout << "In ObjHDL, Player die? : " << Player->Is_Killed() << "\n";
 }
 void ObjectHandler::Add_New_Enemy(int x, int y)
 {
@@ -36,24 +37,31 @@ void ObjectHandler::Add_New_Heart()
 }
 void ObjectHandler::Delete_Player()
 {
-    delete Player;
+    Player = nullptr;
 }
 void ObjectHandler::Delete_Enemy(int i)
 {
+//    Enemies[i] = nullptr;
     Enemies.erase(Enemies.begin() + i);
     Num_Enemies--;
 }
 void ObjectHandler::Delete_Boss(int i)
 {
+//    Bosses[i] = nullptr;
     Bosses.erase(Bosses.begin() + i);
     Num_Bosses--;
 }
 void ObjectHandler::Delete_Heart(int i)
 {
+    delete Hearts[i];
     Hearts.erase(Hearts.begin() + i);
     Num_Hearts--;
 }
-
+bool ObjectHandler::Is_Clear()
+{
+    if(Get_Num_Bosses() == 0 and Get_Num_Enemies() == 0) return true;
+    else return false; 
+}
 void ObjectHandler::Delete_All()
 {
     while(Num_Enemies)

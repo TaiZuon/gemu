@@ -3,25 +3,25 @@
 
 void Animation::Update(double dt, bool repeat, bool &reset)
 {
-    bool stop = false;
+    // bool stop = false;
 
-    // if(reset)
+    // // if(reset)
+    // // {
+    // //     gSprite_Frame = 0;
+    // //     reset = false;
+    // // }
+    // if((gSprite_Frame == gFrame_Count - 1) and !repeat)
     // {
-    //     gSprite_Frame = 0;
-    //     reset = false;
+    //     stop = true;
     // }
-    if((gSprite_Frame == gFrame_Count - 1) and !repeat)
-    {
-        stop = true;
-    }
-    if(!stop) 
-    {
+    // if(!stop) 
+    // {
         gSprite_Frame = (SDL_GetTicks() / gAnimation_Speed) % gFrame_Count;
-    } 
-    else
-    {
-        gSprite_Frame = gFrame_Count - 1;
-    } 
+    // } 
+    // else
+    // {
+    //     gSprite_Frame = gFrame_Count - 1;
+    // } 
 //    std::cout << stop << "\n";
 //    std::cout << gSprite_Frame << "\n";
 //    std::cout << gFrame_Count << "\n";

@@ -4,6 +4,7 @@
 #include <string>
 #include "../../../Camera/Camera.hpp"
 #include "../../Coins/Coin.hpp"
+#include "../../../SoundManager/Sound.hpp"
 
 Health* Health::g_Instance = nullptr;
 
@@ -19,6 +20,11 @@ void Health::Up_Num_Health(int a)
     {
         gNum_Health += a;
         Coin::Get_Instance()->Up_Num_Coins(- gPrice);
+        Sound::Get_Instance()->PlayEffect("Upgrade");
+    }
+    else
+    {
+        Sound::Get_Instance()->PlayEffect("Invalid");
     }
 }
 

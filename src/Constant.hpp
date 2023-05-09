@@ -35,7 +35,7 @@ const int CHAR_SIZE = 96;
 const int BOSS_SIZE = 96*2;
 const int HEART_SIZE = 64;
 
-const int BULLET_TIMELIFE = 10000;
+const int BULLET_TIMELIFE = 2000;
 
 const int BOSS_HEALTH = 10000;
 

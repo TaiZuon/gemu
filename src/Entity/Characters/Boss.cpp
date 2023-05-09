@@ -7,10 +7,11 @@
 #include "../../Physics/CollisionHandler.hpp"
 #include "../Coins/Coin.hpp"
 
+
 Boss::Boss(Properties* props): Character(props)
 {
-    gMax_Damage = 10;
-    gMax_Health = 10000;
+    gMax_Damage = WaveManager::Get_Instance()->Get_Boss_Damage();
+    gMax_Health = WaveManager::Get_Instance()->Get_Boss_Health();
 
     gDamage = gMax_Damage;
     gHealth = gMax_Health;
@@ -24,6 +25,7 @@ Boss::Boss(Properties* props): Character(props)
     gIs_Dead = false;
     gIs_Insane = false;
     gIs_Shooting = false;
+    gLast_Insane = false;
 
     gJump_Time = JUMP_TIME;
     gJump_Force = JUMP_FORCE;
@@ -75,8 +77,7 @@ void Boss::Track_Tar_Shoot()
         gIs_Running = true;
     }
     else gIs_Running = false;
-    //tracking player
-    if(std::abs(gOrigin->X - gTar->X) > 5 and !gIs_Attacking)
+    if(!gIs_Attacking)
     {
         if(gTar->X > gOrigin->X) 
         {
@@ -128,7 +129,9 @@ void Boss::Update(double dt)
             { 
                 if(gShoot_Time <= 0 and Crystal == nullptr) 
                 {
-                    Crystal = new Bullet(new Properties("Bullet_Move", gTransform->X, gTransform->Y + 73, 150, 120, gFlip));
+                    Crystal = new Bullet(new Properties("Bullet_Move", gTransform->X, 288 + 73, 150, 120, gFlip));
+                    Crystal->Set_Dam(gDamage);
+//                    std::cout << gTransform->Y << '\n';
                     Crystal->Set_Dir(gDir);
 //                    std::cout << gDir << '\n';
                 }
@@ -172,9 +175,10 @@ void Boss::Update(double dt)
             if(gIs_Attacking and gAttack_Time > 0)
             {
                 gAttack_Time -= dt;
+                Sound::Get_Instance()->PlayEffect("Orc_Attack");
             }
             else 
-            {
+            {  
                 gIs_Attacking = false;
                 gAttack_Time = ATTACK_TIME;
             }
@@ -193,6 +197,7 @@ void Boss::Update(double dt)
         }
         if(gIs_Hurt and gHurt_Time > 0 and Is_Taken_Dam()) 
         {
+            Sound::Get_Instance()->PlayEffect("Orc_Die");
             gHurt_Time -= dt;
             Hurt(gTar_Dam);
         }
@@ -201,7 +206,7 @@ void Boss::Update(double dt)
             gHurt_Time = 2.0;
             gIs_Hurt = false;
         }
-        if(gIs_Hurt) 
+        if(gIs_Hurt and !gIs_Insane) 
         {
             gAnimation->Set_Props("Orc_Warrior_Hurt", 1, 2, 100, gFlip);
             Repeat = true;
@@ -225,14 +230,14 @@ void Boss::Update(double dt)
             { 
                 gIs_Killed = true;
                 Coin::Get_Instance()->Up_Num_Coins(gVal);
-            }
+                Sound::Get_Instance()->PlayEffect("Orc_Die");
+            } else gIs_Killed = false;
         }
-        gAnimation->Set_Props(gTexture_ID, 1, 4, 100, gFlip);
+        gAnimation->Set_Props("Orc_Warrior_Dead", 1, 4, 100, gFlip);
         gRigidBody->Unset_Force();
         gRigidBody->Stop_Vel_X();
         gRigidBody->Stop_Vel_Y();
         Dead();
-
     }
     else if(gTar_Dead)
     {

@@ -5,6 +5,7 @@
 #include "../Entity/Characters/PlayerProperties/Health.hpp"
 #include "../Entity/Coins/Coin.hpp"
 #include "../Timer/Timer.hpp"
+#include "../SoundManager/Sound.hpp"
 
 Upgrade::Upgrade()
 {
@@ -38,6 +39,8 @@ void Upgrade::Render()
     SDL_RenderClear(gGS_Renderer);
     SDL_SetRenderDrawColor(gGS_Renderer, 200, 0, 0, 255);
 
+    TextureManager::Get_Instance()->Draw("Upgrade_bg", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, nullptr, SDL_FLIP_NONE);
+
     mBack->Draw();
     mUpHealth->Draw();
     mUpDamage->Draw();
@@ -51,19 +54,20 @@ void Upgrade::Render()
 
 void Upgrade::Events()
 {
-    if(mUpHealth->Get_Button_State() == MOUSE_DOWN)
+    if(mUpHealth->Get_Button_State() == MOUSE_DOWN and mUpHealth->Is_New_State())
     {
         gUp_Health = true;
         mUpHealth->Set_Button_State(MOUSE_OVER);
     }
-    if(mUpDamage->Get_Button_State() == MOUSE_DOWN)
+    if(mUpDamage->Get_Button_State() == MOUSE_DOWN and mUpDamage->Is_New_State())
     {
         gUp_Damage = true;
         mUpDamage->Set_Button_State(MOUSE_OVER);
     }
-    if(mBack->Get_Button_State() == MOUSE_DOWN or Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_ESCAPE))
+    if((mBack->Get_Button_State() == MOUSE_DOWN) or Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_ESCAPE))
     {
         gIs_Back = true;
+        mBack->Set_Button_State(MOUSE_OUT);
     }
 }
 
@@ -79,7 +83,7 @@ void Upgrade::Update()
         mUpDamage->State_Update();
 
         if(gUp_Health)
-        {
+        {           
             Health::Get_Instance()->Up_Num_Health(1000);
             Health::Get_Instance()->Save_Num_Health();
             Health::Get_Instance()->Get_Num_Health();
@@ -101,6 +105,7 @@ void Upgrade::Update()
         if(gIs_Back) 
         {
             gIs_Back = false;
+            SDL_Delay(200);
             Back();
         }
     }

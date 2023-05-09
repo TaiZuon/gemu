@@ -1,5 +1,6 @@
 #include "Bullet.hpp"
 #include "../../Camera/Camera.hpp"
+#include "../../SoundManager/Sound.hpp"
 
 Bullet::Bullet(Properties* prop) :Item(prop)
 {
@@ -59,6 +60,7 @@ void Bullet::Update(double dt)
         gRigidBody->Unset_Force();
         gRigidBody->Stop_Vel_X();
         gAnimation->Set_Props("Bullet_Explose", 1, 3, 200, SDL_FLIP_NONE);
+        Sound::Get_Instance()->PlayEffect("Crystal");
     }
     gTransform->X+=gRigidBody->Get_Position().X;
     gTransform->Y+=gRigidBody->Get_Position().Y;

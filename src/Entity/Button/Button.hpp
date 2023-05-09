@@ -31,8 +31,15 @@ public:
     {
         gButton_State = target;
     }
+    bool Is_New_State()
+    {
+        return gNew;
+    }
 private:
     ButtonState gButton_State;
     int gCurrent_State;
+    // ButtonState gCurrent;
+    ButtonState gLast;
+    bool gNew;
 };
 

@@ -3,6 +3,7 @@
 #include "../../Game.hpp"
 #include "../../Camera/Camera.hpp"
 #include "../../Physics/Vector2D.hpp"
+#include"../../SoundManager/Sound.hpp"
 
 Button::Button(Properties* prop): GameObject(prop)
 {
@@ -12,7 +13,6 @@ Button::Button(Properties* prop): GameObject(prop)
 void Button::State_Update()
 {
     //If mouse event happened
-
 	SDL_EventType eventtype = Input::Get_Instance()->Get_Event_Type();
 	if( eventtype == SDL_MOUSEMOTION || eventtype == SDL_MOUSEBUTTONDOWN || eventtype == SDL_MOUSEBUTTONUP )
 	{
@@ -58,10 +58,14 @@ void Button::State_Update()
 			{
 				case SDL_MOUSEMOTION:
 				gButton_State = MOUSE_OVER;
+				if(Is_New_State())
+				Sound::Get_Instance()->PlayEffect("button_over");
 				break;
 			
 				case SDL_MOUSEBUTTONDOWN:
 				gButton_State = MOUSE_DOWN;
+				if(Is_New_State())
+				Sound::Get_Instance()->PlayEffect("button_over");
 				break;
 				
 				case SDL_MOUSEBUTTONUP:
@@ -70,6 +74,8 @@ void Button::State_Update()
 			}
 		}
 	}
+	if(gButton_State != gLast) gNew = true; else gNew = false;
+	gLast = gButton_State;
 }
 
 void Button::Draw()

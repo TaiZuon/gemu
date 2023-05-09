@@ -1,5 +1,6 @@
 #include "Heart.hpp"
 #include "../../Camera/Camera.hpp"
+#include "../../SoundManager/Sound.hpp"
 
 Heart::Heart(Properties * prop): Item(prop)
 {
@@ -36,6 +37,7 @@ void Heart::Update(double dt)
         if(Is_Tar_Colly() != 0)
         {
             gIs_Touched = true;
+            Sound::Get_Instance()->PlayEffect("Upgrade");
 //            std::cout << "Heart touched!\n";
         }
     }

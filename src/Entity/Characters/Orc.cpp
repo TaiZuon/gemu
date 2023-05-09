@@ -5,23 +5,27 @@
 #include "../../Game.hpp"
 #include "../../Physics/CollisionHandler.hpp"
 #include "../Coins/Coin.hpp"
+#include "../../SoundManager/Sound.hpp"
 
 Orc::Orc(Properties* props): Character(props)
 {
-    gMax_Damage = 5;
-    gMax_Health = 2500;
+    gMax_Damage = WaveManager::Get_Instance()->Get_Orc_Damage();
+    gMax_Health = WaveManager::Get_Instance()->Get_Orc_Health();
+
+//    std::cout <<WaveManager::Get_Instance()->Get_Orc_Health() << '\n';
+//    std::cout << "Damage: " << gMax_Damage << " Health: " << gMax_Health << '\n';
 
     gDamage = gMax_Damage;
     gHealth = gMax_Health;
 
-    bool gIs_Jumping = false;
-    bool gIs_Falling = false;
-    bool gIs_Running = false;
-    bool gIs_Attacking = false;
-    bool gIs_Landed = false;
-    bool gIs_Hurt = false;
-    bool gIs_Dead = false;
-    bool gIs_Killed = false;
+    gIs_Jumping = false;
+    gIs_Falling = false;
+    gIs_Running = false;
+    gIs_Attacking = false;
+    gIs_Landed = false;
+    gIs_Hurt = false;
+    gIs_Dead = false;
+    gIs_Killed = false;
 
     gJump_Time = JUMP_TIME;
     gJump_Force = JUMP_FORCE;
@@ -48,6 +52,7 @@ void Orc::Update(double dt)
     }
     if(gIs_Hurt and gHurt_Time > 0 and Is_Taken_Dam()) 
     {
+        Sound::Get_Instance()->PlayEffect("Orc_Die");
         gHurt_Time -= dt;
         Hurt(gTar_Dam);
     }
@@ -98,9 +103,11 @@ void Orc::Update(double dt)
     if(gIs_Attacking and gAttack_Time > 0)
     {
         gAttack_Time -= dt;
+        Sound::Get_Instance()->PlayEffect("Orc_Attack");
     }
     else 
     {
+        
         gIs_Attacking = false;
         gAttack_Time = ATTACK_TIME;
     }
@@ -147,6 +154,7 @@ void Orc::Update(double dt)
 //            std::cout << gDead_Time << " " << dt << '\n'; 
             if(gDead_Time <= dt)
             { 
+                Sound::Get_Instance()->PlayEffect("Orc_Die");
                 gIs_Killed = true;
                 Coin::Get_Instance()->Up_Num_Coins(gVal);
 //                std::cout << "Update: Killed!\n";

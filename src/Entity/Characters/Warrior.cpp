@@ -16,13 +16,14 @@ Warrior::Warrior(Properties* props): Character(props)
     gMax_Damage = Damage::Get_Instance()->Check_Num_Damage(); 
     gDamage = gMax_Damage;
 
-    bool gIs_Jumping = false;
-    bool gIs_Falling = false;
-    bool gIs_Running = false;
-    bool gIs_Attacking = false;
-    bool gIs_Landed = false;
-    bool gIs_Hurt = false;
-    bool gIs_Dead = false;
+    gIs_Jumping = false;
+    gIs_Falling = false;
+    gIs_Running = false;
+    gIs_Attacking = false;
+    gIs_Landed = false;
+    gIs_Hurt = false;
+    gIs_Dead = false;
+    gIs_Killed = false;
     Un_Block();
 
     gJump_Time = JUMP_TIME;
@@ -36,6 +37,12 @@ Warrior::Warrior(Properties* props): Character(props)
 
     gAnimation = new Animation();
     gAnimation->Set_Props(gTexture_ID, 1, 6, 100, SDL_FLIP_NONE);
+    std::cout << "In New, player die? : " << gIs_Killed << "\n";
+}
+void Warrior::Reset_Position()
+{
+    gTransform->X = 100;
+    gTransform->Y = 200;
 }
 
 void Warrior::Draw()
@@ -84,7 +91,7 @@ void Warrior::Heal(int a)
 
 void Warrior::Hurt(int dam)
 {
-    if(SDL_GetTicks() %10 ==0) gHealth -= dam;
+    if(SDL_GetTicks() %1 ==0) gHealth -= dam;
     gHealth = std::max(gHealth, 0);
     gHealth = std::min(gHealth, gMax_Health);
 }
@@ -94,7 +101,7 @@ void Warrior::Update(double dt)
     bool Repeat = false;
     bool Reset = false;
 
-    if(!gIs_Dead)
+    if(!gIs_Dead and !gIs_Killed)
     {
     //    std::cout << gIs_Hurt << "\n";
     if(gEnemy_Attack and !gEnemy_Dead) 
@@ -124,16 +131,6 @@ void Warrior::Update(double dt)
     {
         gIs_Dead = false;
         Repeat = true;
-    }
-    if(gIs_Dead and gDead_Time > 0)
-    {
-        gDead_Time -= dt;
-    }
-    if(gIs_Dead)
-    {
-        gAnimation->Set_Props("Warrior_Dead", 1, 4, 200, gFlip);
-        Repeat = false;
-        Dead();
     }
     //check neu enemy chet thi unblock
     if(gEnemy_Dead or gIs_Jumping) Un_Block();
@@ -187,6 +184,7 @@ void Warrior::Update(double dt)
     if(gIs_Attacking and gAttack_Time > 0) 
     {
         gAttack_Time -= dt;
+        Sound::Get_Instance()->PlayEffect("Attack");    
  //       std::cout << "gAttack_Time: " << gAttack_Time << '\n';
     }
     else 
@@ -225,14 +223,10 @@ void Warrior::Update(double dt)
         Reset = true;
     }
     else gIs_Falling = false;
-//    std::cout << gIs_Jumping << '\n';
-    // if(gIs_Jumping)
-    // {
-    //     gAnimation->Set_Props("Warrior_Jump", 1, 3, 200, gFlip);
-    // } 
-//    std::cout << "Dir: " << gDirection << " Block: " << gIs_Blocked << "\n"; 
+
     if(gIs_Running and (gDirection != gIs_Blocked))
     {
+        Sound::Get_Instance()->PlayEffect("Running");
         gAnimation->Set_Props("Warrior_Run", 1, 6, 100, gFlip);
         gRigidBody->Apply_ForceX( gDirection * RUN_FORCES[WARRIOR] );
         Repeat = true;
@@ -250,13 +244,23 @@ void Warrior::Update(double dt)
         Repeat = false;
     }
     }
-    else
+    else if(gIs_Dead)
     {
+        std::cout << "DT: " << gDead_Time << "\n";
+        gDead_Time -= dt;
+
+        gAnimation->Set_Props("Warrior_Dead", 1, 4, 200, gFlip);
+        Repeat = false;
         Dead();
-        gAnimation->Set_Props("Warrior_Dead", 1, 4, 100, gFlip);
         gRigidBody->Unset_Force();
         gRigidBody->Stop_Vel_X();
 //        gRigidBody->Stop_Vel_Y();
+        if(gDead_Time <= 0)
+        {
+            Sound::Get_Instance()->PlayEffect("Dead");
+            gIs_Killed = true;
+        }
+        else gIs_Killed = false;
     }
 
     gRigidBody->Update(dt, WARRIOR);

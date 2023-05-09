@@ -7,6 +7,8 @@
 #include "../../Constant.hpp"
 #include "../../Physics/CollisionHandler.hpp"
 #include "../Items/Bullet.hpp"
+#include "../../WaveManager/WaveManager.hpp"
+#include "../../SoundManager/Sound.hpp"
 
 class Boss: public Character{
 public:
@@ -98,8 +100,10 @@ public:
     }
     void Is_Insane()
     {
+        if(gLast_Insane != gIs_Insane) Sound::Get_Instance()->PlayEffect("Orc_Insane");
         if(float(gHealth*1.0 / gMax_Health) < 0.5) gIs_Insane = true;
         else gIs_Insane = false;
+        gLast_Insane = gIs_Insane;
     }
     void Track_Tar();
     void Track_Tar_Shoot();
@@ -133,6 +137,7 @@ private:
     bool gIs_Killed;
     bool gIs_Insane;
     bool gIs_Shooting;
+    bool gLast_Insane;
 
     bool gTar_Attack;
     bool gTar_Dead;

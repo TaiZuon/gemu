@@ -3,7 +3,7 @@
 #include "Map/Map.hpp"
 #include "Constant.hpp"
 
-int main(int argv, char** args)
+int main(int argc, char* argv[])
 {
     std::cout << "Starting...\n";
 

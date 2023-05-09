@@ -14,6 +14,7 @@ private:
     int Num_Enemies = 0;
     int Num_Bosses = 0;
     int Num_Hearts = 0;
+    
     Warrior* Player;
     Orc* Enemy;
     std::vector<Orc*> Enemies;
@@ -65,7 +66,8 @@ public:
     void Delete_Enemy(int i);
     void Delete_Boss(int i);
     void Delete_Heart(int i);
-    
+
+    bool Is_Clear();
 
     void Delete_All();
 

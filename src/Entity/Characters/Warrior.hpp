@@ -73,6 +73,12 @@ public:
     {
         return gIs_Dead;
     }
+    int Is_Killed()
+    {
+        if(gIs_Killed) return 1;
+        else return 0;
+    }
+    void Reset_Position();
     RigidBody* Get_RigidBody()
     {
         return gRigidBody;
@@ -117,6 +123,7 @@ private:
     bool gIs_Running;
     bool gIs_Attacking;
     bool gIs_Landed;
+    bool gIs_Killed;
 
     bool gIs_Hurt;
     bool gIs_Dead;
@@ -125,7 +132,7 @@ private:
     double gJump_Time;
     double gJump_Force;
     double gHurt_Time = 1.0;
-    double gDead_Time = 2.0;
+    double gDead_Time = 20.0;
 
     Animation* gAnimation;
     RigidBody* gRigidBody;

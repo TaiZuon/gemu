@@ -4,6 +4,7 @@
 #include <string>
 #include "../../../Camera/Camera.hpp"
 #include "../../Coins/Coin.hpp"
+#include "../../../SoundManager/Sound.hpp"
 
 Damage* Damage::g_Instance = nullptr;
 
@@ -42,6 +43,11 @@ void Damage::Up_Num_Damage(int a)
     {
         gNum_Damage += a;
         Coin::Get_Instance()->Up_Num_Coins(- gPrice);
+        Sound::Get_Instance()->PlayEffect("Upgrade");
+    }
+    else
+    {
+        Sound::Get_Instance()->PlayEffect("Invalid");
     }
 }
 
