@@ -29,4 +29,5 @@ public:
     void Init_Other();
 
     Button* mSetting;
+    Button* mMenu;
 };

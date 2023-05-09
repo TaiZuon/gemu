@@ -5,6 +5,8 @@
 #include "../../Camera/Camera.hpp"
 #include "../../Game.hpp"
 #include "../../Physics/CollisionHandler.hpp"
+#include "../ObjectHandler.hpp"
+#include "Timer/Timer.hpp"
 
 Warrior::Warrior(Properties* props): Character(props)
 {
@@ -91,9 +93,24 @@ void Warrior::Heal(int a)
 
 void Warrior::Hurt(int dam)
 {
+    double dt = Timer::Get_Instance()->Get_Delta_Time();
     if(SDL_GetTicks() %1 ==0) gHealth -= dam;
     gHealth = std::max(gHealth, 0);
     gHealth = std::min(gHealth, gMax_Health);
+    if(gHurt_Time > 0) 
+    {
+        gHurt_Time -= dt;
+    }
+    else 
+    {
+        gHurt_Time = 1.0;
+        gIs_Hurt = false;
+    }
+    if(gIs_Hurt) 
+    {
+        gAnimation->Set_Props("Warrior_Hurt", 1, 2, 100, gFlip);
+    }
+
 }
 
 void Warrior::Update(double dt)
@@ -109,20 +126,20 @@ void Warrior::Update(double dt)
         gIs_Hurt = true;
     }
     else gIs_Hurt = false;
-    if(gIs_Hurt and gHurt_Time > 0) 
-    {
-        gHurt_Time -= dt;
-    }
-    else 
-    {
-        gHurt_Time = 1.0;
-        gIs_Hurt = false;
-    }
-    if(gIs_Hurt) 
-    {
-        gAnimation->Set_Props("Warrior_Hurt", 1, 2, 100, gFlip);
-        Repeat = false;
-    }
+    // if(gIs_Hurt and gHurt_Time > 0) 
+    // {
+    //     gHurt_Time -= dt;
+    // }
+    // else 
+    // {
+    //     gHurt_Time = 1.0;
+    //     gIs_Hurt = false;
+    // }
+    // if(gIs_Hurt) 
+    // {
+    //     gAnimation->Set_Props("Warrior_Hurt", 1, 2, 100, gFlip);
+    //     Repeat = false;
+    // }
     if(gHealth == 0)
     {
         gIs_Dead = true;
@@ -193,7 +210,7 @@ void Warrior::Update(double dt)
         gIs_Attacking = false;
     }
     //jump
-    if(Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_J) and gIs_Landed)
+    if(Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_W) and gIs_Landed)
     {
         gIs_Jumping = true; 
         Reset = true;
@@ -266,17 +283,16 @@ void Warrior::Update(double dt)
     gRigidBody->Update(dt, WARRIOR);
 
     gLast_Safe_Position.X = gTransform->X;
-//    gTransform->TranslateX(gRigidBody->Get_Position().X);
-//    std::cout << "Pos:" << gRigidBody->Get_Position().X << "\n";
-//    std::cout << gRigidBody->Get_Position().X <<'\n';
     gTransform->X+=gRigidBody->Get_Position().X;
     gCollider->Set_Box(gTransform->X, gTransform->Y, CHAR_SIZE, CHAR_SIZE);
-//    std::cout << "Trans: " << gTransform->X << "\n";
-//    std::cout << "Box 1: " << gCollider->Get_Box().x << " " << gCollider->Get_Box().y << '\n';
 
-//    std::cout << gTransform->X << "\n";
     if(gTransform->X <= -35 or gTransform->X > (1860))
     {
+        gTransform->X = gLast_Safe_Position.X;
+    }
+    for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
+    {
+        if(CollisionHandler::Get_Instance()->Is_Collision(Get_Collider()->Get_Box(), ObjectHandler::Get_Instance()->Get_Enemy(i)->Get_Collider()->Get_Box()) != 0)
         gTransform->X = gLast_Safe_Position.X;
     }
 

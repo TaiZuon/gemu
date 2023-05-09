@@ -11,7 +11,7 @@ OBJS += src\Entity\Characters\PlayerProperties\Health.cpp
 OBJS += src\Entity\Characters\PlayerProperties\Damage.cpp 
 OBJS += src\Entity\Items\Bullet.cpp src\GameStates\Upgrade.cpp 
 OBJS += src\SoundManager\Sound.cpp src\GameStates\Defeat.cpp 
-OBJS += src\WaveManager\WaveManager.cpp
+OBJS += src\WaveManager\WaveManager.cpp src\GameStates\Setting.cpp
 
 #OBJS = $(wildcard *.cpp) 
 

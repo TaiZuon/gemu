@@ -7,6 +7,7 @@
 #include "Upgrade.hpp"
 #include "../Camera/Camera.hpp"
 #include "../SoundManager/Sound.hpp"
+#include "Setting.hpp"
 
 Menu::Menu()
 {
@@ -50,17 +51,22 @@ void Menu::Events()
         gIs_Upgrade = true;
         mExit->Set_Button_State(MOUSE_OUT);
     }
+    if(mSetting->Get_Button_State() == MOUSE_DOWN)
+    {
+        gIs_Setting = true;
+        mSetting->Set_Button_State(MOUSE_OUT);
+    }
 }
 
 bool Menu::Init()
 {
     if(!ObjectHandler::Get_Instance()->Is_Clear()) ObjectHandler::Get_Instance()->Delete_All();
     
-    int pos_x = 300; 
-    mNewGame = new Button(new Properties("NewGame",SCREEN_WIDTH / 2 - 70, pos_x, 141, 64, SDL_FLIP_NONE));
-    mSetting = new Button(new Properties("Setting",SCREEN_WIDTH / 2 - 70, pos_x + 70, 141, 64, SDL_FLIP_NONE));
-    mUpgrade = new Button(new Properties("Upgrade",SCREEN_WIDTH / 2 - 70, pos_x + 140, 141, 64, SDL_FLIP_NONE));
-    mExit = new Button(new Properties("Exit",SCREEN_WIDTH / 2 - 70, pos_x + 210, 141, 64, SDL_FLIP_NONE));
+    int pos_y = 300; 
+    mNewGame = new Button(new Properties("NewGame",SCREEN_WIDTH / 2 - 70, pos_y, 141, 64, SDL_FLIP_NONE));
+    mSetting = new Button(new Properties("Setting",SCREEN_WIDTH / 2 - 70, pos_y + 70, 141, 64, SDL_FLIP_NONE));
+    mUpgrade = new Button(new Properties("Upgrade",SCREEN_WIDTH / 2 - 70, pos_y + 140, 141, 64, SDL_FLIP_NONE));
+    mExit = new Button(new Properties("Exit",SCREEN_WIDTH / 2 - 70, pos_y + 210, 141, 64, SDL_FLIP_NONE));
 
     Sound::Get_Instance()->PlayMusic("bg_music_chill");
 
@@ -123,7 +129,10 @@ void Menu::Update()
     }
 }
 
-void Menu::OpenSetting(){}
+void Menu::OpenSetting()
+{
+    Game::Get_Instance()->ChangeState(new Setting());
+}
 
 void Menu::Clean()
 {

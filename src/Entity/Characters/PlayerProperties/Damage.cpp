@@ -57,9 +57,9 @@ int Damage::Check_Num_Damage()
 }
 void Damage::Draw_Num_Damage()
 {
-//    Vector2D Cam = Camera::Get_Instance()->Get_Position();
+    Vector2D Cam = Camera::Get_Instance()->Get_Position();
 
-    gAnimation->Draw(200, SCREEN_HEIGHT*2/3, HEART_SIZE, HEART_SIZE);
+    gAnimation->Draw(200 + (int) Cam.X, SCREEN_HEIGHT*2/3 + (int) Cam.Y, HEART_SIZE, HEART_SIZE);
     int n = Damage::Get_Instance()->Check_Num_Damage();
     TextureManager::Get_Instance()->LoadText("Num_Damage", std::to_string(n));
     TextureManager::Get_Instance()->DrawText("Num_Damage", 300, SCREEN_HEIGHT*2/3 + 25, 0, nullptr, SDL_FLIP_NONE);

@@ -21,6 +21,10 @@ public:
     {
         return gRigidBody;
     }
+    Collider* Get_Collider()
+    {
+        return gCollider;
+    }
     Point* gTar;
     SDL_Rect gTar_Box;
     void Set_Tar_Origin(Point* a)

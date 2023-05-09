@@ -146,6 +146,7 @@ void TextureManager::LoadAll()
     Load("Upgrade_bg","assets/Map/Upgrade_bg.png");
     Load("Menu_bg","assets/Map/Menu_bg.png");
     Load("Defeat_bg","assets/Map/Defeat_bg.png");
+    Load("Setting_bg","assets/Map/Setting_bg.png");
 
     Load("Tile_02","assets/Map/Tiles/Tile_02.png");
     Load("Tile_12","assets/Map/Tiles/Tile_12.png");

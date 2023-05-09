@@ -56,9 +56,9 @@ int Health::Check_Num_Health()
 }
 void Health::Draw_Num_Health()
 {
-//    Vector2D Cam = Camera::Get_Instance()->Get_Position();
+    Vector2D Cam = Camera::Get_Instance()->Get_Position();
 
-    gAnimation->Draw(200, SCREEN_HEIGHT / 3, HEART_SIZE, HEART_SIZE);
+    gAnimation->Draw(200 + (int) Cam.X, SCREEN_HEIGHT / 3 + (int) Cam.Y, HEART_SIZE, HEART_SIZE);
     int n = Health::Get_Instance()->Check_Num_Health();
     TextureManager::Get_Instance()->LoadText("Num_Health", std::to_string(n));
     TextureManager::Get_Instance()->DrawText("Num_Health", 300, SCREEN_HEIGHT / 3 + 25, 0, nullptr, SDL_FLIP_NONE);
