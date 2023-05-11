@@ -80,7 +80,7 @@ bool Play::Init()
     Init_Player();
     Init_Orcs();
     Init_Boss();
-    std::cout << "Play init!\n";
+
     return true;
 }
 
@@ -115,7 +115,6 @@ void Play::Render()
 
 void Play::Update()
 {
-//    std::cout << gIs_Setting << '\n';
     Events();
 
     if(!gPause and !gIs_Defeat and !ObjectHandler::Get_Instance()->Is_Clear() and !gIs_Menu)
@@ -136,7 +135,7 @@ void Play::Update()
                 ObjectHandler::Get_Instance()->Delete_Boss(i);    
             }
         }
-
+        //enemy
         for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
         {
             ObjectHandler::Get_Instance()->Get_Enemy(i)->Update(dt);

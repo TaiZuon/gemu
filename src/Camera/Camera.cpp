@@ -7,7 +7,6 @@ void Camera::Update(double dt)
 {
     if(gTarget != nullptr)
     {
-//        std::cout << gTarget->X << " " << gTarget->Y << '\n';
         gView_Box.x = gTarget->X - SCREEN_WIDTH * 2 / 4;
         gView_Box.y = gTarget->Y - SCREEN_HEIGHT * 2 / 4;
         
@@ -21,6 +20,5 @@ void Camera::Update(double dt)
         gView_Box.w = SCREEN_WIDTH;
 
         gPosition = Vector2D(gView_Box.x, gView_Box.y);
-//        std::cout << gPosition.X << " " << gPosition.Y << '\n';
     }
 }

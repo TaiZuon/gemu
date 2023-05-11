@@ -15,7 +15,7 @@ void Intro::Back()
 }
 void Intro::Load_Intro()
 {
-    std::ifstream file ("src/GameStates/Intro.txt");
+    std::ifstream file ("data/Intro.txt");
     std::string s;
     while(!file.eof())
     {

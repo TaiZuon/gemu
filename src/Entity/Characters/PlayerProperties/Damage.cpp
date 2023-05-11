@@ -24,14 +24,14 @@ void Damage::Update(double dt)
 
 void Damage::Save_Num_Damage()
 {
-    std::ofstream file("src/Entity/Characters/PlayerProperties/Damage.txt");
+    std::ofstream file("data/Damage.txt");
     if (!file) std::cout << "file not open to save!\n";
     file << gNum_Damage << '\n';
     file.close();
 }
 void Damage::Get_Num_Damage()
 {
-    std::ifstream file("src/Entity/Characters/PlayerProperties/Damage.txt");
+    std::ifstream file("data/Damage.txt");
     if (!file) std::cout << "file not open to get!\n";
     file >> gNum_Damage;
     file.close();

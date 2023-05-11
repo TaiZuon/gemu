@@ -55,6 +55,7 @@ Collider* Boss::Get_Collider()
 }
 Bullet* Boss::Get_Crystal()
 {
+    if(Crystal != nullptr)
     return Crystal;
 }
 
@@ -97,7 +98,6 @@ void Boss::Track_Tar(double dt)
 }
 void Boss::Track_Tar_Shoot(double dt)
 {
-
     if(Tar_In_Range()) 
     {
         Shoot(dt);
@@ -195,7 +195,6 @@ void Boss::Mele(double dt)
     gIs_Attacking = true;
     gRigidBody->Unset_Force();
     gAnimation->Set_Props("Orc_Warrior_Attack_1", 1, 4, 150, gFlip);
-//    std::cout << gAnimation->Get_Frame();
     if(gAnimation->Get_Frame() >= 3 and gAnimation->Is_New_Frame())
     {
         Sound::Get_Instance()->PlayEffect("Orc_Attack");
@@ -255,9 +254,6 @@ void Boss::Update(double dt)
 {
     bool Reset = false;
     bool Repeat = true;
-//    std::cout << "Vel: " << gRigidBody->Get_Velocity().X << '\n';
-//    std::cout << "Run: " << gIs_Running<< '\n';
-//    std::cout << "F  : " << gRigidBody->Get_Force().X << '\n';
     gCollider->Set_Empty(-70,-120,140,120);
     if(!gIs_Dead and !gTarget->Is_Dead())
     {
@@ -318,7 +314,6 @@ void Boss::Update(double dt)
             Crystal = nullptr;
         }
     }
-    //
     gRigidBody->Update(dt, gType);
 
     gLast_Safe_Position.X = gTransform->X;

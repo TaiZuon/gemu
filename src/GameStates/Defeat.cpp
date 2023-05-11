@@ -75,7 +75,6 @@ void Defeat::Render()
     SDL_RenderClear(gGS_Renderer);
     SDL_SetRenderDrawColor(gGS_Renderer, 0, 200, 100, 255);
 
-//    Vector2D Cam = Camera::Get_Instance()->Get_Position();
     TextureManager::Get_Instance()->Draw("Defeat_bg", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, nullptr, SDL_FLIP_NONE);
 
     mNewGame->Draw();

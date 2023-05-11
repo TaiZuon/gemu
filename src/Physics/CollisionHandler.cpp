@@ -7,9 +7,7 @@ CollisionHandler* CollisionHandler::g_Instance = nullptr;
 int CollisionHandler::Is_Collision(SDL_Rect a, SDL_Rect b)
 {
     bool collx = (a.x - (b.x + b.w) <= 0.1) && (b.x - (a.x + a.w) <= 0.1);
-//    std::cout << "O box: " << a.x << " " << a.y << " " << a.w << " " << a.h << '\n';  
-    
-//    std::cout << "W box: " << b.x << " " << b.y << " " << b.w << " " << b.h << '\n';
+
     bool colly = (a.y - (b.y + b.h) <= 0.1) && (b.y - (a.y + a.h) <= 0.1);
 
     if(collx && colly)

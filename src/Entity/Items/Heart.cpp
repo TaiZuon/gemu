@@ -28,7 +28,6 @@ int Heart::Get_Num_Heal()
 
 void Heart::Update(double dt)
 {
-//    std::cout << Is_Tar_Colly() << '\n';
     bool Reset = true;
     bool Repeat = true;
     if(!gIs_Touched)
@@ -37,13 +36,11 @@ void Heart::Update(double dt)
         if(Is_Tar_Colly() != 0)
         {
             gIs_Touched = true;
-//            std::cout << "Heart touched!\n";
         }
     }
 
     gCollider->Set_Box(gTransform->X, gTransform->Y, HEART_SIZE, HEART_SIZE);
     SDL_Rect Box = gCollider->Get_Box();
-//    std::cout << Box.x << " " << Box.y << " " << Box.w << " " << Box.h << '\n';
     gAnimation->Update(dt, Repeat, Reset);
 }
 

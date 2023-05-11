@@ -11,5 +11,4 @@ void Timer::Tick()
     gDelta_Time = std::min(gDelta_Time, DELTA_TIME);
 
     gLast_Time = SDL_GetTicks();
-//    std::cout << gDelta_Time << "\n";
 }

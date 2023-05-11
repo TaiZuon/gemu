@@ -41,19 +41,18 @@ void ObjectHandler::Delete_Player()
 }
 void ObjectHandler::Delete_Enemy(int i)
 {
-//    Enemies[i] = nullptr;
+    Enemies[i] = nullptr;
     Enemies.erase(Enemies.begin() + i);
     Num_Enemies--;
 }
 void ObjectHandler::Delete_Boss(int i)
 {
-//    Bosses[i] = nullptr;
+    Bosses[i] = nullptr;
     Bosses.erase(Bosses.begin() + i);
     Num_Bosses--;
 }
 void ObjectHandler::Delete_Heart(int i)
 {
-    delete Hearts[i];
     Hearts.erase(Hearts.begin() + i);
     Num_Hearts--;
 }

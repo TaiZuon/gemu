@@ -84,7 +84,7 @@ public:
         gAccelaration.Y = gGravity + (gForce.Y + gFriction.Y) / gMass;
         
         gVelocity = gVelocity.Add_Vector(gVelocity, gVelocity.ScalarMultiply_Vector(gAccelaration, dt));
-//        gVelocity = gVelocity.ScalarMultiply_Vector(gAccelaration, dt);
+
         if(gVelocity.X > MAX_VELOCITIES[type] or gVelocity.X < - MAX_VELOCITIES[type])
         {
             gVelocity.X = MAX_VELOCITIES[type] * (gVelocity.X / std::abs(gVelocity.X));
@@ -94,8 +94,6 @@ public:
         if(std::abs(gVelocity.X) <= 0.01) gVelocity.X = 0;
         if(std::abs(gPosition.Y) <= 0.01) gPosition.Y = 0;
         if(std::abs(gVelocity.Y) <= 0.01) gVelocity.Y = 0;
-//        std::cout << "Vel: " << gVelocity.Y << " " << "Pos: " << gPosition.Y << '\n';
-//        std::cout << "Vel: " << gVelocity.X << " " << "Pos: " << gPosition.X << '\n';
     }
 
     Vector2D Get_Position()

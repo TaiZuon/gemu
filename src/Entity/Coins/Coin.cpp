@@ -21,7 +21,7 @@ const char* int_to_char(int x)
 
 void Coin::Save_Num_Coins()
 {
-    std::ofstream file("src/Entity/Coins/Coin.txt");
+    std::ofstream file("data/Coin.txt");
     if (!file) std::cout << "file not open to save!\n";
     file << gNum_Coins << '\n';
     file.close();
@@ -29,7 +29,7 @@ void Coin::Save_Num_Coins()
 
 void Coin::Get_Num_Coins()
 {
-    std::ifstream file("src/Entity/Coins/Coin.txt");
+    std::ifstream file("data/Coin.txt");
     if (!file) std::cout << "file not open to get!\n";
     file >> gNum_Coins;
     file.close();

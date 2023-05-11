@@ -45,7 +45,6 @@ bool Setting::Init()
     mAbout = new Button(new Properties("About",SCREEN_WIDTH / 2 - 70, pos_y + 70, 141, 64, SDL_FLIP_NONE));
     mIntro = new Button(new Properties("Intro",SCREEN_WIDTH / 2 - 70, pos_y + 140, 141, 64, SDL_FLIP_NONE));
 
-    std::cout << "Setting initialized!\n";
     return true;
 }
 

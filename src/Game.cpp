@@ -22,10 +22,8 @@ int Num_Enemies = 3;
 
 void Game::PopState()
 {
-//   delete gStates[gCurrent_State_id];
     gStates.erase(gStates.begin() + gCurrent_State_id);
     gCurrent_State_id--;
-//    std::cout << "Pop! " << gCurrent_State_id << '\n';
 }
 void Game::PushState(GameState* Current)
 {
@@ -37,7 +35,6 @@ void Game::ChangeState(GameState* Target)
 {
     PushState(Target);
     StateInit();
-//    std::cout << "Change State!\n";
 }
 
 void Game::Init(const char * title, int width, int height, bool fullscreen)
@@ -92,9 +89,10 @@ void Game::Load()
     TextureManager::Get_Instance()->LoadAll();
 
     Sound::Get_Instance()->LoadAll();
-
     Sound::Get_Instance()->PlayMusic("bg_music_chill");
-    std::cout << "Game loaded!\n";
+
+    Health::Get_Instance()->Get_Num_Health();
+    Damage::Get_Instance()->Get_Num_Damage();
 }
 
 void Game::Handle_Events()
@@ -104,14 +102,11 @@ void Game::Handle_Events()
 
 void Game::Update(double dt)
 {
-    
-//    std::cout << "Enemy Clear: " << ObjectHandler::Get_Instance()->Is_Clear() << '\n';
     gStates[gCurrent_State_id]->Update();
 }
 
 void Game::Render()
 {
-//    std::cout << gCurrent_State_id << "\n";
     gStates[gCurrent_State_id]->Render();
     Coin::Get_Instance()->Save_Num_Coins();
 }
@@ -122,15 +117,9 @@ void Game::Clean()
 
     SDL_DestroyRenderer(gRenderer);
     SDL_Quit();
-    // delete gPlayer;
-    // delete gEnemy;
-    // for (int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++) delete ObjectHandler::Get_Instance()->Get_Enemy(i);
-    // delete gBosu;
     ObjectHandler::Get_Instance()->Delete_All();
-//    gStates[gStates.size()-1]->Clean();
     
     std::cout << "Game cleaned!\n";
-
 }
 
 void Game::Quit()

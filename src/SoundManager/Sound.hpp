@@ -39,11 +39,6 @@ public:
 
     void PlayEffect(std::string id);
 
-    void Set_Mute(bool a)
-    {
-        gIs_Muted = a;
-    }
-
     void LoadMusic(std::string id, std::string path);
     void LoadEffect(std::string id, std::string path);
 

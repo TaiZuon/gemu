@@ -28,7 +28,6 @@ void Menu::OpenUpgrade()
 }
 void Menu::OpenExit()
 {
-    std::cout << "Exit!\n";
     Game::Get_Instance()->Clean();
     Game::Get_Instance()->Quit();
 }
@@ -70,7 +69,6 @@ bool Menu::Init()
 
     Sound::Get_Instance()->PlayMusic("bg_music_chill");
 
-    std::cout << "Menu initialized!\n";
     return true;
 }
 

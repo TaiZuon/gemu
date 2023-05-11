@@ -38,14 +38,14 @@ void Health::Update(double dt)
 
 void Health::Save_Num_Health()
 {
-    std::ofstream file("src/Entity/Characters/PlayerProperties/Health.txt");
+    std::ofstream file("data/Health.txt");
     if (!file) std::cout << "file not open to save!\n";
     file << gNum_Health << '\n';
     file.close();
 }
 void Health::Get_Num_Health()
 {
-    std::ifstream file("src/Entity/Characters/PlayerProperties/Health.txt");
+    std::ifstream file("data/Health.txt");
     if (!file) std::cout << "file not open to get!\n";
     file >> gNum_Health;
     file.close();

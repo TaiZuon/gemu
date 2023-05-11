@@ -5,10 +5,7 @@
 #include "../../Physics/Vector2D.hpp"
 #include"../../SoundManager/Sound.hpp"
 
-Button::Button(Properties* prop): GameObject(prop)
-{
-//	std::cout << "Button init!\n";
-}
+Button::Button(Properties* prop): GameObject(prop){}
 void Button::Set_Props(std::string id)
 {
 	gTexture_ID = id;
@@ -22,7 +19,6 @@ void Button::State_Update()
 		//Get mouse position
 		int x = Input::Get_Instance()->Get_Mouse_Position().X;
 		int y = Input::Get_Instance()->Get_Mouse_Position().Y;
-//		std::cout << x << " " << y << "\n";
 
 		//Check if mouse is in button
 		bool inside = true;

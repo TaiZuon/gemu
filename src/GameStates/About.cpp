@@ -15,7 +15,7 @@ void About::Back()
 }
 void About::Load_About()
 {
-    std::ifstream file ("src/GameStates/About.txt");
+    std::ifstream file ("data/About.txt");
     std::string s;
     while(!file.eof())
     {

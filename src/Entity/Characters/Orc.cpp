@@ -17,9 +17,6 @@ Orc::Orc(Properties* props): Character(props)
     gMax_Damage = WaveManager::Get_Instance()->Get_Orc_Damage();
     gMax_Health = WaveManager::Get_Instance()->Get_Orc_Health();
 
-//    std::cout <<WaveManager::Get_Instance()->Get_Orc_Health() << '\n';
-//    std::cout << "Damage: " << gMax_Damage << " Health: " << gMax_Health << '\n';
-
     gDamage = gMax_Damage;
     gHealth = gMax_Health;
 
@@ -69,7 +66,6 @@ bool Orc::Is_Taken_Dam()
         switch (CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTarget->Get_Collider()->Get_Box()))
         {
         case FORWARD:
-            /* code */
             if(gTarget->Get_Dir() == BACKWARD) return true;
             else return false;
             break;

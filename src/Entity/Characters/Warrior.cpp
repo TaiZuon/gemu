@@ -109,7 +109,6 @@ void Warrior::Heal(int a)
 
 void Warrior::Hurt(double dt)
 {
-//    std::cout << "Hurt: " << gIs_Hurt << "\n";
     for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
     {
         if(ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Attacking() and !ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Dead()) 
@@ -153,10 +152,8 @@ void Warrior::Take_Dam(int dam)
 }
 void Warrior::Jump(double dt)
 {
-//    std::cout << "Jump time: " << gJump_Time << "\n";
     if(Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_W) and gIs_Landed and !gIs_Attacking)
     {
-//        std::cout << "Jump reset\n";
         gAnimation->AnimationStart();
         gIs_Jumping = true;
         gIs_Landed = false;
@@ -183,7 +180,6 @@ void Warrior::Attack()
     if(!gIs_Attacking) 
     {
         gAnimation->AnimationStart();
-        // std::cout << "Atk reset\n";
     }
     gIs_Attacking = true;
     gRigidBody->Unset_Force();
@@ -270,7 +266,6 @@ void Warrior::Fall()
     if(std::abs(gRigidBody->Get_Velocity().Y) <= 0.01 and !gIs_Landed)
     {
         gAnimation->AnimationStart();
-//        std::cout << "Fall reset\n";
     }
     else gIs_Falling = false;
     if(gIs_Falling)
@@ -280,8 +275,6 @@ void Warrior::Fall()
 }
 void Warrior::Friction()
 {
-//    std::cout << gRigidBody->Get_Friction().X << '\n';
-//        std::cout << gRigidBody->Get_Velocity().X << "\n";
     if(std::abs(gRigidBody->Get_Velocity().X) >= 0.01)
     {
         double v_temp = gRigidBody->Get_Velocity().X;
@@ -342,7 +335,7 @@ void Warrior::Update(double dt)
     gTransform->X+=gRigidBody->Get_Position().X;
     gCollider->Set_Box(gTransform->X, gTransform->Y, CHAR_SIZE, CHAR_SIZE);
     //check border of window
-    if(gTransform->X <= -35 or gTransform->X > (1860))
+    if(gTransform->X <= 0 or gTransform->X > (1860))
     {
         gTransform->X = gLast_Safe_Position.X;
     }
@@ -364,18 +357,15 @@ void Warrior::Update(double dt)
     gLast_Safe_Position.Y = gTransform->Y;
     gTransform->Y+=gRigidBody->Get_Position().Y;
     gCollider->Set_Box(gTransform->X, gTransform->Y, CHAR_SIZE, CHAR_SIZE);
-//    std::cout << "Box 2: " << gCollider->Get_Box().x << " " << gCollider->Get_Box().y << '\n';
+
     if(CollisionHandler::Get_Instance()->Is_Map_Collision(gCollider->Get_Box()))
     {
-//        std::cout << "Landed!\n";
         gIs_Landed = true;
         gTransform->Y = gLast_Safe_Position.Y;
-//        gRigidBody->Unset_Force();
         gRigidBody->Stop_Vel_Y();
     }
     else
     {
-//      std::cout << "Not Landed!\n";
         gIs_Landed = false;
     }
 

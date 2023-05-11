@@ -31,7 +31,6 @@ bool Upgrade::Init()
 void Upgrade::Back()
 {
     Game::Get_Instance()->PopState();
-//    Game::Get_Instance()->ChangeState(new Menu());
 }
 
 void Upgrade::Render()

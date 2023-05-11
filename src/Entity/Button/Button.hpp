@@ -39,7 +39,6 @@ public:
 private:
     ButtonState gButton_State;
     int gCurrent_State;
-    // ButtonState gCurrent;
     ButtonState gLast;
     bool gNew;
 };

@@ -7,7 +7,7 @@ Map* Map::g_Instance = nullptr;
 
 void Map::Create_White_Map()
 {
-    std::ofstream file ("src/Map/MapMatrix.txt");
+    std::ofstream file ("data/MapMatrix.txt");
     if (!file) std::cout << "file not open!\n";
     for ( int row = 0; row < MAP_ROWS; row++ )
     {
@@ -25,7 +25,7 @@ void Map::Create_White_Map()
 
 void Map::Read_Map()
 {
-    std::ifstream file ("src/Map/MapMatrix.txt");
+    std::ifstream file ("data/MapMatrix.txt");
     for( int row = 0; row < MAP_ROWS; row++ )
     {
         for( int col = 0; col < MAP_COLS; col++ )
@@ -54,13 +54,8 @@ void Map::Draw()
             {
                 if( gMap[row][col] < 10 ) Tile_ID += "02";
                 else Tile_ID += "12"; 
-//                std::cout << Tile_ID << ' ';
-//                TextureManager::Get_Instance()->Draw("Tile_02", i*gTile_Width, j*gTile_Height, gTile_Width, gTile_Height, 0, NULL, SDL_FLIP_NONE);
-//                std::cout << i*gTile_Width << "\n";
-//                TextureManager::Get_Instance()->Draw(Tile_ID, i*gTile_Width, j*gTile_Height, gTile_Width, gTile_Height, 0, NULL, SDL_FLIP_NONE);
                 TextureManager::Get_Instance()->DrawTile(Tile_ID, col * gTile_Width, row * gTile_Height, gTile_Width, 0, nullptr, SDL_FLIP_NONE);
             }
-//            std::cout << std::endl;
         }
     }
 }

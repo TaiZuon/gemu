@@ -44,7 +44,6 @@ void Bullet::Explose(double dt)
 
 void Bullet::Update(double dt)
 {
-//    std::cout << "Bullet: " << gDir << '\n';
     bool Reset = true;
     bool Repeat = true;
     int gTime_Current = SDL_GetTicks();
