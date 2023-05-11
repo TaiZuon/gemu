@@ -8,7 +8,6 @@ TextureManager* TextureManager::TM_Instance = nullptr;
 void TextureManager::Load(std::string id, const char* fileName )
 {
     SDL_Surface* tmpSurface = IMG_Load(fileName);
-//    if(tmpSurface == nullptr) std::cout << "Load failed!\n"; else std::cout << "Img loaded!\n";
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::Get_Instance()->Get_Renderer(), tmpSurface);
     if(texture == nullptr) std::cout << "load " << id << " texture failes!\n"; 
     SDL_FreeSurface(tmpSurface);
@@ -25,7 +24,6 @@ void TextureManager::Draw(std::string id, int x, int y, int width, int height, d
 
     SDL_Rect destRect = {x - (int)Cam.X, y - (int)Cam.Y, width, height};
     SDL_RenderCopyEx(Game::Get_Instance()->Get_Renderer(), Texture_Map[id], &srcRect, &destRect, angle, center, flip);
-//    std::cout << id << " drawed!\n"; 
 }
 
 void TextureManager::DrawBackGround(std::string id, int x, int y, int width, int height, double angle, const SDL_Point *center, SDL_RendererFlip flip)
@@ -37,7 +35,6 @@ void TextureManager::DrawBackGround(std::string id, int x, int y, int width, int
 
     SDL_Rect destRect = {x - (int)Cam.X, y - (int)Cam.Y, width, height};
     SDL_RenderCopyEx(Game::Get_Instance()->Get_Renderer(), Texture_Map[id], &srcRect, &destRect, angle, center, flip);
-//    std::cout << id << " drawed!\n"; 
 }
 
 void TextureManager::DrawTile(std::string id, int x, int y, int tilesize, double angle, const SDL_Point *center, SDL_RendererFlip flip)
@@ -58,7 +55,6 @@ void TextureManager::DrawFrame(std::string id, int x, int y, int width, int heig
 
     SDL_Rect destRect = {x - (int)Cam.X, y - (int)Cam.Y, width, height};
     SDL_RenderCopyEx(Game::Get_Instance()->Get_Renderer(), Texture_Map[id], &srcRect, &destRect, 0, nullptr, flip);
-//    std::cout << "Draw Frame\n";
 }
 
 void TextureManager::Set_Font(const char* id, int size)
@@ -69,13 +65,11 @@ void TextureManager::Set_Font(const char* id, int size)
 void TextureManager::Set_Text_Color(Uint8 r, Uint8 g, Uint8 b)
 {
     gText_Color = {r, g, b};
-//    std::cout << "set color!\n";
 }
 
 void TextureManager::LoadText(std::string id, std::string text)
 {
     TextureManager::Drop(id);
-//    std::cout << text << '\n';
     SDL_Surface* textSurface = TTF_RenderText_Solid( gFont, text.c_str(), gText_Color );
 	if( textSurface == NULL )
 	{
@@ -103,7 +97,6 @@ void TextureManager::DrawText(std::string id, int x, int y, double angle, const 
 {
     gText_Box.x = 0;
     gText_Box.y = 0;
-//    std::cout << gText_Box.w << " " << gText_Box.h << '\n';
 
     SDL_Rect destRect = {x, y, gText_Box.w, gText_Box.h};
 
@@ -181,7 +174,6 @@ void TextureManager::Clean()
     std::map<std::string, SDL_Texture*>::iterator iter;
     for(iter = Texture_Map.begin(); iter != Texture_Map.end(); iter++)
     {
-//        std::cout<<iter->first << "\n";
         SDL_DestroyTexture(iter->second);
     }
     Texture_Map.clear();

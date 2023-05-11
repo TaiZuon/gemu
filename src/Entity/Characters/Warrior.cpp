@@ -38,7 +38,6 @@ Warrior::Warrior(Properties* props): Character(props)
 
     gAnimation = new Animation();
     gAnimation->Set_Props(gTexture_ID, 1, 6, 100, SDL_FLIP_NONE);
-    std::cout << "In New, player die? : " << gIs_Killed << "\n";
 }
 void Warrior::Reset_Position()
 {

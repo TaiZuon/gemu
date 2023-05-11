@@ -41,7 +41,6 @@ bool Defeat::Init()
     mNewGame = new Button(new Properties("NewGame",SCREEN_WIDTH / 3 - 70, SCREEN_HEIGHT*2/3 + 32, 141, 64, SDL_FLIP_NONE));
     mMenu = new Button(new Properties("Menu",SCREEN_WIDTH*2/3 - 70, SCREEN_HEIGHT*2/3 + 32, 141, 64, SDL_FLIP_NONE));
 
-    std::cout << "Defeat init!\n";
     return true;
 }
 

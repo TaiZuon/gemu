@@ -29,7 +29,7 @@ LIBRARY_PATHS = -L src\SDL\lib
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 #OBJ_NAME specifies the name of our exectuable
-OBJ_NAME = gemu
+OBJ_NAME = Warrior_vs_Orc
 
 #This is the target that compiles our executable
 all : $(OBJS)

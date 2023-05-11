@@ -6,7 +6,6 @@ ObjectHandler* ObjectHandler::g_Instance = nullptr;
 void ObjectHandler::New_Player(int x, int y)
 {
     Player = new Warrior(new Properties("Warrior_Idle", x, y, CHAR_SIZE, CHAR_SIZE, SDL_FLIP_NONE));
-    std::cout << "In ObjHDL, Player die? : " << Player->Is_Killed() << "\n";
 }
 void ObjectHandler::Add_New_Enemy(int x, int y)
 {

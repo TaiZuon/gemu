@@ -38,7 +38,6 @@ public:
     {
         gEnemy_Attack = attack;
         gEnemy_Dead = dead;
-//        std::cout << gEnemy_Attack;
     }
     
     void Take_Dam(int dam);

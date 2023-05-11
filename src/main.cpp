@@ -5,12 +5,9 @@
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Starting...\n";
-
-    Game::Get_Instance()->Init("Gemu", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+    Game::Get_Instance()->Init("Warrior_vs_Orc", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     Game::Get_Instance()->Load();
 
-//    Map::Get_Instance()->Create_White_Map();
     while( Game::Get_Instance()->running())
     {
         Map::Get_Instance()->Draw();

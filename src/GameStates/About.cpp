@@ -22,7 +22,6 @@ void About::Load_About()
         getline(file, s);
         std::string id = "line " + std::to_string(Num_lines);
         TextureManager::Get_Instance()->LoadText(id, s);
-        std::cout << id << " loaded!\n";
         Num_lines++;
     }
     file.close();

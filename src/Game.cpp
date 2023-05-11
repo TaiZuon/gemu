@@ -118,8 +118,6 @@ void Game::Clean()
     SDL_DestroyRenderer(gRenderer);
     SDL_Quit();
     ObjectHandler::Get_Instance()->Delete_All();
-    
-    std::cout << "Game cleaned!\n";
 }
 
 void Game::Quit()
