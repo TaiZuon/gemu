@@ -92,7 +92,7 @@ void Upgrade::Update()
         }
         if(gUp_Damage)
         {
-            Damage::Get_Instance()->Up_Num_Damage(10);
+            Damage::Get_Instance()->Up_Num_Damage(100);
             Damage::Get_Instance()->Save_Num_Damage();
             Damage::Get_Instance()->Get_Num_Damage();
             gUp_Damage = false;
