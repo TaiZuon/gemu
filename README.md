@@ -26,7 +26,7 @@
 ### Windows
 1. Kéo dự án về tài khoản Github cá nhân bằng Fork
 2. Clone dự án về máy tính local bằng lệnh `git clone https://github.com/[USER_NAME]/gemu.git`
-3.Tại đây bạn có 2 lựa chọn 
+3. Tại đây bạn có 2 lựa chọn 
   - Mở thư mục và chạy tệp thực thi (Warrior_vs_Orc.exe)
   - Sử dụng source code và compile:
     + Cài đặt [Visual Studio Code](https://code.visualstudio.com/download) 
@@ -37,5 +37,44 @@
 
 ### MacOS và Linux
 ... sớm cập nhật ...
+
+## Hướng Dẫn Chơi
+
+### CONTROL:                             
+*Press A (D) to Run to Left (Right)                      
+*Press W to Jump                                         
+*Press I to Attack                                       
+                                                         
+### GAMEPLAY:                             
+*In each Wave, Orcs'll be spawned and keep chasing you   
+*Once they come close enough, they'll start Attacking    
+*By killing Orcs, you'll get Coins                       
+*Coins help you to Upgrade you Health and Damage         
+*The more waves you pass, the stronger Ors become    
+
+## Tính Năng Chính
+
+### NewPlay
+- Bắt đầu game mới từ Wave 1
+![](https://github.com/TaiZuon/gemu/blob/main/assets/ScreenShots/NewGame.png)
+
+### Setting
+- Bât/Tắt âm thanh
+- Thông tin thêm
+- Hướng dẫn chơi
+![](https://github.com/TaiZuon/gemu/blob/main/assets/ScreenShots/Setting.png)
+
+### Upgrade
+- Nâng cấp chỉ số người chơi (Health/Damage)
+![](https://github.com/TaiZuon/gemu/blob/main/assets/ScreenShots/Upgrade.png)
+
+### Exit
+- Thoát Game
+
+## Ý Tưởng
+- Lấy cảm hứng từ Game [Shorties's KingDom 2](https://play.google.com/store/apps/details?id=air.dennatolich.shortieskingdom2&hl=en_US) và [The Tower](https://play.google.com/store/apps/details?id=com.TechTreeGames.TheTower&hl=vi&gl=US)
+- Ý tưởng Player tiêu diệt quái từ [Shorties's KingDom 2](https://play.google.com/store/apps/details?id=air.dennatolich.shortieskingdom2&hl=en_US) và Wave vô hạn từ [The Tower](https://play.google.com/store/apps/details?id=com.TechTreeGames.TheTower&hl=vi&gl=US)
+- Chọn game: gameplay đơn giản, thân thuộc, logic game dễ hình dung
+
 
 
