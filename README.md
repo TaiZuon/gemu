@@ -72,9 +72,29 @@
 - Thoát Game
 
 ## Ý Tưởng
+
 - Lấy cảm hứng từ Game [Shorties's KingDom 2](https://play.google.com/store/apps/details?id=air.dennatolich.shortieskingdom2&hl=en_US) và [The Tower](https://play.google.com/store/apps/details?id=com.TechTreeGames.TheTower&hl=vi&gl=US)
 - Ý tưởng Player tiêu diệt quái từ [Shorties's KingDom 2](https://play.google.com/store/apps/details?id=air.dennatolich.shortieskingdom2&hl=en_US) và Wave vô hạn từ [The Tower](https://play.google.com/store/apps/details?id=com.TechTreeGames.TheTower&hl=vi&gl=US)
 - Chọn game: gameplay đơn giản, thân thuộc, logic game dễ hình dung
 
+## Vấn Đề Hiện Tại
 
+[Vấn đề](https://docs.google.com/document/d/1-6D12q_fuEajYuPfgBidWDQA3wQyJGOGoI3QwXuc4C0/edit?usp=sharing)
 
+## Hướng Cải Thiện 
+
+[Hướng Cải Thiện](https://docs.google.com/document/d/1XYNEfkrknXIJXBqA7c61spWnH0pC1a7zPpxdsDrktXU/edit?usp=sharing)
+
+## Nguồn Tham Khảo
+
+- [Madsycode](https://www.youtube.com/playlist?list=PL-K0viiuJ2RctP5nlJlqmHGeh66-GOZR_)
+- [craftpix.net](https://craftpix.net/)
+- [The Git Guild](https://www.youtube.com/watch?v=a8CwpGARAsQ&ab_channel=TheGitGuild)
+- [kapwing](https://www.kapwing.com/)
+- [Shields.io](https://shields.io/category/activity)
+
+## Liên Hệ
+
+- Mọi thắc mắc, góp ý vui lòng trao đổi qua email thaiduongabcdef@gmail.com
+
+## Rất mong nhận được sự đóng góp từ bạn :heart: !
