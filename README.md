@@ -66,6 +66,7 @@
 
 ### Upgrade
 - Nâng cấp chỉ số người chơi (Health/Damage)
+- Với 1000 Coins, có thể dùng để nâng cấp 1000 Health hoặc 100 Damage
 ![](https://github.com/TaiZuon/gemu/blob/main/assets/ScreenShots/Upgrade.png)
 
 ### Exit
