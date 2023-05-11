@@ -25,6 +25,8 @@ INCLUDE_PATHS = -I src\SDL\include\SDL2  -I src
 #LIBRARY_PATHS specifies the additional library paths we'll need
 LIBRARY_PATHS = -L src\SDL\lib
 
+COMPILER_FLAGS = -Wl,-subsystem,windows
+
 #LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
@@ -33,4 +35,4 @@ OBJ_NAME = Warrior_vs_Orc
 
 #This is the target that compiles our executable
 all : $(OBJS)
-	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
