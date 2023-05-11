@@ -58,37 +58,55 @@ Bullet* Boss::Get_Crystal()
     return Crystal;
 }
 
-void Boss::Track_Tar()
+void Boss::Track_Tar(double dt)
 {
-    if(std::abs(gOrigin->X - gTarget->Get_Origin()->X) > 50 )
+    if(Is_Tar_Colly() != 0)
     {
-//        std::cout << "Chase!\n";
-        gIs_Running = true;
+        Mele(dt);
+        gIs_Running = false;
     }
-    //tracking player
-    if(std::abs(gOrigin->X - gTarget->Get_Origin()->X) > 5 and !gIs_Attacking)
+    else
+    {
+        gIs_Running = true;
+        gIs_Attacking = false;
+    }
+    if(std::abs(gOrigin->X - gTarget->Get_Origin()->X) > 5 and gIs_Running)
     {
         if(gTarget->Get_Origin()->X > gOrigin->X) 
         {
             gFlip = SDL_FLIP_NONE;
             gDir = FORWARD;
+            gRigidBody->Apply_ForceX(gDir * RUN_FORCES[gType]);
         }
         else 
         {
             gFlip = SDL_FLIP_HORIZONTAL;
             gDir = BACKWARD;
-        }
-        gRigidBody->Apply_ForceX(gDir * RUN_FORCES[gType]);
+            gRigidBody->Apply_ForceX(gDir * RUN_FORCES[gType]);
+        }   
     }
     else 
     {
-//        std::cout << "Stop!\n";
         gRigidBody->Unset_Force();
         gIs_Running = false;
     }
+    if(gIs_Running)
+    {
+        gAnimation->Set_Props("Orc_Warrior_Run", 1, 6, 100, gFlip);
+    }
 }
-void Boss::Track_Tar_Shoot()
+void Boss::Track_Tar_Shoot(double dt)
 {
+
+    if(Tar_In_Range()) 
+    {
+        Shoot(dt);
+    }
+    else
+    {
+        gIs_Shooting = false;
+        gIs_Running = true;
+    }
     if(std::abs(gOrigin->X - gTarget->Get_Origin()->X) > gShoot_Range)
     {
         gIs_Running = true;
@@ -109,7 +127,7 @@ void Boss::Track_Tar_Shoot()
     }
     if(gIs_Running)
     {
-        gRigidBody->Apply_ForceX(gDir * RUN_FORCES[BOSS]);
+        gRigidBody->Apply_ForceX(gDir * RUN_FORCES[gType]);
         gAnimation->Set_Props("Orc_Warrior_Run", 1, 6, 100, gFlip);
     }
     else
@@ -128,8 +146,8 @@ void Boss::Hurt(int dam)
 }
 void Boss::Is_Insane()
 {
-    if(gLast_Insane != gIs_Insane) Sound::Get_Instance()->PlayEffect("Orc_Insane");
     if(float(gHealth*1.0 / gMax_Health) < 0.5) gIs_Insane = true;
+    if(gLast_Insane != gIs_Insane) Sound::Get_Instance()->PlayEffect("Orc_Insane");
     else gIs_Insane = false;
     gLast_Insane = gIs_Insane;
 }
@@ -141,6 +159,48 @@ void Boss::Dead()
     gIs_Attacking = false;
     gIs_Landed = false; 
     gIs_Hurt = false;
+}
+void Boss::Friction()
+{
+    if(std::abs(gRigidBody->Get_Velocity().X) != 0)
+    {
+        double v_temp = gRigidBody->Get_Velocity().X;
+        Vector2D friction(-FRICTION * (v_temp/std::abs(v_temp)), 0);
+        gRigidBody->Apply_Friction(friction);
+    } 
+    else
+    {
+        gRigidBody->Unset_Friction();
+    }
+}
+void Boss::Shoot(double dt)
+{
+    if(!gIs_Shooting) gAnimation->AnimationStart();
+    gIs_Shooting = true;
+    gRigidBody->Unset_Force();
+    gAnimation->Set_Props("Orc_Warrior_Attack_2", 1, 4, 250, gFlip);
+    if(Crystal == nullptr) 
+    {
+        Crystal = new Bullet(new Properties("Bullet_Move", gTransform->X, 288 + 73, 150, 120, gFlip));
+        Crystal->Set_Dam(gDamage);
+        Crystal->Set_Dir(gDir);
+    }
+}
+
+void Boss::Mele(double dt)
+{
+    gCollider->Set_Empty(-65,-120,130,120);
+    gRigidBody->Stop_Vel_X();
+    if(!gIs_Attacking) gAnimation->AnimationStart();
+    gIs_Attacking = true;
+    gRigidBody->Unset_Force();
+    gAnimation->Set_Props("Orc_Warrior_Attack_1", 1, 4, 150, gFlip);
+//    std::cout << gAnimation->Get_Frame();
+    if(gAnimation->Get_Frame() >= 3 and gAnimation->Is_New_Frame())
+    {
+        Sound::Get_Instance()->PlayEffect("Orc_Attack");
+        gTarget->Take_Dam(gDamage);
+    }
 }
 
 int Boss::Is_Tar_Colly()
@@ -193,112 +253,14 @@ bool Boss::Tar_In_Range()
 
 void Boss::Update(double dt)
 {
-//    std::cout << gType << '\n';
     bool Reset = false;
     bool Repeat = true;
-    if(!gIs_Dead and !gTarget->Is_Dead() and !gIs_Killed)
+//    std::cout << "Vel: " << gRigidBody->Get_Velocity().X << '\n';
+//    std::cout << "Run: " << gIs_Running<< '\n';
+//    std::cout << "F  : " << gRigidBody->Get_Force().X << '\n';
+    gCollider->Set_Empty(-70,-120,140,120);
+    if(!gIs_Dead and !gTarget->Is_Dead())
     {
-        if(!gIs_Insane)
-        {
-            gType = BOSS;
-            Track_Tar_Shoot();
-            //shoot bullet
-            if(Tar_In_Range()) 
-            {
-                gIs_Shooting = true;
-            }
-            else gIs_Shooting = false;
-            if(gIs_Shooting and gShoot_Time > 0) 
-            {
-                gShoot_Time -= dt;
-                gAnimation->Set_Props("Orc_Warrior_Attack_2", 1, 4, 250, gFlip);
-                Repeat = true;
-            } 
-            else 
-            { 
-                if(gShoot_Time <= 0 and Crystal == nullptr) 
-                {
-                    Crystal = new Bullet(new Properties("Bullet_Move", gTransform->X, 288 + 73, 150, 120, gFlip));
-                    Crystal->Set_Dam(gDamage);
-//                    std::cout << gTransform->Y << '\n';
-                    Crystal->Set_Dir(gDir);
-//                    std::cout << gDir << '\n';
-                }
-                if(!gIs_Running)
-                gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
-                gShoot_Time = 5.0;
-                Repeat = true;
-            }
-//            gAnimation->Set_Props("Orc_Warrior_Attack_2", 1, 4, 150, gFlip);
-
-            Is_Insane();
-        }
-        else 
-        { 
-            gType = BOSS_INSANE;
-            gIs_Shooting = false;
-            Track_Tar();
-            if(std::abs(gRigidBody->Get_Velocity().X) != 0)
-            {
-                double v_temp = gRigidBody->Get_Velocity().X;
-                Vector2D friction(-FRICTION * (v_temp/std::abs(v_temp)), 0);
-                gRigidBody->Apply_Friction(friction);
-            } 
-            else
-            {
-                gRigidBody->Unset_Friction();
-            }
-            if(!gIs_Attacking and !gIs_Running)
-            gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
-
-            if(Is_Tar_Colly() != 0)
-            {
-                gIs_Attacking = true;
-                gIs_Running = false;
-            }
-            else
-            {
-                gIs_Attacking = false;
-                gIs_Running = true;
-            }
-            if(gIs_Attacking and gAttack_Time > 0)
-            {
-                gAttack_Time -= dt;
-                Sound::Get_Instance()->PlayEffect("Orc_Attack");
-            }
-            else 
-            {  
-                gIs_Attacking = false;
-                gAttack_Time = ATTACK_TIME;
-            }
-            if(gIs_Attacking)
-            {
-                gAnimation->Set_Props("Orc_Warrior_Attack_1", 1, 4, 150, gFlip);
-            }
-            if(gIs_Running)
-            {
-                gAnimation->Set_Props("Orc_Warrior_Run", 1, 6, 200, gFlip);
-            }
-        }
-        if(gTarget->Is_Attacking()) 
-        {
-            gIs_Hurt = true;
-        }
-        if(gIs_Hurt and gHurt_Time > 0) 
-        {
-            Sound::Get_Instance()->PlayEffect("Orc_Die");
-            gHurt_Time -= dt;
-        }
-        else 
-        {
-            gHurt_Time = 2.0;
-            gIs_Hurt = false;
-        }
-        if(gIs_Hurt and !gIs_Insane) 
-        {
-            gAnimation->Set_Props("Orc_Warrior_Hurt", 1, 2, 100, gFlip);
-            Repeat = true;
-        }
         if(gHealth == 0)
         {
             gIs_Dead = true;
@@ -306,8 +268,20 @@ void Boss::Update(double dt)
         else 
         {
             gIs_Dead = false;
-            Repeat = true;
         }
+        if(!gIs_Insane)
+        {
+            gType = BOSS;
+            Track_Tar_Shoot(dt);
+            Is_Insane();
+        }
+        else 
+        { 
+            gType = BOSS_INSANE;
+            gIs_Shooting = false;
+            Track_Tar(dt);
+        }
+        
     }
     else if(gIs_Dead)
     {
@@ -337,9 +311,8 @@ void Boss::Update(double dt)
     // bullet
     if(Crystal != nullptr) 
     {
-        Crystal->Set_Tar_Box(gTarget->Get_Collider()->Get_Box());
         Crystal->Update(dt);
-        if(Crystal->Get_Bullet_State())
+        if(Crystal->Get_Bullet_Done())
         {
             delete Crystal;
             Crystal = nullptr;
@@ -380,12 +353,6 @@ void Boss::Update(double dt)
 void Boss::Draw()
 {
     gAnimation->Draw(gTransform->X, gTransform->Y, gWidth, gHeight);
-
-    Vector2D Cam = Camera::Get_Instance()->Get_Position();
-    SDL_Rect Box = gCollider->Get_Box();
-    Box.x -= Cam.X;
-    Box.y -= Cam.Y;
-
     if(Crystal != nullptr) Crystal->Draw();
 
     Draw_Health();
@@ -394,22 +361,17 @@ void Boss::Draw()
 void Boss::Draw_Health()
 {
     Vector2D Cam = Camera::Get_Instance()->Get_Position();
-    SDL_Rect Box = gCollider->Get_Box();
+    SDL_Rect Box = {(int)gTransform->X + 60, (int)gTransform->Y + 50, 75, 4};
     Box.x -= Cam.X;
     Box.y -= Cam.Y;
     SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
-    Box.y -= 60;
-    Box.h -= 67;
-    Box.x -= 22;
-    Box.w += 28;
     SDL_Rect H = Box;
-//    std::cout << "H: " << Box.h << '\n';
-//    std::cout << Box.w << "\n";
-    H.w = double(gHealth*1.0 / gMax_Health) *80;
+    H.w = double(gHealth*1.0 / gMax_Health) *75;
     Box.x--;
-    Box.y--;
-    Box.h++;
-    Box.w+=2;
+    Box.y-=2;
+    Box.h += 4;
+    Box.w++;
+
     SDL_SetRenderDrawColor(Game::Get_Instance()->gRenderer, 255, 255, 255, 0); 
     SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
     if(gIs_Insane) 

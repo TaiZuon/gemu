@@ -27,6 +27,7 @@ public:
     {
         return gButton_State;
     }
+    void Set_Props(std::string id);
     void Set_Button_State(ButtonState target)
     {
         gButton_State = target;

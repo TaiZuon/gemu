@@ -8,11 +8,11 @@ class Play: public GameState
 {
 private:
     static void OpenMenu();
-    static void OpenSetting();
     static void OpenDefeat();
 
-    bool gIs_Setting;
+    bool gPause;
     bool gIs_Defeat;
+    bool gIs_Menu;
     
 public:
     Play();
@@ -28,6 +28,6 @@ public:
     void Init_Boss();
     void Init_Other();
 
-    Button* mSetting;
     Button* mMenu;
+    Button* mPause;
 };

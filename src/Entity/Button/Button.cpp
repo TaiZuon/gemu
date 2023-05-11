@@ -9,7 +9,10 @@ Button::Button(Properties* prop): GameObject(prop)
 {
 //	std::cout << "Button init!\n";
 }
-
+void Button::Set_Props(std::string id)
+{
+	gTexture_ID = id;
+}
 void Button::State_Update()
 {
     //If mouse event happened

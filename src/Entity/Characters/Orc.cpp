@@ -23,6 +23,7 @@ Orc::Orc(Properties* props): Character(props)
     gDamage = gMax_Damage;
     gHealth = gMax_Health;
 
+    gIs_Reset_Ani = true;
     gIs_Jumping = false;
     gIs_Falling = false;
     gIs_Running = false;
@@ -103,14 +104,37 @@ void Orc::Hurt(int dam)
         gHealth = std::max(gHealth, 0);
     }
 }
-void Orc::Dead()
+void Orc::Dead(double dt)
 {
+    if(gIs_Reset_Ani) 
+    {
+        gAnimation->AnimationStart();
+        gIs_Reset_Ani = false;;
+    }
     gIs_Jumping = false;
     gIs_Falling = false;
     gIs_Running = false;
     gIs_Attacking = false;
     gIs_Landed = false; 
     gIs_Hurt = false;
+    if(gDead_Time > 0)
+    {
+        gDead_Time -= dt;
+    }
+    else
+    { 
+        if(gAnimation->Get_Frame() == 4) 
+        {
+            Sound::Get_Instance()->PlayEffect("Orc_Die");
+            Coin::Get_Instance()->Up_Num_Coins(gVal);
+            gIs_Killed = true;
+        }
+    }
+    gAnimation->Set_Props("Orc_Dead", 1, 4, 250, gFlip);
+    gRigidBody->Unset_Force();
+    gRigidBody->Stop_Vel_X();
+    gRigidBody->Stop_Vel_Y();
+
 }
 
 void Orc::Track_Tar()
@@ -155,6 +179,8 @@ void Orc::Track_Tar()
 } 
 void Orc::Attack()
 {  
+    gCollider->Set_Empty(-30,-50,60,50);
+    gRigidBody->Stop_Vel_X();
     if(!gIs_Attacking) gAnimation->AnimationStart();
     gIs_Attacking = true;
     gRigidBody->Unset_Force();
@@ -183,28 +209,10 @@ void Orc::Update(double dt)
 {
     bool Reset = false;
     bool Repeat = false;
-    if(!gIs_Dead and !gTarget->Is_Dead() and !gIs_Killed)
+    gCollider->Set_Empty(-35,-50,70,50);
+    if(!gIs_Dead and !gTarget->Is_Dead())
     {
         Friction();
-        if(Is_Taken_Dam()) 
-        {
-            gIs_Hurt = true;
-        }
-        if(gIs_Hurt and gHurt_Time > 0 and Is_Taken_Dam()) 
-        {
-            Sound::Get_Instance()->PlayEffect("Orc_Die");
-            gHurt_Time -= dt;
-        }
-        else 
-        {
-            gHurt_Time = 2.0;
-            gIs_Hurt = false;
-        }
-        if(gIs_Hurt) 
-        {
-            gAnimation->Set_Props("Orc_Hurt", 1, 2, 100, gFlip);
-            Repeat = false;
-        }
         if(gHealth == 0)
         {
             gIs_Dead = true;
@@ -212,33 +220,9 @@ void Orc::Update(double dt)
         else 
         {
             gIs_Dead = false;
-            Repeat = true;
         }
-
-        if(!gIs_Attacking and !gIs_Running)
-        gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
         Track_Tar();
     }
-    else if(gIs_Dead)
-    {
-        if(gDead_Time > 0)
-        {
-            gDead_Time -= dt;
-//            std::cout << gDead_Time << " " << dt << '\n'; 
-            if(gDead_Time <= 0)
-            { 
-                Sound::Get_Instance()->PlayEffect("Orc_Die");
-                gIs_Killed = true;
-                Coin::Get_Instance()->Up_Num_Coins(gVal);
-//                std::cout << "Update: Killed!\n";
-            }
-        }
-        gAnimation->Set_Props("Orc_Dead", 1, 4, 100, gFlip);
-        gRigidBody->Unset_Force();
-        gRigidBody->Stop_Vel_X();
-        gRigidBody->Stop_Vel_Y();
-        Dead();
-    } 
     else if(gTarget->Is_Dead())
     {
         gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
@@ -246,6 +230,10 @@ void Orc::Update(double dt)
         gRigidBody->Stop_Vel_X();
         gRigidBody->Stop_Vel_Y();
         Repeat = true;
+    } 
+    else 
+    {
+        Dead(dt);
     } 
 
     gRigidBody->Update(dt, ORC);
@@ -282,33 +270,23 @@ void Orc::Update(double dt)
 void Orc::Draw()
 {
     gAnimation->Draw(gTransform->X, gTransform->Y, gWidth, gHeight);
-
-    Vector2D Cam = Camera::Get_Instance()->Get_Position();
-    SDL_Rect Box = gCollider->Get_Box();
-    Box.x -= Cam.X;
-    Box.y -= Cam.Y;
-//    std::cout << "Box: " << Box.x << " " << Box.y << '\n';
-//    std::cout << "Cam: " << Cam.X << " " << Cam.Y << '\n';
-//   std::cout << "transform: " << gTransform->X << " " << gTransform->Y << '\n';
-    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
     Draw_Health();
 }
 
 void Orc::Draw_Health()
 {
     Vector2D Cam = Camera::Get_Instance()->Get_Position();
-    SDL_Rect Box = gCollider->Get_Box();
+    SDL_Rect Box = {(int)gTransform->X + 36, (int)gTransform->Y + 30, 25, 4};
     Box.x -= Cam.X;
     Box.y -= Cam.Y;
-//    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
-    Box.y -= 15;
-    Box.h -= 50;
+    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
     SDL_Rect H = Box;
     H.w = double(gHealth*1.0 / gMax_Health) *25;
     Box.x--;
     Box.y-=2;
     Box.h += 4;
     Box.w++;
+
     SDL_SetRenderDrawColor(Game::Get_Instance()->gRenderer, 255, 255, 255, 0); 
     SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
     SDL_SetRenderDrawColor(Game::Get_Instance()->gRenderer, 255, 50, 50, 0); 

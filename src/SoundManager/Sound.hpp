@@ -20,14 +20,16 @@ private:
 public:
     Sound()
     {
-        gIs_Muted = false;
         gIs_Playing_Music = false;
         gIs_Pause_Music = false;
     }
+
     static Sound* Get_Instance()
     {
         return g_Instance = (g_Instance != nullptr)? g_Instance : new Sound();
     }
+    void Mute();
+    void UnMute();
     void PlayMusic(std::string id);
     void ChangeMusic(std::string id);
 

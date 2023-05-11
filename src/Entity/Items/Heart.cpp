@@ -37,7 +37,6 @@ void Heart::Update(double dt)
         if(Is_Tar_Colly() != 0)
         {
             gIs_Touched = true;
-            Sound::Get_Instance()->PlayEffect("Upgrade");
 //            std::cout << "Heart touched!\n";
         }
     }

@@ -147,6 +147,8 @@ void TextureManager::LoadAll()
     Load("Menu_bg","assets/Map/Menu_bg.png");
     Load("Defeat_bg","assets/Map/Defeat_bg.png");
     Load("Setting_bg","assets/Map/Setting_bg.png");
+    Load("Pause_bg","assets/Map/Pause_bg.png");
+    Load("bg","assets/Map/bg.png");
 
     Load("Tile_02","assets/Map/Tiles/Tile_02.png");
     Load("Tile_12","assets/Map/Tiles/Tile_12.png");
@@ -166,6 +168,12 @@ void TextureManager::LoadAll()
     Load("Exit","assets/Button/Exit.png");
     Load("Back","assets/Button/Back.png");
     Load("Up","assets/Button/Up.png");
+    Load("Intro","assets/Button/Intro.png");
+    Load("About","assets/Button/About.png");
+    Load("Sound_On","assets/Button/Sound_On.png");
+    Load("Sound_Off","assets/Button/Sound_Off.png");
+    Load("Play","assets/Button/Play.png");
+    Load("Pause","assets/Button/Pause.png");
 }
 
 void TextureManager::Clean()

@@ -11,6 +11,7 @@ private:
     static void OpenIntro();
     static void OpenAbout();
     static void Mute();
+    static void UnMute();
 
     bool gIs_Back;
     bool gIs_Menu;

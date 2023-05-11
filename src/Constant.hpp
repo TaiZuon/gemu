@@ -27,7 +27,7 @@
 #define BOSS_INSANE 5
 
 const double RUN_FORCES[6] = {0.5, 0.5, 0.5, 0.5, 0.2, 0.5};
-const double MAX_VELOCITIES[6] = {5, 3, 3, 1, 7, 4};
+const double MAX_VELOCITIES[6] = {5, 3, 3, 1, 8, 4};
 const double MAX_VELOCITY = 3;
 const double FRICTION = 0.4;
 

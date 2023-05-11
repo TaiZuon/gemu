@@ -22,16 +22,19 @@ public:
     RigidBody* Get_RigidBody();
     Collider* Get_Collider();
     Bullet* Get_Crystal();
-    
+
     int Get_Damage();
     int Is_Tar_Colly();
     
     void Draw_Health();
     void Hurt(int dam);
     void Is_Insane();
-    void Track_Tar();
-    void Track_Tar_Shoot();
+    void Track_Tar(double dt);
+    void Track_Tar_Shoot(double dt);
     void Dead();
+    void Shoot(double dt);
+    void Mele(double dt);
+    void Friction();
 
     bool Is_Taken_Dam();
     bool Is_Attacking();

@@ -60,18 +60,14 @@ void Warrior::Draw()
 void Warrior::Draw_Health()
 {
     Vector2D Cam = Camera::Get_Instance()->Get_Position();
-    SDL_Rect Box = gCollider->Get_Box();
-    Box.x -= Cam.X;
-    Box.y -= Cam.Y;
-    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
-    Box.y -= 15;
-    Box.h -= 50;
+    SDL_Rect Box = {20, SCREEN_HEIGHT/2 - 150, 10, 250};
     SDL_Rect H = Box;
-    H.w = double(gHealth*1.0 / gMax_Health) *25;
+    H.h = double(gHealth*1.0 / gMax_Health) *250;
+    H.y += Box.h - H.h; 
     Box.x--;
-    Box.y-=2;
-    Box.h += 4;
-    Box.w++;
+    Box.y--;
+    Box.h+=2;
+    Box.w+=2;
 
     SDL_SetRenderDrawColor(Game::Get_Instance()->gRenderer, 255, 255, 255, 0); 
     SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &Box);
@@ -183,6 +179,7 @@ void Warrior::Jump(double dt)
 }
 void Warrior::Attack()
 {
+    gCollider->Set_Empty(-30,-50,60,50);
     if(!gIs_Attacking) 
     {
         gAnimation->AnimationStart();
@@ -294,6 +291,7 @@ void Warrior::Friction()
 }
 void Warrior::Update(double dt)
 {
+    gCollider->Set_Empty(-35,-50,70,50);
     bool Repeat = false;
     bool Reset = false;
     if(!gIs_Dead and !gIs_Killed)

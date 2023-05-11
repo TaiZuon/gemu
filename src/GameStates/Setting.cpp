@@ -1,12 +1,14 @@
 #include "Setting.hpp"
 #include "Game.hpp"
+#include "SoundManager/Sound.hpp"
+#include "Intro.hpp"
+#include "About.hpp"
 
 Setting::Setting()
 {
     gGS_Renderer = Game::Get_Instance()->gRenderer;
     
     gIs_Back = false;
-    gIs_Menu = false;
     gIs_Mute = false;
     gIs_Intro = false;
     gIs_About = false;
@@ -19,21 +21,29 @@ void Setting::Back()
 
 void Setting::OpenIntro()
 {
-
+    Game::Get_Instance()->ChangeState(new Intro());
 }
 
 void Setting::OpenAbout()
 {
-
+    Game::Get_Instance()->ChangeState(new About());
 }
 
+void Setting::Mute()
+{
+    Sound::Get_Instance()->Mute();
+}
+void Setting::UnMute()
+{
+    Sound::Get_Instance()->UnMute();
+}
 bool Setting::Init()
 {
     int pos_y = 300;
     mBack = new Button(new Properties("Back",SCREEN_WIDTH - 100, 5, 80, 80, SDL_FLIP_NONE));
-    mSound = new Button(new Properties("NewGame",SCREEN_WIDTH / 2 - 70, pos_y, 141, 64, SDL_FLIP_NONE));
-    mAbout = new Button(new Properties("NewGame",SCREEN_WIDTH / 2 - 70, pos_y + 70, 141, 64, SDL_FLIP_NONE));
-    mIntro = new Button(new Properties("Upgrade",SCREEN_WIDTH / 2 - 70, pos_y + 140, 141, 64, SDL_FLIP_NONE));
+    mSound = new Button(new Properties("Sound_On",SCREEN_WIDTH / 2 - 70, pos_y, 141, 64, SDL_FLIP_NONE));
+    mAbout = new Button(new Properties("About",SCREEN_WIDTH / 2 - 70, pos_y + 70, 141, 64, SDL_FLIP_NONE));
+    mIntro = new Button(new Properties("Intro",SCREEN_WIDTH / 2 - 70, pos_y + 140, 141, 64, SDL_FLIP_NONE));
 
     std::cout << "Setting initialized!\n";
     return true;
@@ -63,10 +73,24 @@ void Setting::Events()
     if(mAbout->Get_Button_State() == MOUSE_DOWN)
     {
         gIs_About = true;
+        mAbout->Set_Button_State(MOUSE_OUT);
     }
     if(mIntro->Get_Button_State() == MOUSE_DOWN)
     {
         gIs_Intro = true;
+        mIntro->Set_Button_State(MOUSE_OUT);
+    }
+    if(!gIs_Mute and mSound->Get_Button_State() == MOUSE_DOWN and mSound->Is_New_State())
+    {
+        gIs_Mute = true;
+        mSound->Set_Props("Sound_Off");
+        mSound->Set_Button_State(MOUSE_OUT);
+    }
+    if(gIs_Mute and mSound->Get_Button_State() == MOUSE_DOWN and mSound->Is_New_State())
+    {
+        gIs_Mute = false;
+        mSound->Set_Props("Sound_On");
+        mSound->Set_Button_State(MOUSE_OUT);
     }
 }
 
@@ -75,9 +99,21 @@ void Setting::Update()
     Events();
     if(!gIs_About and !gIs_Back and !gIs_Intro)
     {
+        if(gIs_Mute)
+        {
+            Mute();
+            
+        }
+        else if(!gIs_Mute)
+        {
+            UnMute();
+            
+        }
+        mSound->State_Update();
         mBack->State_Update();
         mAbout->State_Update();
         mIntro->State_Update();
+        
     }
     else if(gIs_About)
     {
@@ -98,7 +134,6 @@ void Setting::Update()
         OpenIntro();
     }
 }
-
 void Setting::Clean()
 {
     

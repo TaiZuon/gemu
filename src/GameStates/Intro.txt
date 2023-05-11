@@ -1,0 +1,15 @@
+                ***HOW TO PLAY***                        
+---------------------------------------------------------
+                                                         
+                    CONTROL:                             
+*Press A (D) to Run to Left (Right)                      
+*Press W to Jump                                         
+*Press I to Attack                                       
+---------------------------------------------------------
+                                                         
+                   GAMEPLAY:                             
+*In each Wave, Orcs'll be spawned and keep chasing you   
+*Once they come close enough, they'll start Attacking    
+*By killing Orcs, you'll get Coins                       
+*Coins help you to Upgrade you Health and Damage         
+*The more waves you pass, the stronger Ors become        

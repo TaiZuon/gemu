@@ -2,6 +2,16 @@
 
 Sound* Sound::g_Instance = nullptr;
 
+void Sound::Mute()
+{
+    Mix_Volume(-1, 0);
+    Mix_VolumeMusic(0);
+}
+void Sound::UnMute()
+{
+    Mix_Volume(-1, 128);
+    Mix_VolumeMusic(128);
+}
 void Sound::LoadMusic(std::string id, std::string path)
 {
     MusicMap[id] = Mix_LoadMUS(path.c_str());

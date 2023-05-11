@@ -44,7 +44,9 @@ void Upgrade::Render()
     mBack->Draw();
     mUpHealth->Draw();
     mUpDamage->Draw();
-
+    
+    TextureManager::Get_Instance()->LoadText("Price", "Price: 1000");
+    TextureManager::Get_Instance()->DrawText("Price", SCREEN_WIDTH/2 - 100, 5, 0, nullptr, SDL_FLIP_NONE);
     Health::Get_Instance()->Draw_Num_Health();
     Damage::Get_Instance()->Draw_Num_Damage();
     Coin::Get_Instance()->Draw_Num_Coins();

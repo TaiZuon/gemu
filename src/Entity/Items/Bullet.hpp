@@ -2,6 +2,7 @@
 
 #include "Item.hpp"
 #include "../../Physics/RigidBody.hpp"
+#include "Entity/Characters/Warrior.hpp"
 
 class Bullet: public Item
 {
@@ -11,20 +12,11 @@ public:
     virtual void Draw();
     virtual void Clean();
     virtual void Update(double dt);
-    //player
-    SDL_Rect gTar_Box;
-    void Set_Tar_Box(SDL_Rect a);
     int Is_Tar_Colly();
-
-    int Get_Dam();
-
-    bool Get_Bullet_State()
+    void Explose(double dt);
+    bool Get_Bullet_Done()
     {
         return gIs_Done;
-    }
-    void Set_Bullet_State(bool a)
-    {
-        gIs_Touched = a;
     }
     void Set_Dir(int a)
     {
@@ -44,5 +36,6 @@ private:
 
     double gEx_Time = 20.0;
 
+    Warrior* gTarget;
     RigidBody* gRigidBody;
 };

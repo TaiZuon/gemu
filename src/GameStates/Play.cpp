@@ -18,8 +18,9 @@
 
 Play::Play()
 {
-    gIs_Setting = false;
+    gPause = false;
     gIs_Defeat = false;
+    gIs_Menu = false;
     gGS_Renderer = Game::Get_Instance()->gRenderer;
     WaveManager::Get_Instance()->Reset_Waves();
     WaveManager::Get_Instance()->Update_Wave(WaveManager::Get_Instance()->Get_Current_Wave());
@@ -32,7 +33,7 @@ void Play::Init_Player()
 }
 void Play::Init_Orcs()
 {
-    int Num = 3;
+    int Num = 3 + (WaveManager::Get_Instance()->Get_Current_Wave() + 1) / 5;
     srand(time(0));
     for (int i = 0; i < Num; i++)
     {
@@ -53,6 +54,7 @@ void Play::Init_Boss()
 }
 void Play::Init_Other()
 {
+    TextureManager::Get_Instance()->LoadText("Pause_ms", "PAUSE");
     Sound::Get_Instance()->PlayMusic("bg_music_playgame");
 
     Coin::Get_Instance()->Get_Num_Coins();
@@ -71,18 +73,14 @@ bool Play::Init()
     
     if(!ObjectHandler::Get_Instance()->Is_Clear()) ObjectHandler::Get_Instance()->Delete_All();
 
-    mSetting = new Button(new Properties("Back", SCREEN_WIDTH - 100, 5, 80, 80, SDL_FLIP_NONE));
+    mPause = new Button(new Properties("Pause", SCREEN_WIDTH - 100, 5, 80, 80, SDL_FLIP_NONE));
+    mMenu = new Button(new Properties("Menu",SCREEN_WIDTH / 2 - 70, 250, 141, 64, SDL_FLIP_NONE));
 
     Init_Other();
     Init_Player();
     Init_Orcs();
     Init_Boss();
     std::cout << "Play init!\n";
-
-    std::cout << gIs_Defeat << '\n'; 
-    std::cout << "Player die?: " << ObjectHandler::Get_Instance()->Get_Player()->Is_Killed() << '\n';
-    int a;
-//    std::cin >> a; 
     return true;
 }
 
@@ -93,15 +91,20 @@ void Play::Render()
 
     TextureManager::Get_Instance()->DrawBackGround("Background", 0, 0, 1600, 640, 0, nullptr, SDL_FLIP_NONE);
     Map::Get_Instance()->Draw();
-
-    mSetting->Draw();
-
+    
     for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Bosses(); i++) 
     ObjectHandler::Get_Instance()->Get_Boss(i)->Draw();
     for( int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
     ObjectHandler::Get_Instance()->Get_Enemy(i)->Draw();
     ObjectHandler::Get_Instance()->Get_Player()->Draw();
     ObjectHandler::Get_Instance()->Get_Heart(0)->Draw();
+    if(gPause)
+    {
+        TextureManager::Get_Instance()->DrawBackGround("Pause_bg", 0, 0, 1600, 640, 0, nullptr, SDL_FLIP_NONE);
+        mMenu->Draw();
+        TextureManager::Get_Instance()->DrawText("Pause_ms", SCREEN_WIDTH/2 - 55, 150, 0, nullptr, SDL_FLIP_NONE);
+    }
+    mPause->Draw();
 
     Coin::Get_Instance()->Draw_Num_Coins();
 
@@ -115,11 +118,11 @@ void Play::Update()
 //    std::cout << gIs_Setting << '\n';
     Events();
 
-    if(!gIs_Setting and !gIs_Defeat and !ObjectHandler::Get_Instance()->Is_Clear())
+    if(!gPause and !gIs_Defeat and !ObjectHandler::Get_Instance()->Is_Clear() and !gIs_Menu)
     {
         double dt = Timer::Get_Instance()->Get_Delta_Time();
 
-        mSetting->State_Update();
+        mPause->State_Update();
 
         int blocked_back = 0;
         int blocked_fore = 0;
@@ -127,30 +130,16 @@ void Play::Update()
         //boss
         for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Bosses(); i++)
         {
-            ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_State(ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Attacking(), ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Dead());
-            if(ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Tar_Colly() != 0)  
-            {       
-                if(ObjectHandler::Get_Instance()->Get_Player()->gEnemy_Attack)
-                ObjectHandler::Get_Instance()->Get_Player()->Hurt(ObjectHandler::Get_Instance()->Get_Boss(i)->Get_Damage());
-                if(ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Killed()) 
-                {
-                    ObjectHandler::Get_Instance()->Delete_Boss(i);    
-                }
-            }
-            
-            //bullet
-            if(ObjectHandler::Get_Instance()->Get_Boss(i)->Get_Crystal() != nullptr)
+            ObjectHandler::Get_Instance()->Get_Boss(i)->Update(dt);
+            if(ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Killed()) 
             {
-                if(ObjectHandler::Get_Instance()->Get_Boss(i)->Get_Crystal()->Is_Tar_Colly() != 0)
-                {
-                    ObjectHandler::Get_Instance()->Get_Player()->Hurt(ObjectHandler::Get_Instance()->Get_Boss(i)->Get_Crystal()->Get_Dam());
-                }
+                ObjectHandler::Get_Instance()->Delete_Boss(i);    
             }
         }
 
         for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
         {
-//            ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_State(ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Attacking(), ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Dead());
+            ObjectHandler::Get_Instance()->Get_Enemy(i)->Update(dt);
             if(ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Killed()) 
             {
                 ObjectHandler::Get_Instance()->Delete_Enemy(i); 
@@ -161,6 +150,7 @@ void Play::Update()
         if(ObjectHandler::Get_Instance()->Get_Heart(0)->Get_Heart_State())
         {
             ObjectHandler::Get_Instance()->Get_Player()->Heal(ObjectHandler::Get_Instance()->Get_Heart(0)->Get_Num_Heal());
+            Sound::Get_Instance()->PlayEffect("Upgrade");
             ObjectHandler::Get_Instance()->Get_Heart(0)->Set_Heart_State(false);
             ObjectHandler::Get_Instance()->Delete_Heart(0);
             do
@@ -171,15 +161,8 @@ void Play::Update()
                 else break;
             } while (1);
         }
-        for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Bosses(); i++)
-        {
-            ObjectHandler::Get_Instance()->Get_Boss(i)->Update(dt);
-        }
-        for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
-        {
-            ObjectHandler::Get_Instance()->Get_Enemy(i)->Update(dt);
-        }
         ObjectHandler::Get_Instance()->Get_Heart(0)->Update(dt);
+
         ObjectHandler::Get_Instance()->Get_Player()->Update(dt); 
         if(ObjectHandler::Get_Instance()->Get_Player()->Is_Killed() == 1) gIs_Defeat = true; else gIs_Defeat = false;
 
@@ -193,33 +176,44 @@ void Play::Update()
     }
     else if(ObjectHandler::Get_Instance()->Is_Clear())
     {
+        SDL_Delay(200);
         ObjectHandler::Get_Instance()->Get_Player()->Reset_Position();
         WaveManager::Get_Instance()->Next_Wave();
         WaveManager::Get_Instance()->Update_Wave(WaveManager::Get_Instance()->Get_Current_Wave());                        
         Init_Orcs();
         Init_Boss();
     }
-    else if(gIs_Setting)
+    else if(gPause)
     {
-        OpenSetting();
+        mMenu->State_Update();
+        mPause->State_Update();
+    }
+    if(gIs_Menu)
+    {
+        gIs_Menu = false;
+        SDL_Delay(200);
+        OpenMenu();
     }
 }
 
 void Play::Events()
 {
-    if(Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_M))
+    if(mMenu->Get_Button_State() == MOUSE_DOWN)
     {
-        OpenMenu();
+        gIs_Menu = true;
+        mMenu->Set_Button_State(MOUSE_OUT);
     }
-    if(!gIs_Setting and (Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_ESCAPE) or (mSetting->Get_Button_State() == MOUSE_DOWN and mSetting->Is_New_State())))
+    if(!gPause and (mPause->Get_Button_State() == MOUSE_DOWN and mPause->Is_New_State()))
     {
-        gIs_Setting = true;
-        // mSetting->Set_Button_State(MOUSE_OUT);
-    } else
-    if(gIs_Setting and Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_SPACE))
+        gPause = true;
+        mPause->Set_Props("Play");
+        mPause->Set_Button_State(MOUSE_OUT);
+    } 
+    if(gPause and mPause->Get_Button_State() == MOUSE_DOWN and mPause->Is_New_State())
     {
-        gIs_Setting = false;
-        // mSetting->Set_Button_State(MOUSE_OUT);
+        gPause = false;
+        mPause->Set_Props("Pause");
+        mPause->Set_Button_State(MOUSE_OUT);
     }
 }
 
@@ -239,7 +233,3 @@ void Play::OpenDefeat()
     Game::Get_Instance()->ChangeState(new Defeat());
 }
 
-void Play::OpenSetting()
-{
-
-}

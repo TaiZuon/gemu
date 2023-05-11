@@ -31,7 +31,9 @@ public:
     bool Is_Dead();
     bool Is_Killed();
     void Hurt(int dam);
-    void Dead();
+    void Dead(double dt);
+
+    bool gIs_Reset_Ani;
 
 private:
     bool gIs_Jumping;
