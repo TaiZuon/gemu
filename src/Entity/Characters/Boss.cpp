@@ -6,6 +6,7 @@
 #include "../../Game.hpp"
 #include "../../Physics/CollisionHandler.hpp"
 #include "../Coins/Coin.hpp"
+#include "Entity/ObjectHandler.hpp"
 
 
 Boss::Boss(Properties* props): Character(props)
@@ -15,6 +16,11 @@ Boss::Boss(Properties* props): Character(props)
 
     gDamage = gMax_Damage;
     gHealth = gMax_Health;
+
+    if(gTarget == nullptr)
+    {
+        gTarget = ObjectHandler::Get_Instance()->Get_Player();
+    }
 
     gIs_Jumping = false;
     gIs_Falling = false;
@@ -39,18 +45,30 @@ Boss::Boss(Properties* props): Character(props)
     gAnimation = new Animation();
     gAnimation->Set_Props(gTexture_ID, 1, 5, 150, SDL_FLIP_NONE);
 }
+RigidBody* Boss::Get_RigidBody()
+{
+    return gRigidBody;
+}
+Collider* Boss::Get_Collider()
+{
+    return gCollider;
+}
+Bullet* Boss::Get_Crystal()
+{
+    return Crystal;
+}
 
 void Boss::Track_Tar()
 {
-    if(std::abs(gOrigin->X - gTar->X) > 50 )
+    if(std::abs(gOrigin->X - gTarget->Get_Origin()->X) > 50 )
     {
 //        std::cout << "Chase!\n";
         gIs_Running = true;
     }
     //tracking player
-    if(std::abs(gOrigin->X - gTar->X) > 5 and !gIs_Attacking)
+    if(std::abs(gOrigin->X - gTarget->Get_Origin()->X) > 5 and !gIs_Attacking)
     {
-        if(gTar->X > gOrigin->X) 
+        if(gTarget->Get_Origin()->X > gOrigin->X) 
         {
             gFlip = SDL_FLIP_NONE;
             gDir = FORWARD;
@@ -69,17 +87,16 @@ void Boss::Track_Tar()
         gIs_Running = false;
     }
 }
-
 void Boss::Track_Tar_Shoot()
 {
-    if(std::abs(gOrigin->X - gTar->X) > gShoot_Range)
+    if(std::abs(gOrigin->X - gTarget->Get_Origin()->X) > gShoot_Range)
     {
         gIs_Running = true;
     }
     else gIs_Running = false;
     if(!gIs_Attacking)
     {
-        if(gTar->X > gOrigin->X) 
+        if(gTarget->Get_Origin()->X > gOrigin->X) 
         {
             gFlip = SDL_FLIP_NONE;
             gDir = FORWARD;
@@ -101,13 +118,85 @@ void Boss::Track_Tar_Shoot()
         gRigidBody->Stop_Vel_X();
     }
 }
+void Boss::Hurt(int dam)
+{
+    if(Is_Tar_Colly()) 
+    {
+        gHealth -= dam;
+        gHealth = std::max(gHealth, 0);
+    }
+}
+void Boss::Is_Insane()
+{
+    if(gLast_Insane != gIs_Insane) Sound::Get_Instance()->PlayEffect("Orc_Insane");
+    if(float(gHealth*1.0 / gMax_Health) < 0.5) gIs_Insane = true;
+    else gIs_Insane = false;
+    gLast_Insane = gIs_Insane;
+}
+void Boss::Dead()
+{
+    gIs_Jumping = false;
+    gIs_Falling = false;
+    gIs_Running = false;
+    gIs_Attacking = false;
+    gIs_Landed = false; 
+    gIs_Hurt = false;
+}
+
+int Boss::Is_Tar_Colly()
+{
+    return CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTarget->Get_Collider()->Get_Box());
+}
+int Boss::Get_Damage()
+{
+    return gDamage;
+}
+
+bool Boss::Is_Taken_Dam()
+{
+    if(Is_Tar_Colly() != 0)
+    {
+        switch (CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTarget->Get_Collider()->Get_Box()))
+        {
+        case FORWARD:
+            if(gTarget->Get_Dir() == BACKWARD) return true;
+            else return false;
+            break;
+        case BACKWARD:
+            if(gTarget->Get_Dir() == FORWARD) return true;
+            else return false;
+            break;
+        default:
+            break;
+        }
+    }
+    return false;
+} 
+bool Boss::Is_Attacking()
+{
+    return gIs_Attacking;
+}
+bool Boss::Is_Dead()
+{
+    return gIs_Dead;
+}
+bool Boss::Is_Killed()
+{
+    return gIs_Killed;
+}
+bool Boss::Tar_In_Range()
+{
+    if(std::abs(gTarget->Get_Origin()->X - gOrigin->X) <= gShoot_Range) return true;
+    return false;
+}
+
 
 void Boss::Update(double dt)
 {
 //    std::cout << gType << '\n';
     bool Reset = false;
     bool Repeat = true;
-    if(!gIs_Dead and !gTar_Dead and !gIs_Killed)
+    if(!gIs_Dead and !gTarget->Is_Dead() and !gIs_Killed)
     {
         if(!gIs_Insane)
         {
@@ -191,15 +280,14 @@ void Boss::Update(double dt)
                 gAnimation->Set_Props("Orc_Warrior_Run", 1, 6, 200, gFlip);
             }
         }
-        if(gTar_Attack) 
+        if(gTarget->Is_Attacking()) 
         {
             gIs_Hurt = true;
         }
-        if(gIs_Hurt and gHurt_Time > 0 and Is_Taken_Dam()) 
+        if(gIs_Hurt and gHurt_Time > 0) 
         {
             Sound::Get_Instance()->PlayEffect("Orc_Die");
             gHurt_Time -= dt;
-            Hurt(gTar_Dam);
         }
         else 
         {
@@ -239,7 +327,7 @@ void Boss::Update(double dt)
         gRigidBody->Stop_Vel_Y();
         Dead();
     }
-    else if(gTar_Dead)
+    else if(gTarget->Is_Dead())
     {
         gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
         gRigidBody->Unset_Force();
@@ -249,7 +337,7 @@ void Boss::Update(double dt)
     // bullet
     if(Crystal != nullptr) 
     {
-        Crystal->Set_Tar_Box(gTar_Box);
+        Crystal->Set_Tar_Box(gTarget->Get_Collider()->Get_Box());
         Crystal->Update(dt);
         if(Crystal->Get_Bullet_State())
         {

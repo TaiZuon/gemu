@@ -1,4 +1,5 @@
-#pragma once
+#ifndef OBJECT_HANDLER_HPP
+#define OBJECT_HANDLER_HPP
 
 #include "SDL.h"
 #include "Characters/Warrior.hpp"
@@ -73,4 +74,5 @@ public:
 
 };
 
+#endif
 

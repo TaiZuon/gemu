@@ -9,6 +9,17 @@ Input::Input()
     gKey_States = SDL_GetKeyboardState(nullptr);
 }
 
+bool Input::No_Key_Down()
+{
+    SDL_Scancode Key_List [] = {SDL_SCANCODE_W, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_I, SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SDL_SCANCODE_ESCAPE,SDL_SCANCODE_SPACE};
+    for (SDL_Scancode key : Key_List){
+        if (gKey_States[key] == 1){
+            return false;
+        }
+    }
+    return true;
+}
+
 void Input::Listen()
 {
     SDL_Event event;

@@ -123,25 +123,6 @@ void Play::Update()
 
         int blocked_back = 0;
         int blocked_fore = 0;
-        for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Bosses(); i++)
-        {
-            ObjectHandler::Get_Instance()->Get_Boss(i)->Set_Tar_Box(ObjectHandler::Get_Instance()->Get_Player()->Get_Collider()->Get_Box());
-            ObjectHandler::Get_Instance()->Get_Boss(i)->Set_Tar(ObjectHandler::Get_Instance()->Get_Player()->Get_Origin());
-            ObjectHandler::Get_Instance()->Get_Boss(i)->Set_Tar_Dir(ObjectHandler::Get_Instance()->Get_Player()->Get_Dir());
-            ObjectHandler::Get_Instance()->Get_Boss(i)->Set_Tar_Dam(ObjectHandler::Get_Instance()->Get_Player()->Get_Damage());
-            ObjectHandler::Get_Instance()->Get_Boss(i)->Set_Tar_State(ObjectHandler::Get_Instance()->Get_Player()->Is_Attacking(), ObjectHandler::Get_Instance()->Get_Player()->Is_Dead());
-            ObjectHandler::Get_Instance()->Get_Boss(i)->Update(dt);
-        }
-        for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
-        {
-            ObjectHandler::Get_Instance()->Get_Enemy(i)->Set_Tar_Dir(ObjectHandler::Get_Instance()->Get_Player()->Get_Dir());
-            ObjectHandler::Get_Instance()->Get_Enemy(i)->Set_Tar_Box(ObjectHandler::Get_Instance()->Get_Player()->Get_Collider()->Get_Box());
-            ObjectHandler::Get_Instance()->Get_Enemy(i)->Set_Tar_Origin(ObjectHandler::Get_Instance()->Get_Player()->Get_Origin());
-            ObjectHandler::Get_Instance()->Get_Enemy(i)->Set_Tar_Dam(ObjectHandler::Get_Instance()->Get_Player()->Get_Damage());
-            ObjectHandler::Get_Instance()->Get_Enemy(i)->Set_Tar_State(ObjectHandler::Get_Instance()->Get_Player()->Is_Attacking(), ObjectHandler::Get_Instance()->Get_Player()->Is_Dead());
-            ObjectHandler::Get_Instance()->Get_Enemy(i)->Update(dt);
-        }
-        ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_Dam(0);
         
         //boss
         for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Bosses(); i++)
@@ -149,28 +130,14 @@ void Play::Update()
             ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_State(ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Attacking(), ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Dead());
             if(ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Tar_Colly() != 0)  
             {       
-                ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_Dam(ObjectHandler::Get_Instance()->Get_Boss(i)->Get_Damage());
-
                 if(ObjectHandler::Get_Instance()->Get_Player()->gEnemy_Attack)
                 ObjectHandler::Get_Instance()->Get_Player()->Hurt(ObjectHandler::Get_Instance()->Get_Boss(i)->Get_Damage());
-
-                switch (ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Tar_Colly())
-                {
-                case FORWARD:
-                    if(Input::Get_Instance()->Get_Direction(HORIZONTAL) == BACKWARD) blocked_back--;
-                    break;
-                case BACKWARD:
-                    if(Input::Get_Instance()->Get_Direction(HORIZONTAL) == FORWARD) blocked_fore++;
-                    break;
-                default:
-                    break;
-                }
                 if(ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Killed()) 
                 {
                     ObjectHandler::Get_Instance()->Delete_Boss(i);    
                 }
             }
-            //
+            
             //bullet
             if(ObjectHandler::Get_Instance()->Get_Boss(i)->Get_Crystal() != nullptr)
             {
@@ -183,34 +150,13 @@ void Play::Update()
 
         for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
         {
-            ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_State(ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Attacking(), ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Dead());
-
-            if(ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Tar_Colly() != 0)  
-            {       
-                ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_Dam(ObjectHandler::Get_Instance()->Get_Enemy(i)->Get_Damage());
-                ObjectHandler::Get_Instance()->Get_Player()->Hurt(ObjectHandler::Get_Instance()->Get_Enemy(i)->Get_Damage());
-
-                switch (ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Tar_Colly())
-                {
-                case FORWARD:
-                    if(Input::Get_Instance()->Get_Direction(HORIZONTAL) == BACKWARD) blocked_back--;
-                    break;
-                case BACKWARD:
-                    if(Input::Get_Instance()->Get_Direction(HORIZONTAL) == FORWARD) blocked_fore++;
-                    break;
-                default:
-                    break;
-                }
-            }
+//            ObjectHandler::Get_Instance()->Get_Player()->Set_Enemy_State(ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Attacking(), ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Dead());
             if(ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Killed()) 
             {
                 ObjectHandler::Get_Instance()->Delete_Enemy(i); 
             }
         }
-
-        if(blocked_back != 0) ObjectHandler::Get_Instance()->Get_Player()->Block_Backward();
-        if(blocked_fore != 0) ObjectHandler::Get_Instance()->Get_Player()->Block_Forward();
-
+        //heart
         ObjectHandler::Get_Instance()->Get_Heart(0)->Set_Tar_Box(ObjectHandler::Get_Instance()->Get_Player()->Get_Collider()->Get_Box());
         if(ObjectHandler::Get_Instance()->Get_Heart(0)->Get_Heart_State())
         {
@@ -225,7 +171,14 @@ void Play::Update()
                 else break;
             } while (1);
         }
-
+        for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Bosses(); i++)
+        {
+            ObjectHandler::Get_Instance()->Get_Boss(i)->Update(dt);
+        }
+        for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
+        {
+            ObjectHandler::Get_Instance()->Get_Enemy(i)->Update(dt);
+        }
         ObjectHandler::Get_Instance()->Get_Heart(0)->Update(dt);
         ObjectHandler::Get_Instance()->Get_Player()->Update(dt); 
         if(ObjectHandler::Get_Instance()->Get_Player()->Is_Killed() == 1) gIs_Defeat = true; else gIs_Defeat = false;
@@ -248,7 +201,6 @@ void Play::Update()
     }
     else if(gIs_Setting)
     {
-        //gIs_Setting = false;
         OpenSetting();
     }
 }

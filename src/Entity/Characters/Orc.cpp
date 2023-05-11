@@ -6,9 +6,14 @@
 #include "../../Physics/CollisionHandler.hpp"
 #include "../Coins/Coin.hpp"
 #include "../../SoundManager/Sound.hpp"
+#include "Entity/ObjectHandler.hpp"
 
 Orc::Orc(Properties* props): Character(props)
 {
+    if(gTarget == nullptr)
+    {
+        gTarget = ObjectHandler::Get_Instance()->Get_Player();
+    }
     gMax_Damage = WaveManager::Get_Instance()->Get_Orc_Damage();
     gMax_Health = WaveManager::Get_Instance()->Get_Orc_Health();
 
@@ -39,87 +44,94 @@ Orc::Orc(Properties* props): Character(props)
     gAnimation = new Animation();
     gAnimation->Set_Props(gTexture_ID, 1, 5, 50, SDL_FLIP_NONE);
 }
-
-void Orc::Update(double dt)
+RigidBody* Orc::Get_RigidBody()
 {
-    bool Reset = false;
-    bool Repeat = false;
-    if(!gIs_Dead and !gTar_Dead and !gIs_Killed)
-    {
-    if(gTar_Attack) 
-    {
-        gIs_Hurt = true;
-    }
-    if(gIs_Hurt and gHurt_Time > 0 and Is_Taken_Dam()) 
-    {
-        Sound::Get_Instance()->PlayEffect("Orc_Die");
-        gHurt_Time -= dt;
-        Hurt(gTar_Dam);
-    }
-    else 
-    {
-        gHurt_Time = 2.0;
-        gIs_Hurt = false;
-    }
-    if(gIs_Hurt) 
-    {
-        gAnimation->Set_Props("Orc_Hurt", 1, 2, 100, gFlip);
-        Repeat = false;
-    }
-    if(gHealth == 0)
-    {
-        gIs_Dead = true;
-    }
-    else 
-    {
-        gIs_Dead = false;
-        Repeat = true;
-    }
+    return gRigidBody;
+}
+Collider* Orc::Get_Collider()
+{
+    return gCollider;
+}
 
-    if(std::abs(gRigidBody->Get_Velocity().X) != 0)
-    {
-        double v_temp = gRigidBody->Get_Velocity().X;
-        Vector2D friction(-FRICTION * (v_temp/std::abs(v_temp)), 0);
-        gRigidBody->Apply_Friction(friction);
-    } 
-    else
-    {
-        gRigidBody->Unset_Friction();
-    }
-    if(!gIs_Attacking and !gIs_Running)
-    gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
-
+int Orc::Is_Tar_Colly()
+{
+    return CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTarget->Get_Collider()->Get_Box());
+}
+int Orc::Get_Damage()
+{
+    return gDamage;
+}
+bool Orc::Is_Taken_Dam()
+{
     if(Is_Tar_Colly() != 0)
     {
-//        std::cout << "Touch!\n";
-        gIs_Attacking = true;
+        switch (CollisionHandler::Get_Instance()->Is_Collision(gCollider->Get_Box(), gTarget->Get_Collider()->Get_Box()))
+        {
+        case FORWARD:
+            /* code */
+            if(gTarget->Get_Dir() == BACKWARD) return true;
+            else return false;
+            break;
+        case BACKWARD:
+            if(gTarget->Get_Dir() == FORWARD) return true;
+            else return false;
+            break;
+        default:
+            break;
+        }
+    }
+    return false;
+}    
+bool Orc::Is_Attacking()
+{
+    return gIs_Attacking;
+}
+bool Orc::Is_Dead()
+{
+    return gIs_Dead;
+}
+bool Orc::Is_Killed()
+{
+    return gIs_Killed;
+}
+
+void Orc::Hurt(int dam)
+{
+    if(Is_Tar_Colly() != 0) 
+    {
+        gHealth -= dam;
+        gHealth = std::max(gHealth, 0);
+    }
+}
+void Orc::Dead()
+{
+    gIs_Jumping = false;
+    gIs_Falling = false;
+    gIs_Running = false;
+    gIs_Attacking = false;
+    gIs_Landed = false; 
+    gIs_Hurt = false;
+}
+
+void Orc::Track_Tar()
+{
+    if(std::abs(gOrigin->X - gTarget->Get_Origin()->X) > 50 )
+    {
+        gIs_Running = true;
+    }
+    if(Is_Tar_Colly() != 0)
+    {
+        Attack();
         gIs_Running = false;
     }
     else
     {
-        gIs_Attacking = false;
         gIs_Running = true;
-    }
-    if(gIs_Attacking and gAttack_Time > 0)
-    {
-        gAttack_Time -= dt;
-        Sound::Get_Instance()->PlayEffect("Orc_Attack");
-    }
-    else 
-    {
-        
         gIs_Attacking = false;
-        gAttack_Time = ATTACK_TIME;
     }
-    if(std::abs(gOrigin->X - gTar->X) > 50 )
+    if(std::abs(gOrigin->X - gTarget->Get_Origin()->X) > 5 and gIs_Running)
     {
-//        std::cout << "Chase!\n";
-        gIs_Running = true;
-    }
-    //tracking player
-    if(std::abs(gOrigin->X - gTar->X) > 5 and !gIs_Attacking)
-    {
-        if(gTar->X > gOrigin->X) 
+        if(gTarget->Get_Origin()->X > gOrigin->X) 
         {
             gFlip = SDL_FLIP_NONE;
             gRigidBody->Apply_ForceX(RUN_FORCES[ORC]);
@@ -132,19 +144,80 @@ void Orc::Update(double dt)
     }
     else 
     {
-//        std::cout << "Stop!\n";
         gRigidBody->Unset_Force();
         gIs_Running = false;
-    }
-
-    if(gIs_Attacking)
-    {
-        gAnimation->Set_Props("Orc_Attack_1", 1, 4, 150, gFlip);
     }
     if(gIs_Running)
     {
         gAnimation->Set_Props("Orc_Run", 1, 6, 100, gFlip);
     }
+
+} 
+void Orc::Attack()
+{  
+    if(!gIs_Attacking) gAnimation->AnimationStart();
+    gIs_Attacking = true;
+    gRigidBody->Unset_Force();
+    gAnimation->Set_Props("Orc_Attack_1", 1, 4, 150, gFlip);
+    if(gAnimation->Get_Frame() >= 3 and gAnimation->Is_New_Frame())
+    {
+        Sound::Get_Instance()->PlayEffect("Orc_Attack");
+        gTarget->Take_Dam(gDamage);
+    }
+}
+
+void Orc::Friction()
+{
+    if(std::abs(gRigidBody->Get_Velocity().X) != 0)
+    {
+        double v_temp = gRigidBody->Get_Velocity().X;
+        Vector2D friction(-FRICTION * (v_temp/std::abs(v_temp)), 0);
+        gRigidBody->Apply_Friction(friction);
+    } 
+    else
+    {
+        gRigidBody->Unset_Friction();
+    }
+}
+void Orc::Update(double dt)
+{
+    bool Reset = false;
+    bool Repeat = false;
+    if(!gIs_Dead and !gTarget->Is_Dead() and !gIs_Killed)
+    {
+        Friction();
+        if(Is_Taken_Dam()) 
+        {
+            gIs_Hurt = true;
+        }
+        if(gIs_Hurt and gHurt_Time > 0 and Is_Taken_Dam()) 
+        {
+            Sound::Get_Instance()->PlayEffect("Orc_Die");
+            gHurt_Time -= dt;
+        }
+        else 
+        {
+            gHurt_Time = 2.0;
+            gIs_Hurt = false;
+        }
+        if(gIs_Hurt) 
+        {
+            gAnimation->Set_Props("Orc_Hurt", 1, 2, 100, gFlip);
+            Repeat = false;
+        }
+        if(gHealth == 0)
+        {
+            gIs_Dead = true;
+        }
+        else 
+        {
+            gIs_Dead = false;
+            Repeat = true;
+        }
+
+        if(!gIs_Attacking and !gIs_Running)
+        gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
+        Track_Tar();
     }
     else if(gIs_Dead)
     {
@@ -152,7 +225,7 @@ void Orc::Update(double dt)
         {
             gDead_Time -= dt;
 //            std::cout << gDead_Time << " " << dt << '\n'; 
-            if(gDead_Time <= dt)
+            if(gDead_Time <= 0)
             { 
                 Sound::Get_Instance()->PlayEffect("Orc_Die");
                 gIs_Killed = true;
@@ -166,7 +239,7 @@ void Orc::Update(double dt)
         gRigidBody->Stop_Vel_Y();
         Dead();
     } 
-    else if(gTar_Dead)
+    else if(gTarget->Is_Dead())
     {
         gAnimation->Set_Props(gTexture_ID, 1, 5, 150, gFlip);
         gRigidBody->Unset_Force();

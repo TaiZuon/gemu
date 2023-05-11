@@ -7,8 +7,8 @@
 
 #define JUMP_TIME 1.5f
 #define JUMP_FORCE 5.0f
-#define RUN_FORCE 1.0f
-#define ATTACK_TIME 15.0f
+#define RUN_FORCE 0.5f
+#define ATTACK_TIME 1.0f
 
 #define UNI_MASS 1.0f
 #define GRAVITY 0.5f

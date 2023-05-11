@@ -73,6 +73,10 @@ public:
         gVelocity.Y = 0;
         gPosition.Y = 0;
     }
+    void Set_Vel_Y(double a)
+    {
+        gVelocity.Y = a;
+    }
 
     void Update(double dt, int type)
     {
@@ -105,6 +109,14 @@ public:
     Vector2D Get_Accelaration()
     {
         return gAccelaration;
+    }
+    Vector2D Get_Force()
+    {
+        return gForce;
+    }
+    Vector2D Get_Friction()
+    {
+        return gFriction;
     }
 
 };

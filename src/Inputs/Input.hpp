@@ -26,6 +26,7 @@ public:
     void Listen();
     bool Get_Key_Down(SDL_Scancode Key);
     bool Get_Key_Up(SDL_Scancode Key);
+    bool No_Key_Down();
     int Get_Direction(int Dir);
 
     SDL_EventType Get_Event_Type();
