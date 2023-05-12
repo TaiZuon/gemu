@@ -21,7 +21,6 @@ public:
     
     RigidBody* Get_RigidBody();
     Collider* Get_Collider();
-    Bullet* Get_Crystal();
 
     int Get_Damage();
     int Is_Tar_Colly();
@@ -42,7 +41,7 @@ public:
     bool Is_Killed();
     bool Tar_In_Range();
 
-
+    
 private:
     bool gIs_Jumping;
     bool gIs_Falling;
@@ -63,14 +62,14 @@ private:
     double gDead_Time = 20.0;
     double gShoot_Time = 5.0;
 
-    double gShoot_Range = 300;
+    double gShoot_Range = BOSS_RANGE;
 
     int gMax_Health;
     int gMax_Damage;
 
     int gType;
-
     int gHealth;
+    
     int gDamage;
     int gDir;
 

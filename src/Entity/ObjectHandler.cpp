@@ -9,15 +9,29 @@ void ObjectHandler::New_Player(int x, int y)
 }
 void ObjectHandler::Add_New_Enemy(int x, int y)
 {
-    Enemy = new Orc(new Properties("Orc_Idle", x, y, CHAR_SIZE, CHAR_SIZE, SDL_FLIP_NONE));
-    Enemies.push_back(Enemy);
+    Orc* tEnemy = new Orc(new Properties("Orc_Idle", x, y, CHAR_SIZE, CHAR_SIZE, SDL_FLIP_NONE));
+    Enemies.push_back(tEnemy);
     Num_Enemies++;
 }
 void ObjectHandler::Add_New_Boss(int x, int y)
 {
-    Bosu = new Boss(new Properties("Orc_Warrior_Idle", x, y, BOSS_SIZE, BOSS_SIZE, SDL_FLIP_NONE)); 
-    Bosses.push_back(Bosu);
+    Boss* Bosut = new Boss(new Properties("Orc_Warrior_Idle", x, y, BOSS_SIZE, BOSS_SIZE, SDL_FLIP_NONE)); 
+    Bosses.push_back(Bosut);
+
     Num_Bosses++;
+    // std::cout << "Pos x: " << Bosses[Num_Bosses - 1]->Get_Origin()->X << '\n';
+    // std::cout << "Num B: " << Bosses.size() << "\n";
+}
+void ObjectHandler::Add_New_Crystal(int x, int y, int dir, int dam)
+{
+    Num_Crystals++;
+    Bullet* Crysta;
+//    std::cout << "a" << '\n';
+    Crysta = new Bullet(new Properties("Bullet_Move", x, 288 + 73, 150, 120, SDL_FLIP_NONE));
+    Crysta->Set_Dir(dir);
+    Crysta->Set_Dam(dam);
+    Crystals.push_back(Crysta);
+//    std::cout << Num_Crystals << "New Crystal\n";
 }
 void ObjectHandler::Add_New_Heart()
 {   
@@ -40,15 +54,26 @@ void ObjectHandler::Delete_Player()
 }
 void ObjectHandler::Delete_Enemy(int i)
 {
-    Enemies[i] = nullptr;
+    delete Enemies[i];
+//    Enemies[i] = nullptr;
     Enemies.erase(Enemies.begin() + i);
     Num_Enemies--;
 }
 void ObjectHandler::Delete_Boss(int i)
 {
-    Bosses[i] = nullptr;
+    std::cout << "del\n";
+    delete Bosses[i];
+//    Bosses[i] = nullptr;
     Bosses.erase(Bosses.begin() + i);
     Num_Bosses--;
+}
+void ObjectHandler::Delete_Crystal(int i)
+{
+    delete Crystals[i];
+    Crystals.erase(Crystals.begin() + i);
+    Num_Crystals--;
+//    std::cout << i << "Delete Crystal!\n";
+
 }
 void ObjectHandler::Delete_Heart(int i)
 {
@@ -73,6 +98,10 @@ void ObjectHandler::Delete_All()
     while (Num_Hearts)
     {
         Delete_Heart(0);
+    } 
+    while (Num_Crystals)
+    {
+        Delete_Crystal(0);
     }
 }
 

@@ -25,7 +25,7 @@ bool Animation::Is_New_Frame()
 
 int Animation::Get_Frame()
 {
-    return gFrame_Count;
+    return gSprite_Frame;
 }
 
 void Animation::Draw(double x, double y, int Sprite_Width, int Sprite_Height)

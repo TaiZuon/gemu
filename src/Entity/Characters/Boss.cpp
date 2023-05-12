@@ -17,10 +17,7 @@ Boss::Boss(Properties* props): Character(props)
     gDamage = gMax_Damage;
     gHealth = gMax_Health;
 
-    if(gTarget == nullptr)
-    {
-        gTarget = ObjectHandler::Get_Instance()->Get_Player();
-    }
+    gTarget = ObjectHandler::Get_Instance()->Get_Player();
 
     gIs_Jumping = false;
     gIs_Falling = false;
@@ -32,18 +29,22 @@ Boss::Boss(Properties* props): Character(props)
     gIs_Insane = false;
     gIs_Shooting = false;
     gLast_Insane = false;
+    gIs_Killed = false;
 
     gJump_Time = JUMP_TIME;
     gJump_Force = JUMP_FORCE;
 
     gCollider = new Collider();
     gCollider->Set_Empty(-70,-120,140,120);
+    gCollider->Set_Box(gTransform->X, gTransform->Y, BOSS_SIZE, BOSS_SIZE);
 
     gRigidBody = new RigidBody();
     gRigidBody->Set_Gravity(GRAVITY);
 
     gAnimation = new Animation();
     gAnimation->Set_Props(gTexture_ID, 1, 5, 150, SDL_FLIP_NONE);
+
+    // Crystal = nullptr;
 }
 RigidBody* Boss::Get_RigidBody()
 {
@@ -52,11 +53,6 @@ RigidBody* Boss::Get_RigidBody()
 Collider* Boss::Get_Collider()
 {
     return gCollider;
-}
-Bullet* Boss::Get_Crystal()
-{
-    if(Crystal != nullptr)
-    return Crystal;
 }
 
 void Boss::Track_Tar(double dt)
@@ -175,16 +171,18 @@ void Boss::Friction()
 }
 void Boss::Shoot(double dt)
 {
+//    std::cout << gAnimation->Is_New_Frame() <<"\n";
     if(!gIs_Shooting) gAnimation->AnimationStart();
     gIs_Shooting = true;
     gRigidBody->Unset_Force();
     gAnimation->Set_Props("Orc_Warrior_Attack_2", 1, 4, 250, gFlip);
-    if(Crystal == nullptr) 
-    {
-        Crystal = new Bullet(new Properties("Bullet_Move", gTransform->X, 288 + 73, 150, 120, gFlip));
-        Crystal->Set_Dam(gDamage);
-        Crystal->Set_Dir(gDir);
-    }
+    // if(Crystal == nullptr) 
+    // {
+    //     Crystal = new Bullet(new Properties("Bullet_Move", gTransform->X, 288 + 73, 150, 120, gFlip));
+    //     Crystal->Set_Dam(gDamage);
+    //     Crystal->Set_Dir(gDir);
+    // }
+    if(gAnimation->Get_Frame() == 3 and gAnimation->Is_New_Frame()) ObjectHandler::Get_Instance()->Add_New_Crystal(gTransform->X, 288 + 73, gDir, gDamage);
 }
 
 void Boss::Mele(double dt)
@@ -257,7 +255,7 @@ void Boss::Update(double dt)
     gCollider->Set_Empty(-70,-120,140,120);
     if(!gIs_Dead and !gTarget->Is_Dead())
     {
-        if(gHealth == 0)
+        if(gHealth <= 0)
         {
             gIs_Dead = true;
         }
@@ -305,15 +303,16 @@ void Boss::Update(double dt)
         gRigidBody->Stop_Vel_Y();
     }
     // bullet
-    if(Crystal != nullptr) 
-    {
-        Crystal->Update(dt);
-        if(Crystal->Get_Bullet_Done())
-        {
-            delete Crystal;
-            Crystal = nullptr;
-        }
-    }
+    // if(Crystal != nullptr) 
+    // {
+    //     Crystal->Update(dt);
+    //     if(Crystal->Get_Bullet_Done())
+    //     {
+    //         delete Crystal;
+    //         Crystal = nullptr;
+    //         std::cout << "delete Bullet!\n";
+    //     }
+    // }
     gRigidBody->Update(dt, gType);
 
     gLast_Safe_Position.X = gTransform->X;
@@ -348,7 +347,7 @@ void Boss::Update(double dt)
 void Boss::Draw()
 {
     gAnimation->Draw(gTransform->X, gTransform->Y, gWidth, gHeight);
-    if(Crystal != nullptr) Crystal->Draw();
+    // if(Crystal != nullptr) Crystal->Draw();
 
     Draw_Health();
 }
@@ -378,5 +377,5 @@ void Boss::Draw_Health()
  void Boss::Clean()
  {
     TextureManager::Get_Instance()->Drop(gTexture_ID);
-    if(Crystal != nullptr) Crystal->Clean();
+    // if(Crystal != nullptr) Crystal->Clean();
  }

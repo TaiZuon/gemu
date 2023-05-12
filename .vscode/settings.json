@@ -74,6 +74,11 @@
             "cwd": "d:\\hoc_tap\\Learning_C++\\MyProject\\gemu",
             "binaryPath": "d:\\hoc_tap\\Learning_C++\\MyProject\\gemu\\gemu",
             "binaryArgs": []
+        },
+        {
+            "cwd": "d:\\hoc_tap\\Learning_C++\\MyProject\\gemu",
+            "binaryPath": "d:\\hoc_tap\\Learning_C++\\MyProject\\gemu\\Warrior_vs_Orc",
+            "binaryArgs": []
         }
     ]
 }

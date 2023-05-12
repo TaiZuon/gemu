@@ -28,8 +28,9 @@ void Menu::OpenUpgrade()
 }
 void Menu::OpenExit()
 {
-    Game::Get_Instance()->Clean();
-    Game::Get_Instance()->Quit();
+    // Game::Get_Instance()->Clean();
+    // Game::Get_Instance()->Quit();
+    Game::Get_Instance()->Stop();
 }
 
 void Menu::Events()

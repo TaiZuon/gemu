@@ -34,7 +34,7 @@ void Play::Init_Player()
 void Play::Init_Orcs()
 {
     int Num = 3 + (WaveManager::Get_Instance()->Get_Current_Wave() + 1) / 5;
-    srand(time(0));
+//    std::cout << "Num Enemy: " << Num << '\n';
     for (int i = 0; i < Num; i++)
     {
         int MAX = 1000, MIN = 600;
@@ -45,11 +45,13 @@ void Play::Init_Orcs()
 void Play::Init_Boss()
 {
     int Num = (WaveManager::Get_Instance()->Get_Current_Wave() + 1) / 5;
+    std::cout << "Num Boss: " << Num << '\n';
     for( int i = 0; i < Num; i++ )
     {
-        int MAX = 1500, MIN = 1000;
+        int MAX = 1400, MIN = 1000;
         int posX = rand() % (MAX - MIN + 1) + MIN;
-        ObjectHandler::Get_Instance()->Add_New_Boss(posX, 200);
+
+        ObjectHandler::Get_Instance()->Add_New_Boss(posX, 100);
     }
 }
 void Play::Init_Other()
@@ -96,8 +98,15 @@ void Play::Render()
     ObjectHandler::Get_Instance()->Get_Boss(i)->Draw();
     for( int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Enemies(); i++)
     ObjectHandler::Get_Instance()->Get_Enemy(i)->Draw();
+    for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Crystals(); i++)
+    {
+        ObjectHandler::Get_Instance()->Get_Crystal(i)->Draw();
+        // std::cout << i << " Draw Crystal\n";
+    }
+
     ObjectHandler::Get_Instance()->Get_Player()->Draw();
     ObjectHandler::Get_Instance()->Get_Heart(0)->Draw();
+
     if(gPause)
     {
         TextureManager::Get_Instance()->DrawBackGround("Pause_bg", 0, 0, 1600, 640, 0, nullptr, SDL_FLIP_NONE);
@@ -117,6 +126,7 @@ void Play::Update()
 {
     Events();
 
+//    std::cout << ObjectHandler::Get_Instance()->Get_Num_Crystals() << '\n';
     if(!gPause and !gIs_Defeat and !ObjectHandler::Get_Instance()->Is_Clear() and !gIs_Menu)
     {
         double dt = Timer::Get_Instance()->Get_Delta_Time();
@@ -129,10 +139,12 @@ void Play::Update()
         //boss
         for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Bosses(); i++)
         {
+            std::cout << ObjectHandler::Get_Instance()->Get_Boss(i)->Get_Origin()->X << '\n';
             ObjectHandler::Get_Instance()->Get_Boss(i)->Update(dt);
             if(ObjectHandler::Get_Instance()->Get_Boss(i)->Is_Killed()) 
             {
-                ObjectHandler::Get_Instance()->Delete_Boss(i);    
+                ObjectHandler::Get_Instance()->Delete_Boss(i);   
+                i--; 
             }
         }
         //enemy
@@ -142,6 +154,18 @@ void Play::Update()
             if(ObjectHandler::Get_Instance()->Get_Enemy(i)->Is_Killed()) 
             {
                 ObjectHandler::Get_Instance()->Delete_Enemy(i); 
+                i--;
+            }
+        }
+        //bullet
+        for(int i = 0; i < ObjectHandler::Get_Instance()->Get_Num_Crystals(); i++)
+        {
+//            std::cout << i << " a\n";
+            ObjectHandler::Get_Instance()->Get_Crystal(i)->Update(dt);
+            if(ObjectHandler::Get_Instance()->Get_Crystal(i)->Get_Bullet_Done())
+            {
+                ObjectHandler::Get_Instance()->Delete_Crystal(i);
+                i--;
             }
         }
         //heart

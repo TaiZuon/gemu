@@ -151,7 +151,7 @@ void Warrior::Take_Dam(int dam)
 }
 void Warrior::Jump(double dt)
 {
-    if(Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_W) and gIs_Landed and !gIs_Attacking)
+    if(Input::Get_Instance()->Get_Key_Down(SDL_SCANCODE_W) and gIs_Landed)
     {
         gAnimation->AnimationStart();
         gIs_Jumping = true;

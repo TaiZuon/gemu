@@ -10,10 +10,7 @@
 
 Orc::Orc(Properties* props): Character(props)
 {
-    if(gTarget == nullptr)
-    {
-        gTarget = ObjectHandler::Get_Instance()->Get_Player();
-    }
+    gTarget = ObjectHandler::Get_Instance()->Get_Player();
     gMax_Damage = WaveManager::Get_Instance()->Get_Orc_Damage();
     gMax_Health = WaveManager::Get_Instance()->Get_Orc_Health();
 
@@ -35,6 +32,7 @@ Orc::Orc(Properties* props): Character(props)
 
     gCollider = new Collider();
     gCollider->Set_Empty(-35,-50,70,50);
+    gCollider->Set_Box(gTransform->X, gTransform->Y, CHAR_SIZE, CHAR_SIZE);
 
     gRigidBody = new RigidBody();
     gRigidBody->Set_Gravity(GRAVITY);
@@ -119,7 +117,7 @@ void Orc::Dead(double dt)
     }
     else
     { 
-        if(gAnimation->Get_Frame() == 4) 
+        if(gAnimation->Get_Frame() >= 3) 
         {
             Sound::Get_Instance()->PlayEffect("Orc_Die");
             Coin::Get_Instance()->Up_Num_Coins(gVal);
@@ -181,7 +179,7 @@ void Orc::Attack()
     gIs_Attacking = true;
     gRigidBody->Unset_Force();
     gAnimation->Set_Props("Orc_Attack_1", 1, 4, 150, gFlip);
-    if(gAnimation->Get_Frame() >= 3 and gAnimation->Is_New_Frame())
+    if(gAnimation->Get_Frame() >= 2 and gAnimation->Is_New_Frame())
     {
         Sound::Get_Instance()->PlayEffect("Orc_Attack");
         gTarget->Take_Dam(gDamage);

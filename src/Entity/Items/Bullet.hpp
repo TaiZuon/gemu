@@ -21,15 +21,17 @@ public:
     void Set_Dir(int a)
     {
         gDir = a;
+//        std::cout << "Direction " << gDir << "\n";
     }
     void Set_Dam(int a)
     {
         gDam = a;
+//        std::cout << "Damage: " << gDam << '\n';
     }
 private:
     int gDam;
     int gDir;
-    int gTime_Start;
+    Uint32 gTime_Start;
 
     bool gIs_Touched;
     bool gIs_Done;

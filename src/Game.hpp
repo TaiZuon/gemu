@@ -31,6 +31,10 @@ public:
     void PushState(GameState* Current);
     void ChangeState(GameState* Target);
 
+    void Stop()
+    {
+        gIs_Running = false;
+    }
     bool running()
     {
         return gIs_Running;

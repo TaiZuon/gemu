@@ -78,6 +78,7 @@ void Game::StateInit()
 
 void Game::Load() 
 {
+    srand(time(0));
     Coin::Get_Instance()->Get_Num_Coins();
 
     Map::Get_Instance()->Create_White_Map();
@@ -117,7 +118,7 @@ void Game::Clean()
 
     SDL_DestroyRenderer(gRenderer);
     SDL_Quit();
-    ObjectHandler::Get_Instance()->Delete_All();
+    if(!ObjectHandler::Get_Instance()->Is_Clear())ObjectHandler::Get_Instance()->Delete_All();
 }
 
 void Game::Quit()

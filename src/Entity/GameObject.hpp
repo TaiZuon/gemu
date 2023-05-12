@@ -42,15 +42,15 @@ class GameObject: public IObject
         {
             return gOrigin;
         }
-        SDL_Rect Get_Box()
-        {
-            SDL_Rect a;
-            a.x = gOrigin->X;
-            a.y = gOrigin->Y;
-            a.w = gWidth;
-            a.h = gHeight;
-            return a;
-        }
+        // SDL_Rect Get_Box()
+        // {
+        //     SDL_Rect a;
+        //     a.x = gOrigin->X;
+        //     a.y = gOrigin->Y;
+        //     a.w = gWidth;
+        //     a.h = gHeight;
+        //     return a;
+        // }
         virtual void Draw()=0;
         virtual void Update(double dt){}
         virtual void Clean()=0;
