@@ -50,7 +50,7 @@ void Heart::Draw()
     Vector2D Cam = Camera::Get_Instance()->Get_Position();
     a.x -= Cam.X;
     a.y -= Cam.Y;
-    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &a);
+//    SDL_RenderDrawRect(Game::Get_Instance()->gRenderer, &a);
 
     gAnimation->Draw(gTransform->X, gTransform->Y, gWidth, gHeight);
 }
